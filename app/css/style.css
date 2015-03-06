@@ -4,7 +4,7 @@
 @import url("../lib/codemirror.css");
 @import url("../addon/fold/foldgutter.css");
 @import url("../addon/lint/lint.css");
-@import url("../lib/hsla-picker.css");
+@import url("../lib/spectrum.css");
 @import url("../alertify/themes/alertify.core.css");
 @import url("../alertify/themes/alertify.default.css");
 @import url("../jqwidgets/styles/jqx.base.css");
@@ -72,9 +72,8 @@ a:active {
 }
 #add-library, #add-demo {
   font-size: 1.6em;
-  padding: 0 5px 0 0;
+  padding: 0px 5px 0px 0px;
 }
-
 #charmenu {
   position: absolute;
   top: 0;
@@ -134,6 +133,11 @@ a:active {
   text-align: center;
   font: 16px arial;
 }
+.dialog .sp-cancel {
+  font: 12px arial;
+  margin: 5px 5px 0 0;
+  padding: 2px;
+}
 .dialog h3 {
   padding-top: 20px;
   margin: 20px;
@@ -149,7 +153,6 @@ a:active {
   margin: 0 10px;
 }
 input[type=text].heading {
-  display: block;
   text-align: center;
   margin-bottom: 10px;
 }
@@ -164,10 +167,8 @@ input[type=text].heading {
   border: 1px solid #000;
   z-index: 100;
 }
-.swatches a {
-  width: 20px;
-  height: 20px;
-  margin: 0 5px!important;
+.full-spectrum .sp-palette {
+  max-width: 20px;
 }
 
 /* Click Add Libraries or Demos In Dialog */
@@ -284,7 +285,6 @@ ul.ldd-menu ul li a {
   display: block;
   width: 100%;
   background: transparent;
-  z-index: 0;
 }
 .CodeMirror, .CodeMirror-gutters {
   height: 100%!important;

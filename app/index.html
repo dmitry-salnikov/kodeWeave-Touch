@@ -15,7 +15,7 @@
   <script src="dist/FileSaver.js"></script>
   <script type="text/javascript">
     TogetherJSConfig_siteName="kodeWeave";
-    TogetherJSConfig_toolName="Team Up";
+    TogetherJSConfig_toolName="Teamwork";
     TogetherJSConfig_suppressJoinConfirmation = true;
     TogetherJSConfig_includeHashInUrl = true;
     TogetherJSConfig_dontShowClicks = true;
@@ -32,8 +32,6 @@
       <i class="fa fa-wrench"></i>
     </a>
     <div class="dialog toolbox hide">
-      <input class="projectname heading" type="text" value="ProjectName" />
-      
       <a class="ipsum fn heading" href="javascript:void(0)">
         Lorem Ispum Generator
       </a><br /><br />
@@ -58,18 +56,7 @@
       </div>
 
       <!-- Color Picker -->
-      <div class="swatches"></div><br /><br />
-
-      <div class="cpicker">
-        <a class="fl heading add-swatch" href="javascript:void(0)">
-          <i class="fa fa-copy"></i>
-        </a>
-        <input id="mainpicker" class="picker" type="text">
-        <a class="fr heading add-color" href="javascript:void(0)">
-          <i class="fa fa-plus"></i>
-        </a>
-        <div class="place-picker" align="center"></div>
-      </div>
+      <input class="picker" type="text">
     </div>
     
     <a class="open-libraries" href="javascript:void(0)">
@@ -193,7 +180,7 @@
                 <li id="jQMobile"><a href="javascript:void(0)">jQuery Mobile (latest)</a></li>
                 <li id="jQUI"><a href="javascript:void(0)">jQuery UI (latest)</a></li>
                 <li id="jQTools"><a href="javascript:void(0)">jQuery Tools (1.2.7)</a></li>
-                <li id="JSZip"><a href="javascript:void(0)">JSZip (2.4.0)<span class="new"> Popular !</span></a></li>
+                <li id="JSZip"><a href="javascript:void(0)">JSZip (2.4.0)</a><span class="new"> Popular !</span></li>
                 <li>&nbsp;</li>
                 <li class="ldd-heading no-border">K</li>
                 <li id="KineticJS"><a href="javascript:void(0)">Kinetic JS 4.7.3</a></li>
@@ -233,7 +220,7 @@
                 <li class="ldd-heading">W</li>
                 <li id="WebFontloader"><a href="javascript:void(0)">Web Font Loader (1.4.10)</a></li>
                 <li>&nbsp;</li>
-                <li YUI="ldd-heading">Y</li>
+                <li class="ldd-heading">Y</li>
                 <li id="yui"><a href="javascript:void(0)">YUI (3.13.0)</a></li>   
                 <li>&nbsp;</li>
                 <li class="ldd-heading">Z</li>
@@ -251,6 +238,8 @@
       <i class="fa fa-save"></i>
     </a>
     <div class="dialog fl hide">
+      <input class="projectname heading hide" type="text" value="ProjectName" placeholder="ProjectName" />
+      
       <a class="download-as-droid-proj" href="javascript:void(0)">
         Download as Android PhoneGap Project
       </a><br />
@@ -356,6 +345,7 @@
         <option value="web browser">web browser</option>
         <option value="web designer">web designer</option>
         <option value="webgl cube">webgl cube</option>
+        <option value="webgl first person interaction">webgl first person interaction</option>
         <option value="whiteboard">whiteboard</option>
         <option value="wysiwyg editor">wysiwyg editor</option>
       </select>
@@ -435,6 +425,7 @@
                 <li id="web browser"><a href="javascript:void(0)">web browser</a></li>
                 <li id="web designer"><a href="javascript:void(0)">web designer</a></li>
                 <li id="webgl cube"><a href="javascript:void(0)">webgl cube</a></li>
+                <li id="webgl first person interaction"><a href="javascript:void(0)">webgl first person interaction</a></li>
                 <li id="whiteboard"><a href="javascript:void(0)">whiteboard</a></li>
                 <li id="wysiwyg editor"><a href="javascript:void(0)">wysiwyg editor</a></li>
             </div>
@@ -521,7 +512,7 @@
   <script src="addon/lint/css-lint.js"></script>
   <script src="alertify/alertify.min.js"></script>
   
-  <script src="lib/hsla-picker.js"></script>
+  <script src="lib/spectrum.js"></script>
   <script src="lib/shortcut.js"></script>
   <script src="editor.js"></script>
   <script type="text/javascript">
@@ -625,6 +616,13 @@
           cssEditor.removeLineWidget(widgets[i]);
           jsEditor.removeLineWidget(widgets[i]);
         }
+      var dest = $(".projectname");
+      var content =  htmlEditor.getValue();
+      var openTagIndex = content.search(/<title/);
+      var closeTagIndex = content.search(/<\/title>/);
+      var titleTag = content.slice(openTagIndex , closeTagIndex);
+      var editorTitle = titleTag.slice(titleTag.search(/>/) + 1);  
+      dest.val(editorTitle).val(dest.val().split(" ").join(""));
     });
     cssEditor.on("change", function() {
       clearTimeout(delay);

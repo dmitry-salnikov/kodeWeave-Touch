@@ -122,24 +122,6 @@ $(document).ready(function() {
   }
   reset();
   
-  var CallSwatches = function() {
-    $(".swatches").append("<a href=\"javascript:void(0)\" style=\"background-color:"+ $("#mainpicker").val() +";\"></a><input class=\"hide\" type=\"text\" value=\""+ $("#mainpicker").val() +"\" \><input class=\"hide\" type=\"text\" value=\""+ $("#h").slider("value") +"\" \><input class=\"hide\" type=\"text\" value=\""+ $("#s").slider("value") +"\" \><input class=\"hide\" type=\"text\" value=\""+ $("#l").slider("value") +"\" \><input class=\"hide\" type=\"text\" value=\""+ $("#a").slider("value") +"\" \>");
-    
-    if (myarray.length >= 8) {
-        myarray.shift();
-    }
-    myarray.push("<a href=\"javascript:void(0)\" style=\"background-color:"+ $("#mainpicker").val() +";\"></a><input class=\"hide\" type=\"text\" value=\""+ $("#mainpicker").val() +"\" \><input class=\"hide\" type=\"text\" value=\""+ $("#h").slider("value") +"\" \><input class=\"hide\" type=\"text\" value=\""+ $("#s").slider("value") +"\" \><input class=\"hide\" type=\"text\" value=\""+ $("#l").slider("value") +"\" \><input class=\"hide\" type=\"text\" value=\""+ $("#a").slider("value") +"\" \>");
-    $(".swatches").html(myarray.join(""));
-    
-    $(".swatches a").on("click", function() {
-      $(".picker").val( $(this).next().val() ).trigger("change");
-      $("#h").slider("value", $(this).next().next().val() );
-      $("#s").slider("value", $(this).next().next().next().val() );
-      $("#l").slider("value", $(this).next().next().next().next().val() );
-      $("#a").slider("value", $(this).next().next().next().next().next().val() );
-    });
-  };
-  
   // Choose Grid Scheme
   $(".grid-alignment").click(function() {
     $("#htmlEditor, #cssEditor, #jsEditor").css("style", "");
@@ -514,10 +496,14 @@ $(document).ready(function() {
       $(".download-zip").trigger("click");
       $(".download").trigger("click");
     });
-    $(".projectname").keyup(function() {
-      var dest = $(this);
-      dest.val(dest.val().split(" ").join("")); 
-    });
+    
+    var dest = $(".projectname");
+    var content =  htmlEditor.getValue();
+    var openTagIndex = content.search(/<title/);
+    var closeTagIndex = content.search(/<\/title>/);
+    var titleTag = content.slice(openTagIndex , closeTagIndex);
+    var editorTitle = titleTag.slice(titleTag.search(/>/) + 1);  
+    dest.val(editorTitle).val(dest.val().split(" ").join(""));
   });
   
   // Download
@@ -610,7 +596,7 @@ $(document).ready(function() {
         
         // Your Android Files
         zip.file("AndroidManifest.xml", "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    android:windowSoftInputMode=\"adjustPan\"\n	package=\"com.kodeweave."+ $('.projectname').val() +"\"\n    android:versionName=\"1.0.0\" android:versionCode=\"1\"\n	android:hardwareAccelerated=\"true\">\n	\n	<support-screens\n		android:xlargeScreens=\"true\"\n		android:largeScreens=\"true\"\n		android:normalScreens=\"true\"\n		android:smallScreens=\"true\"\n		android:anyDensity=\"true\" />\n	\n	<uses-permission android:name=\"android.permission.INTERNET\" />\n	<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\n	\n    <application\n        android:icon=\"@drawable/logo\"\n        android:label=\"@string/app_name\" \n		android:hardwareAccelerated=\"true\">\n        <activity\n            android:name=\".MainActivity\"\n            android:label=\"@string/app_name\"\n			android:configChanges=\"orientation|keyboardHidden|keyboard|screenSize|locale\"\n			>\n            <intent-filter >\n                <action android:name=\"android.intent.action.MAIN\" />\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n    </application>\n\n    <uses-sdk \n        android:minSdkVersion=\"7\" \n        android:targetSdkVersion=\"17\" />\n\n</manifest>\n");
-        zip.file("src/com/kodeweave/" + $('.projectname').val() + "/ManActivity.java", "package com.kodeweave." + $('.projectname').val() + ";\n\nimport android.os.Bundle;\nimport org.apache.cordova.*;\n\npublic class MainActivity extends DroidGap\n{\n    /** Called when the activity is first created. */\n    @Override\n    public void onCreate(Bundle savedInstanceState)\n	{\n        super.onCreate(savedInstanceState);\n        // Set by <content src=\"index.html\" /> in config.xml\n		super.loadUrl(Config.getStartUrl());\n		// super.loadUrl(\"file://android_asset/www/index.html\")\n    }\n}\n");
+        zip.file("src/com/kodeweave/" + $('.projectname').val() + "/MainActivity.java", "package com.kodeweave." + $('.projectname').val() + ";\n\nimport android.os.Bundle;\nimport org.apache.cordova.*;\n\npublic class MainActivity extends DroidGap\n{\n    /** Called when the activity is first created. */\n    @Override\n    public void onCreate(Bundle savedInstanceState)\n	{\n        super.onCreate(savedInstanceState);\n        // Set by <content src=\"index.html\" /> in config.xml\n		super.loadUrl(Config.getStartUrl());\n		// super.loadUrl(\"file://android_asset/www/index.html\")\n    }\n}\n");
         zip.file("res/values/strings.xml", "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n    <string name=\"app_name\">" + $('.projectname').val() + "</string>\n</resources>\n");
         
         // Your Web App
@@ -681,27 +667,29 @@ $(document).ready(function() {
     });
     
     // Color Picker
-    $(".picker").on('focus', function() {
-    }).HSLAColorPicker(".place-picker");
-    
-    // Add Color Code from Picker
-    $(".add-color").click(function() {
-      if ( activeEditor.val() === "htmlEditor" ) {
-        htmlEditor.replaceSelection( $(".picker").val() );
-      } else if ( activeEditor.val() === "cssEditor" ) {
-        cssEditor.replaceSelection( $(".picker").val() );
-      } else if ( activeEditor.val() === "jsEditor" ) {
-        jsEditor.replaceSelection( $(".picker").val() );
+    $(".picker").spectrum({
+      preferredFormat: "hex",
+      className: "full-spectrum",
+      flat: true,
+      allowEmpty: true,
+      showAlpha: true,
+      showInitial: true,
+      showInput: true,
+      showPalette: true,
+      showSelectionPalette: true,
+      maxPaletteSize: 10,
+      maxSelectionSize: 10,
+      palette: [ ],
+      change: function(color) {
+        if ( activeEditor.val() === "htmlEditor" ) {
+          htmlEditor.replaceSelection( color.toString() );
+        } else if ( activeEditor.val() === "cssEditor" ) {
+          cssEditor.replaceSelection( color.toString() );
+        } else if ( activeEditor.val() === "jsEditor" ) {
+          jsEditor.replaceSelection( color.toString() );
+        }
       }
-      
-      $(".tools").trigger("click");
     });
-
-    // Swatches
-    $(".add-swatch").click(function() {
-      CallSwatches();
-    });
-    CallSwatches();
   });
   
   // Add Libraries
@@ -757,15 +745,15 @@ $(document).ready(function() {
       } else if ($.inArray($val.toLowerCase(), ["jquery"]) > -1) {
         txt="    <"+"script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-latest.min.js\">"+"</"+"script"+">";
         appendLib(txt);
-      } else if ($.inArray($val.toLowerCase(), ["jqmobile", "jq mobile", "jquerymobile", "jquery mobile"]) > -1) {
-        txt1="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"http://demos.jquerymobile.com/1.4.5/css/themes/default/jquery.mobile-1.4.5.min.css\" />\n";
-        txt2="    <"+"script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-latest.min.js\">"+"</"+"script"+">\n";
-        txt3="    <"+"script type=\"text/javascript\" src=\"http://demos.jquerymobile.com/1.4.5/js/jquery.mobile-1.4.5.min.js\">"+"</"+"script"+">";
-        appendLib(txt1 + txt2 + txt3);
       } else if ($.inArray($val.toLowerCase(), ["jqui", "jq ui", "jqueryui", "jquery ui"]) > -1) {
         txt1="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.css\" />\n";
         txt2="    <"+"script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-latest.min.js\">"+"</"+"script"+">\n";
         txt3="    <"+"script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js\">"+"</"+"script"+">";
+        appendLib(txt1 + txt2 + txt3);
+      } else if ($.inArray($val.toLowerCase(), ["jqmobile", "jq mobile", "jquerymobile", "jquery mobile"]) > -1) {
+        txt1="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"http://demos.jquerymobile.com/1.4.5/css/themes/default/jquery.mobile-1.4.5.min.css\" />\n";
+        txt2="    <"+"script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-latest.min.js\">"+"</"+"script"+">\n";
+        txt3="    <"+"script type=\"text/javascript\" src=\"http://demos.jquerymobile.com/1.4.5/js/jquery.mobile-1.4.5.min.js\">"+"</"+"script"+">";
         appendLib(txt1 + txt2 + txt3);
       } else if ($.inArray($val.toLowerCase(), ["jqtools", "jq tools", "jquerytools", "jquery tools"]) > -1) {
         txt="    <"+"script type=\"text/javascript\" src=\"http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js\">"+"</"+"script"+">";
@@ -855,7 +843,7 @@ $(document).ready(function() {
       $("#search-libraries").val( $(this).parent().prop("id") );
       $("#add-library").trigger("click");
     });
-    
+
     $("#search-select-libraries").on("change", function() {
       $("#search-libraries").val( $(this).val() );
     });
@@ -868,7 +856,7 @@ $(document).ready(function() {
     });
   });
   
-  // Handles Demos
+  // Demos
   $(function() {
     $("#add-demo").on("click", function() {
       var $val = $("#search-demos").val();
@@ -1015,6 +1003,10 @@ $(document).ready(function() {
         htmlEditor.setValue("<!-- Tutorial Located at: http://www.html5canvastutorials.com/three/html5-canvas-three-js-normal-material/ -->\n\n<!DOCTYPE HTML>\n<html>\n  <head>\n    <title>WebGL Cube: Demo</title>\n  </head>\n  <body>\n    <div id='container'></div>\n    <script src='http://www.html5canvastutorials.com/libraries/three.min.js'></script>\n  </body>\n</html>");
         cssEditor.setValue("body {\n  margin: 0;\n  padding: 0;\n}\n");
         jsEditor.setValue("// revolutions per second\nvar angularSpeed = 0.2; \nvar lastTime = 0;\n\n// this function is executed on each animation frame\nfunction animate(){\n  // update\n  var time = (new Date()).getTime();\n  var timeDiff = time - lastTime;\n  var angleChange = angularSpeed * timeDiff * 2 * Math.PI / 1000;\n  cube.rotation.y += angleChange;\n  lastTime = time;\n  \n  // render\n  renderer.render(scene, camera);\n  \n  // request new frame\n  requestAnimationFrame(function(){\n    animate();\n  });\n}\n\n// renderer\nvar renderer = new THREE.WebGLRenderer();\nrenderer.setSize(window.innerWidth, window.innerHeight);\ndocument.body.appendChild(renderer.domElement);\n\n// camera\nvar camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);\ncamera.position.z = 500;\n\n// scene\nvar scene = new THREE.Scene();\n\n// cube\nvar cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshNormalMaterial());\ncube.overdraw = true;\ncube.rotation.x = Math.PI * 0.1;\nscene.add(cube);\n\n// start animation\nanimate();\n");
+      } else if ($.inArray($val.toLowerCase(), ["webgl first person interaction"]) > -1) {
+        htmlEditor.setValue("<!DOCTYPE html>\n<html>\n  <head>\n    <title>WebGL: First Person Pointer Lock</title>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\" />\n    <link type=\"text/css\" rel=\"stylesheet\" href=\"http://necolas.github.io/normalize.css/3.0.1/normalize.css\" />\n    <script type=\"text/javascript\" src=\"http://www.html5canvastutorials.com/libraries/three.min.js\"></script>\n  </head>\n  <body>\n    <h1>WASD keys to move</h1>\n  </body>\n</html>");
+        cssEditor.setValue("");
+        jsEditor.setValue("//http://www.html5rocks.com/en/tutorials/pointerlock/intro/#toc-references\n\nvar\nscene_width = window.innerWidth,\n    scene_height = window.innerHeight,\n    player = {\n      body : new THREE.Object3D()\n    },\n    key = {\n      left   : false,\n      up     : false,\n      right  : false,\n      down   : false,\n      space   : false\n    },\n    drawCube = function(x,y,z,w,h,d){\n\n      var cube = new THREE.Mesh(new THREE.CubeGeometry(w, h, d), new THREE.MeshNormalMaterial());\n\n      cube.overdraw = true;\n\n      cube.position.set(x,y,z);\n\n      scene.add(cube);\n\n    },\n    animate = function(){\n\n      if(key.left)\n        player.body.translateX(-0.15);\n\n      if(key.up)\n        player.body.translateZ(-0.15);\n\n      if(key.right)\n        player.body.translateX(0.15);\n\n      if(key.down)\n        player.body.translateZ(0.15);\n\n      // render\n      renderer.render(scene, camera);\n\n      // request new frame\n      requestAnimationFrame(function(){\n        animate();\n      });\n    };\n\n// renderer\nvar renderer = new THREE.WebGLRenderer();\nrenderer.setSize(scene_width, scene_height);\ndocument.body.appendChild(renderer.domElement);\n\n/* Pointer lock */\nvar canvas = document.getElementsByTagName(\"canvas\")[0],\n    mouse_sensitivity = 200,\n    changeCallback = function(e){\n      if (document.pointerLockElement === canvas ||\n          document.mozPointerLockElement === canvas ||\n          document.webkitPointerLockElement === canvas) {\n        // Pointer was just locked\n        // Enable the mousemove listener\n        document.addEventListener(\"mousemove\", moveCallback, false);\n      } else {\n        // Pointer was just unlocked\n        // Disable the mousemove listener\n        document.removeEventListener(\"mousemove\", moveCallback, false);\n      }\n    },\n    moveCallback = function(e){\n\n      var movementX = e.movementX ||\n          e.mozMovementX ||\n          e.webkitMovementX ||\n          0,\n\n          movementY = e.movementY ||\n          e.mozMovementY ||\n          e.webkitMovementY ||\n          0;\n\n      player.body.rotation.y -= movementX/mouse_sensitivity;\n      camera.rotation.x -= movementY/mouse_sensitivity;\n    };\n\ncanvas.requestPointerLock = canvas.requestPointerLock ||\n  canvas.mozRequestPointerLock ||\n  canvas.webkitRequestPointerLock;\n\n\ncanvas.onclick=function(){\n\n  // Ask the browser to lock the pointer)\n  canvas.requestPointerLock();\n};\n\n// Hook pointer lock state change events\ndocument.addEventListener('pointerlockchange', changeCallback, false);\ndocument.addEventListener('mozpointerlockchange', changeCallback, false);\ndocument.addEventListener('webkitpointerlockchange', changeCallback, false);\n\n// Ask the browser to release the pointer\ndocument.exitPointerLock = document.exitPointerLock ||\n  document.mozExitPointerLock ||\n  document.webkitExitPointerLock;\n\ndocument.exitPointerLock();\n\n// camera\nvar camera = new THREE.PerspectiveCamera(45, scene_width / scene_height, 1, 1000);\n// camera.position.z = 80;\n\n// scene\nvar scene = new THREE.Scene();\n\n// plane aka ground\nvar plane = new THREE.Mesh(new THREE.PlaneGeometry(50,50), new THREE.MeshNormalMaterial());\n\nplane.rotation.x = 4.7;\nplane.position.y = -1;\n\nscene.add(plane);\n\n// cube\ndrawCube(0,0,0,1,1,1);\ndrawCube(5,0,0,1,1,1);\ndrawCube(5,0,5,1,1,1);\ndrawCube(-5,0,5,1,1,1);\ndrawCube(-5,5,5,1,1,1);\ndrawCube(0,3,5,1,1,1);\ndrawCube(-4,3,-5,1,1,1);\ndrawCube(2.5,3,-5,1,1,1);\ndrawCube(5,2,-20,1,1,1);\n\n\nplayer.body.position.z = 5;\n\nplayer.body.add(camera);\nscene.add(player.body);\n\n// start animation\nanimate();\n\ndocument.body.onkeydown=function(e){\n\n  switch(e.keyCode){\n    case 65 :\n      key.left = true;\n      break;\n\n    case 87 :\n      key.up = true;\n      break;\n\n    case 68 :\n      key.right = true;\n      break;\n\n    case 83 :\n      key.down = true;\n      break;\n\n    case 32 :\n      key.space = true;\n      break;\n  }\n};\ndocument.body.onkeyup=function(e){\n\n  switch(e.keyCode){\n    case 65 :\n      key.left = false;\n      break;\n\n    case 87 :\n      key.up = false;\n      break;\n\n    case 68 :\n      key.right = false;\n      break;\n\n    case 83 :\n      key.down = false;\n      break;\n\n    case 32 :\n      key.space = false;\n      break;\n  }\n};");
       } else if ($.inArray($val.toLowerCase(), ["whiteboard"]) > -1) {
         htmlEditor.setValue("<!DOCTYPE html>\n<html>\n<head>\n  <title>HTML5 Canvas Drawing Board</title>\n  <meta charset='utf-8' />\n  <meta name='viewport' content='initial-scale=1.0'>\n  <meta http-equiv='X-UA-Compatible' content='IE=9' />\n  <link type='text/css' rel='stylesheet' href='http://necolas.github.io/normalize.css/3.0.1/normalize.css'/>\n  <script type='text/javascript' src='http://code.jquery.com/jquery-latest.min.js'></script>\n</head>\n<body>\n  <canvas id='myCanvas'>\n    Sorry, your browser does not support HTML5 canvas technology.\n  </canvas>\n</body>\n</html>");
         cssEditor.setValue("body, html {\n  height: 100%;\n  margin: 0;\n}\n\n#myCanvas {\n  cursor: crosshair;\n  position: fixed;\n}\n");
