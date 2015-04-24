@@ -198,12 +198,7 @@ input[type=text].heading {
 .addlibrary-tablets, .adddemos-tablets {
   display: block;
   text-align: left;
-}
-.addlibrary-tablets {
-  width: 500px;
-}
-.adddemos-tablets {
-  width: 450px;
+  width: 600px;
 }
 
 .addlibrary-tablets li a, .adddemos-tablets li a {
@@ -238,6 +233,7 @@ ul.ldd-menu ul {
   border-left: 1px solid #DDD;
   margin: 0;
   padding: 10px;
+  width: 170px;
 }
 
 .ldd-heading {
@@ -261,7 +257,7 @@ ul.ldd-menu ul li a {
   font-size: 10px;
 }
 
-@media all and (max-width:600px) {
+@media all and (max-width:680px) {
   .addlibrary-tablets, .adddemos-tablets {
     display: none;
   }

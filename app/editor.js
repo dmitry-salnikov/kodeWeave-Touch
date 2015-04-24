@@ -78,21 +78,26 @@ $(document).ready(function() {
     }
     
   }).on("load resize", function() {
-    if ( $(this).width() < 600 ) {
-      $(".libraries-dialog, .demos-dialog").css({
-        "height": "auto",
-        "overflow-y": "visible"
-      });
+    if ( $(this).width() < 681 ) {
+      if ( $(this).height() < 600 ) {
+        $(".libraries-dialog, .demos-dialog").css({
+          "height": "auto",
+          "overflow-y": "auto"
+        });
+      }
     } else {
       if ( $(this).height() < 600 ) {
         $(".libraries-dialog, .demos-dialog").css({
-          "height": "300px",
+          "height": $(this).height() - 80 + "px",
           "overflow-y": "auto"
+        });
+      } else if ( $(this).height() < 630 ) {
+        $(".libraries-dialog, .demos-dialog").css({
+          "height": "auto"
         });
       } else {
         $(".libraries-dialog, .demos-dialog").css({
-          "height": "auto",
-          "overflow-y": "visible"
+          "height": "auto"
         });
       }
     }
@@ -509,67 +514,6 @@ $(document).ready(function() {
   // Download
   $(function() {
 
-    // Download as Windows App
-    $(".download-as-win-app").on("click", function() {
-      $(".download").trigger("click");
-      
-      JSZipUtils.getBinaryContent('YourWinApp.zip', function(err, data) {
-        if(err) {
-          throw err; // or handle err
-        }
-        
-        var zip = new JSZip(data);
-        
-        var htmlContent = htmlEditor.getValue();
-        var cssContent = cssEditor.getValue();
-        var jsContent = jsEditor.getValue();
-        
-        var cssLink="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
-        var jsLink="    <"+"script type=\"text/javascript\" src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-        
-        cssLink = cssLink + "</head>";
-        jsLink = jsLink + "</body>";
-        
-        htmlContent = htmlContent.replace("</head>",cssLink);
-        htmlContent = htmlContent.replace("</body>",jsLink);
-        
-        // Your Web App
-        zip.file("YourWinApp/YourWinApp/bin/Debug/app/css/style.css", cssContent);
-        zip.file("YourWinApp/YourWinApp/bin/Debug/app/js/script.js", jsContent);
-        zip.file("YourWinApp/YourWinApp/bin/Debug/app/index.html", htmlContent);
-        var content = zip.generate({type:"blob"});
-        saveAs(content, $('.projectname').val() + "-win.zip");
-      });
-    });
-    
-    // Download as Linux App
-    $(".download-as-lin-app").on("click", function() {
-      $(".download").trigger("click");
-      var zip = new JSZip();
-      
-      var htmlContent = htmlEditor.getValue();
-      var cssContent = cssEditor.getValue();
-      var jsContent = jsEditor.getValue();
-      
-      var cssLink="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
-      var jsLink="    <"+"script type=\"text/javascript\" src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-      
-      cssLink = cssLink + "</head>";
-      jsLink = jsLink + "</body>";
-      
-      htmlContent = htmlContent.replace("</head>",cssLink);
-      htmlContent = htmlContent.replace("</body>",jsLink);
-      
-      // Your Web App
-      zip.file($('.projectname').val() + "/app/css/style.css", cssContent);
-      zip.file($('.projectname').val() + "/app/js/script.js", jsContent);
-      zip.file($('.projectname').val() + "/app/index.html", htmlContent);
-      zip.file($('.projectname').val() + "/app.py", "#!/usr/bin/env python\n\nimport webkit, pygtk, gtk, os\n\nif gtk.pygtk_version < (2,3,90):\n  print \"Please upgrade pygtk\"\n  raise SystemExit\n\nclass "+ $('.projectname').val() +":\n  def __init__(self):\n      \n    def reload_page(frame, event):\n      if event.keyval == gtk.keysyms.F5:\n        web.reload()\n      \n    def fill_screen(self, event):\n      if event.keyval == gtk.keysyms.F11:\n        if full.get_active() == False:\n          full.set_active(True)\n          win.fullscreen()\n        else:\n          full.set_active(False)\n          win.unfullscreen()\n      \n    win = gtk.Window(gtk.WINDOW_TOPLEVEL)\n    win.set_title(\""+ $('.projectname').val() +"\")\n    win.resize(800,600)\n    win.connect(\"destroy\", lambda w: gtk.main_quit())\n    win.connect(\"key-press-event\", reload_page)\n    win.connect(\"key-press-event\", fill_screen)\n    \n    vbox = gtk.VBox()\n    hbox = gtk.HBox()\n    mb = gtk.MenuBar()\n    viewmenu = gtk.Menu()\n    vm = gtk.MenuItem(\"View\")\n    vm.set_submenu(viewmenu)\n\n    full = gtk.CheckMenuItem()\n    full.set_label(\"Fullscreen\")\n    full.set_active(False)\n    full.connect(\"activate\", fill_screen)\n    viewmenu.append(full)\n    mb.append(vm)\n\n    vbox = gtk.VBox(False, 0)\n    win.add(vbox)\n       \n    scroller = gtk.ScrolledWindow()\n    vbox.pack_start(scroller, 1)\n    web = webkit.WebView()\n    path=os.getcwd()\n    print path\n    web.open(\"file://\" + path + \"/index.html\")\n    web.props.settings.props.enable_default_context_menu = True\n    scroller.add(web)\n    win.show_all()\n\n"+ $('.projectname').val() +"()\ngtk.main()\n");
-      zip.file($('.projectname').val() + "/PYGTK-README", "This application for Linux relies on webkit, pygtk, gtk, os\n\nUbuntu Webkit information - https://help.ubuntu.com/community/WebKit\n  sudo apt-get install libwebkitgtk-dev\n  sudo apt-get install python-webkit-dev\n  sudo apt-get install python-webkit\n  \nUsing `apt-cache search your_package` is handy when you cannot find a package.\n\nOpen your terminal and navigate to it using...\ncd Desktop/AppName\n\nTo run type ./app.py or python app.py\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
-      var content = zip.generate({type:"blob"});
-      saveAs(content, $('.projectname').val() + "-lin.zip");
-    });
-    
     // Download as Android Project
     $(".download-as-droid-proj").on("click", function() {
       $(".download").trigger("click");
@@ -608,10 +552,106 @@ $(document).ready(function() {
       });
     });
 
+    // Download as Windows App
+    $(".download-as-win-app").on("click", function() {
+      $(".download").trigger("click");
+      
+      JSZipUtils.getBinaryContent('YourWinApp.zip', function(err, data) {
+        if(err) {
+          throw err; // or handle err
+        }
+        
+        var zip = new JSZip(data);
+        
+        var htmlContent = htmlEditor.getValue();
+        var cssContent = cssEditor.getValue();
+        var jsContent = jsEditor.getValue();
+        
+        var cssLink="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
+        var jsLink="    <"+"script type=\"text/javascript\" src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+        
+        cssLink = cssLink + "</head>";
+        jsLink = jsLink + "</body>";
+        
+        htmlContent = htmlContent.replace("</head>",cssLink);
+        htmlContent = htmlContent.replace("</body>",jsLink);
+        
+        // Your Web App
+        zip.file("YourWinApp/YourWinApp/bin/Debug/app/css/style.css", cssContent);
+        zip.file("YourWinApp/YourWinApp/bin/Debug/app/js/script.js", jsContent);
+        zip.file("YourWinApp/YourWinApp/bin/Debug/app/index.html", htmlContent);
+        var content = zip.generate({type:"blob"});
+        saveAs(content, $('.projectname').val() + "-win.zip");
+      });
+    });
+    
+    // Download as Linux App
+    $(".download-as-lin-app").on("click", function() {
+      $(".download").trigger("click");
+      
+      JSZipUtils.getBinaryContent('YourLinApp.zip', function(err, data) {
+        if(err) {
+          throw err; // or handle err
+        }
+        
+        var zip = new JSZip(data);
+        
+        var htmlContent = htmlEditor.getValue();
+        var cssContent = cssEditor.getValue();
+        var jsContent = jsEditor.getValue();
+        
+        var cssLink="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
+        var jsLink="    <"+"script type=\"text/javascript\" src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+        
+        cssLink = cssLink + "</head>";
+        jsLink = jsLink + "</body>";
+        
+        htmlContent = htmlContent.replace("</head>",cssLink);
+        htmlContent = htmlContent.replace("</body>",jsLink);
+        
+        // Your Web App
+        zip.file("/app/css/style.css", cssContent);
+        zip.file("/app/js/script.js", jsContent);
+        zip.file("/app/index.html", htmlContent);
+        zip.file("/source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $('.projectname').val() + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $('.projectname').val() + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
+        zip.file("/README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
+        var content = zip.generate({type:"blob"});
+        saveAs(content, $('.projectname').val() + "-lin.zip");
+      });
+    });
+    
+    // Download as PyGTK App
+    $(".download-as-pygtk-app").on("click", function() {
+      $(".download").trigger("click");
+      var zip = new JSZip();
+      
+      var htmlContent = htmlEditor.getValue();
+      var cssContent = cssEditor.getValue();
+      var jsContent = jsEditor.getValue();
+      
+      var cssLink="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
+      var jsLink="    <"+"script type=\"text/javascript\" src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+      
+      cssLink = cssLink + "</head>";
+      jsLink = jsLink + "</body>";
+      
+      htmlContent = htmlContent.replace("</head>",cssLink);
+      htmlContent = htmlContent.replace("</body>",jsLink);
+      
+      // Your Web App
+      zip.file($('.projectname').val() + "/app/css/style.css", cssContent);
+      zip.file($('.projectname').val() + "/app/js/script.js", jsContent);
+      zip.file($('.projectname').val() + "/app/index.html", htmlContent);
+      zip.file($('.projectname').val() + "/app.py", "#!/usr/bin/env python\n\nimport webkit, pygtk, gtk, os\n\nif gtk.pygtk_version < (2,3,90):\n  print \"Please upgrade pygtk\"\n  raise SystemExit\n\nclass "+ $('.projectname').val() +":\n  def __init__(self):\n      \n    def reload_page(frame, event):\n      if event.keyval == gtk.keysyms.F5:\n        web.reload()\n      \n    def fill_screen(self, event):\n      if event.keyval == gtk.keysyms.F11:\n        if full.get_active() == False:\n          full.set_active(True)\n          win.fullscreen()\n        else:\n          full.set_active(False)\n          win.unfullscreen()\n      \n    win = gtk.Window(gtk.WINDOW_TOPLEVEL)\n    win.set_title(\""+ $('.projectname').val() +"\")\n    win.resize(800,600)\n    win.connect(\"destroy\", lambda w: gtk.main_quit())\n    win.connect(\"key-press-event\", reload_page)\n    win.connect(\"key-press-event\", fill_screen)\n    \n    vbox = gtk.VBox()\n    hbox = gtk.HBox()\n    mb = gtk.MenuBar()\n    viewmenu = gtk.Menu()\n    vm = gtk.MenuItem(\"View\")\n    vm.set_submenu(viewmenu)\n\n    full = gtk.CheckMenuItem()\n    full.set_label(\"Fullscreen\")\n    full.set_active(False)\n    full.connect(\"activate\", fill_screen)\n    viewmenu.append(full)\n    mb.append(vm)\n\n    vbox = gtk.VBox(False, 0)\n    win.add(vbox)\n       \n    scroller = gtk.ScrolledWindow()\n    vbox.pack_start(scroller, 1)\n    web = webkit.WebView()\n    path=os.getcwd()\n    print path\n    web.open(\"file://\" + path + \"/app/index.html\")\n    web.props.settings.props.enable_default_context_menu = True\n    scroller.add(web)\n    win.show_all()\n\n"+ $('.projectname').val() +"()\ngtk.main()\n");
+      zip.file($('.projectname').val() + "/README", "PyGTK information - http://www.pygtk.org/downloads.html\nUbuntu Webkit information - https://help.ubuntu.com/community/WebKit\n\nThis PyGTK application relies on webkit, pygtk, gtk, os\n  sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n\n~~~...For Linux users...~~~\nUsing `apt-cache search your_package` is handy when you cannot find a package.\n\nOpen your terminal and navigate to it using...\ncd Desktop/AppName\n\nTo run type ./app.py or python app.py\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
+      var content = zip.generate({type:"blob"});
+      saveAs(content, $('.projectname').val() + "-pygtk.zip");
+    });
+    
     // Download as html
     $(".download-html").on("click", function() {
       $(".download").trigger("click");
-      saveTextAsFile();
+      saveTextAsHTML();
     });
 
     // Download as zip
@@ -963,6 +1003,10 @@ $(document).ready(function() {
         htmlEditor.setValue("<!-- Learn more about how to use the library at - http://stuk.github.io/jszip/ -->\n<!DOCTYPE html>\n<html>\n  <head>\n    <title>JSZip Download Demo</title>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\" />\n    <script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-latest.min.js\"></script>\n    <script type=\"text/javascript\" src=\"http://stuk.github.io/jszip/dist/jszip.min.js\"></script>\n    <script type=\"text/javascript\" src=\"http://stuk.github.io/jszip-utils/dist/jszip-utils.js\"></script>\n    <script type=\"text/javascript\" src=\"http://stuk.github.io/jszip/vendor/FileSaver.js\"></script>\n</head>\n  <body>\n    <div class=\"grid\">\n      <div class=\"grid__col--12\">\n        <a class=\"btn--default download\" href=\"javascript:void(0)\">Run</a>\n        <textarea class=\"form__input\" id=\"jszipdemo\" rows=\"7\" disabled=\"true\" placeholder=\"Demo code here...\">var zip = new JSZip();\nzip.file(\"Hello.txt\", \"Hello World\\n\");\nvar folder = zip.folder(\"images\");\nfolder.file(\"folder.txt\", \"I'm a file in a new folder\");\nvar content = zip.generate({type:\"blob\"});\n// see FileSaver.js\nsaveAs(content, \"example.zip\");</textarea>\n      </div>\n    </div>\n  </body>\n</html>\n");
         cssEditor.setValue("@import url(\"http://necolas.github.io/normalize.css/3.0.1/normalize.css\");\n@import url(\"http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900\");\n\n.grid:after {\n  content: \"\";\n  display: table;\n  clear: both; }\n\n.srt, .form__label--hidden {\n  border: 0;\n  clip: rect(0 0 0 0);\n  height: 1px;\n  margin: -1px;\n  overflow: hidden;\n  padding: 0;\n  position: absolute;\n  width: 1px; }\n\n.panel--centered, .panel--padded--centered, [class^=\"btn--\"] {\n  text-align: center; }\n\n[class^=\"progbar__\"]:after, .icn--nav-toggle:before {\n  display: block;\n  content: '';\n  position: absolute; }\n\n.centered, .grid {\n  float: none;\n  margin-left: auto;\n  margin-right: auto; }\n\nhtml {\n  font-family: sans-serif;\n  -ms-text-size-adjust: 100%;\n  -webkit-text-size-adjust: 100%; }\n\nbody {\n  margin: 0; }\n\narticle,\naside,\ndetails,\nfigcaption,\nfigure,\nfooter,\nheader,\nhgroup,\nmain,\nnav,\nsection,\nsummary {\n  display: block; }\n\naudio,\ncanvas,\nprogress,\nvideo {\n  display: inline-block;\n  vertical-align: baseline; }\n\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n[hidden],\ntemplate {\n  display: none; }\n\na {\n  background: transparent; }\n\na:active,\na:hover {\n  outline: 0; }\n\nabbr[title] {\n  border-bottom: 1px dotted; }\n\nb,\nstrong {\n  font-weight: bold; }\n\ndfn {\n  font-style: italic; }\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\nmark {\n  background: #ff0;\n  color: #000; }\n\nsmall {\n  font-size: 80%; }\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsup {\n  top: -0.5em; }\n\nsub {\n  bottom: -0.25em; }\n\nimg {\n  border: 0; }\n\nsvg:not(:root) {\n  overflow: hidden; }\n\nfigure {\n  margin: 1em 40px; }\n\nhr {\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n  height: 0; }\n\npre {\n  overflow: auto; }\n\ncode,\nkbd,\npre,\nsamp {\n  font-family: monospace, monospace;\n  font-size: 1em; }\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  color: inherit;\n  font: inherit;\n  margin: 0; }\n\nbutton {\n  overflow: visible; }\n\nbutton,\nselect {\n  text-transform: none; }\n\nbutton,\nhtml input[type=\"button\"],\ninput[type=\"reset\"],\ninput[type=\"submit\"] {\n  -webkit-appearance: button;\n  cursor: pointer; }\n\nbutton[disabled],\nhtml input[disabled] {\n  cursor: default; }\n\nbutton::-moz-focus-inner,\ninput::-moz-focus-inner {\n  border: 0;\n  padding: 0; }\n\ninput {\n  line-height: normal; }\n\n*\ninput[type=\"checkbox\"],\ninput[type=\"radio\"] {\n  box-sizing: border-box;\n  padding: 0; }\n\ninput[type=\"number\"]::-webkit-inner-spin-button,\ninput[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\ninput[type=\"search\"] {\n  -webkit-appearance: textfield;\n  -moz-box-sizing: content-box;\n  -webkit-box-sizing: content-box;\n  box-sizing: content-box; }\n\ninput[type=\"search\"]::-webkit-search-cancel-button,\ninput[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em; }\n\nlegend {\n  border: 0;\n  padding: 0; }\n\ntextarea {\n  overflow: auto; }\n\noptgroup {\n  font-weight: bold; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\ntd,\nth {\n  padding: 0; }\n\n* {\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\nbody {\n  color: #797e83;\n  font-size: 16px;\n  font-family: \"Lato\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  line-height: 1.5; }\n\nh3 {\n  font-size: 1.125em; }\n\nh4 {\n  margin-top: 1.375em;\n  margin-bottom: 2.57143em;\n  color: #d6d7d9;\n  text-transform: uppercase;\n  letter-spacing: 1px;\n  font-weight: 400;\n  font-size: 0.875em; }\n  @media (min-width: 769px) {\n    h4 {\n      margin-top: 2.625em; } }\n\na {\n  color: #656a6e;\n  text-decoration: none;\n  font-weight: 400; }\n\np {\n  margin: 0 0 1.66667em;\n  font-weight: 300;\n  font-size: 1.125em;\n  line-height: 1.5; }\n\nblockquote {\n  font-weight: 300;\n  font-style: italic;\n  font-size: 1.25em; }\n  @media (min-width: 769px) {\n    blockquote {\n      margin: 1.33333em 0;\n      padding: 0 0 0 5%;\n      border-left: 0.33333em solid #ebecec;\n      font-size: 1.5em; } }\n\nul,\nli {\n  margin: 0;\n  padding: 0;\n  list-style-type: none; }\n\nimg {\n  margin-bottom: 1.5em;\n  max-width: 100%;\n  height: auto; }\n\ninput,\ntextarea {\n  display: block;\n  padding: 15px;\n  width: 100%;\n  outline: 0;\n  border: 0; }\n\ninput:focus,\ntextarea:focus {\n  transition: 0.3s; }\n\nbutton {\n  outline: 0; }\n\nfooter {\n  border-top: 1px solid #ebecec; }\n  footer p {\n    font-size: 1em;\n    margin-top: 1.375em; }\n\n.panel, .panel--centered {\n  padding-top: 1.875em; }\n  @media (min-width: 769px) {\n    .panel, .panel--centered {\n      padding-bottom: 1.25em; } }\n\n.panel--padded, .panel--padded--centered {\n  padding-top: 2.125em; }\n  @media (min-width: 769px) {\n    .panel--padded, .panel--padded--centered {\n      padding-top: 5em;\n      padding-bottom: 2.125em; } }\n\n.grid {\n  width: 90%; }\n  [class*=\"grid__col--\"] > .grid {\n    width: 100%; }\n  @media (min-width: 1100px) {\n    .grid {\n      max-width: 1050px; } }\n\n@media (min-width: 769px) {\n  .grid__col--1 {\n    width: 6.5%; }\n  .grid__col--2 {\n    width: 15%; }\n  .grid__col--3 {\n    width: 23.5%; }\n  .grid__col--4 {\n    width: 32%; }\n  .grid__col--5 {\n    width: 40.5%; }\n  .grid__col--6 {\n    width: 49%; }\n  .grid__col--7 {\n    width: 57.5%; }\n  .grid__col--8 {\n    width: 66%; }\n  .grid__col--9 {\n    width: 74.5%; }\n  .grid__col--10 {\n    width: 83%; }\n  .grid__col--11 {\n    width: 91.5%; }\n  .grid__col--12 {\n    width: 100%; } }\n\n@media (min-width: 1px) and (max-width: 768px) {\n  [class^=\"grid__col--\"] {\n    margin-top: 0.75em;\n    margin-bottom: 0.75em; } }\n@media (min-width: 769px) {\n  [class^=\"grid__col--\"] {\n    float: left;\n    min-height: 1px;\n    padding-left: 10px;\n    padding-right: 10px; }\n    [class^=\"grid__col--\"] + [class^=\"grid__col--\"] {\n      margin-left: 2%; }\n    [class^=\"grid__col--\"]:last-of-type {\n      float: right; } }\n\n.theme__poly .grid [class*=\"grid__col\"] {\n  font-weight: 100;\n  margin-bottom: 1em;\n  padding: 1.75%; }\n\n@media (min-width: 769px) {\n  .nav__item, .nav__item--current {\n    display: inline-block;\n    margin: 0 0.625em; } }\n\n.nav__item--current a, .nav__item a {\n  font-weight: 300;\n  text-align: center;\n  font-size: 1.125em;\n  display: block;\n  padding: 0.4em;\n  border-bottom: 1px solid transparent; }\n  @media (min-width: 1px) and (max-width: 768px) {\n    .nav__item--current a, .nav__item a {\n      border-bottom-color: #ebecec;\n      padding-top: 0.77778em;\n      padding-bottom: 0.77778em; } }\n\n.nav__item--current a, .nav__item a:hover {\n  color: #0b0b0b;\n  border-color: #52bab3; }\n\nh1, .headline-primary, .headline-primary--grouped {\n  color: #525559;\n  font-weight: 300;\n  font-size: 2.625em;\n  line-height: 1.09524;\n  margin-top: 0; }\n\nh2, .headline-secondary, .headline-secondary--grouped {\n  color: #999da1;\n  letter-spacing: 1px;\n  font-weight: 100;\n  font-size: 1.5em;\n  font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif; }\n\n.form__btn, [class^=\"btn--\"] {\n  padding: 15px 30px;\n  border: 0;\n  border-radius: 0.4em;\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.875em;\n  font-weight: 400;\n  transition: opacity 0.3s;\n  display: block; }\n  .form__btn:hover, [class^=\"btn--\"]:hover {\n    opacity: .75; }\n  .form__btn:active, [class^=\"btn--\"]:active {\n    opacity: initial; }\n\n.menu__link, .menu__link--end {\n  display: block;\n  padding-top: 1em;\n  padding-bottom: 1em;\n  color: #fff;\n  text-align: center;\n  text-shadow: 0 1px rgba(11, 11, 11, 0.2);\n  font-size: 1.125em; }\n\n.icn--nav-toggle, .icn--close {\n  line-height: 0;\n  cursor: pointer; }\n\n.img--wrap {\n  border: 1px solid #d6d7d9;\n  padding: 0.75em; }\n.img--avatar {\n  display: block;\n  margin-left: auto;\n  margin-right: auto;\n  border-radius: 50%; }\n  @media (min-width: 769px) {\n    .img--avatar {\n      margin-top: 1.5em; } }\n@media (min-width: 769px) {\n  .img--hero {\n    margin-bottom: 2.625em; } }\n\n.headline-primary {\n  margin-bottom: 1.66667em; }\n  .headline-primary--grouped {\n    margin-bottom: 0; }\n.headline-secondary {\n  margin-bottom: 0.91667em; }\n  .headline-secondary--grouped {\n    margin-top: 0.41667em;\n    margin-bottom: 2.25em; }\n\n.form__label {\n  display: block;\n  margin-bottom: 0.625em; }\n.form__input {\n  font-size: 1.125em;\n  margin-bottom: 1.11111em;\n  border-bottom: 6px solid #d6d7d9;\n  border-radius: 0.4em;\n  background: #ebecec;\n  color: black;\n  font-weight: 300; }\n  .form__input:focus {\n    border-color: #52bab3; }\n.form__btn {\n  background: #52bab3; }\n\n.btn--default {\n  background-color: #52bab3; }\n.btn--success {\n  background-color: #5ece7f; }\n.btn--error {\n  background-color: #e67478; }\n.btn--warning {\n  background-color: #ff784f; }\n.btn--info {\n  background-color: #9279c3; }\n\n[class^=\"btn--\"] {\n  margin-bottom: 1.42857em; }\n  @media (min-width: 1px) and (max-width: 768px) {\n    [class^=\"btn--\"] {\n      width: 100%; } }\n  @media (min-width: 769px) {\n    [class^=\"btn--\"] {\n      width: auto;\n      display: inline-block; }\n      [class^=\"btn--\"] + [class^=\"btn--\"] {\n        margin-left: 20px; } }\n\n.navbar {\n  position: relative; }\n  @media (min-width: 769px) {\n    .navbar {\n      margin-top: 3.375em;\n      margin-bottom: 0; } }\n\n.nav {\n  margin-top: 1.25em;\n  margin-bottom: 1.875em; }\n  .nav__item a {\n    color: #797e83; }\n\n.offcanvas {\n  position: relative;\n  padding: 0.625em;\n  letter-spacing: 1px;\n  background: #39add1;\n  background: linear-gradient(45deg, rgba(94, 206, 127, 0.8) 0%, #39add1 100%); }\n\n.menu {\n  margin-top: 1.25em; }\n  .menu__link {\n    border-bottom: solid 1px rgba(255, 255, 255, 0.3); }\n\n.progbar {\n  height: 4px;\n  border-radius: 2px;\n  background: #d6d7d9;\n  position: relative;\n  margin-bottom: 2.875em; }\n  .progbar__status--default {\n    background-color: #52bab3; }\n    .progbar__status--default:after {\n      background-color: #6fc6c0; }\n  .progbar__status--success {\n    background-color: #5ece7f; }\n    .progbar__status--success:after {\n      background-color: #7dd898; }\n  .progbar__status--error {\n    background-color: #e67478; }\n    .progbar__status--error:after {\n      background-color: #ec979a; }\n  .progbar__status--warning {\n    background-color: #ff784f; }\n    .progbar__status--warning:after {\n      background-color: #ff9778; }\n  .progbar__status--info {\n    background-color: #9279c3; }\n    .progbar__status--info:after {\n      background-color: #a995d0; }\n\n[class^=\"progbar__\"] {\n  display: block;\n  width: 50%;\n  height: 100%;\n  border-radius: inherit;\n  position: relative; }\n  [class^=\"progbar__\"]:after {\n    width: 20px;\n    height: 20px;\n    border-radius: 50%;\n    right: -10px;\n    top: -8px; }\n\n.site-logo {\n  background-image: url(\"http://treehouse-code-samples.s3.amazonaws.com/poly/img/logo.svg\");\n  background-repeat: no-repeat;\n  width: 115px;\n  height: 45px;\n  display: inline-block; }\n\n.icn--nav-toggle {\n  width: 25px;\n  height: 17px;\n  border-top: solid 3px #797e83;\n  border-bottom: solid 3px #797e83;\n  position: relative; }\n  .icn--nav-toggle:before {\n    width: 25px;\n    height: 3px;\n    background: #999da1;\n    top: 4px; }\n.icn--close {\n  background-image: url(\"img/icn-close.svg\");\n  background-repeat: no-repeat;\n  width: 20px;\n  height: 20px;\n  display: block;\n  position: absolute;\n  right: 4%;\n  top: 4%; }\n\n@media (min-width: 1px) and (max-width: 768px) {\n  .is-displayed-mobile {\n    display: block; }\n    .is-hidden-mobile {\n      display: none; } }\n@media (min-width: 769px) {\n  .is-displayed-mobile {\n    display: none; } }\n\n@media (min-width: 1px) and (max-width: 768px) {\n  .is-collapsed-mobile {\n    visibility: collapse;\n    padding: 0;\n    height: 0;\n    margin: 0;\n    line-height: 0; } }\n\n.theme__poly .grid__col--12 {\n  background-color: #DEF4E5; }\n\n.theme__poly .grid__col--8 {\n  background-color: #DCE0F2; }\n\n.theme__poly .grid__col--7 {\n  background-color: #DCF0EF; }\n\n.theme__poly .grid__col--6 {\n  background-color: #FFE3DB; }\n\n.theme__poly .grid__col--4 {\n  background-color: #F8EDD0; }\n\n.theme__poly .grid__col--5 {\n  background-color: #EAEBEC; }\n\n.theme__poly .grid__col--2 {\n  background-color: #C5E2CE; }\n\n.theme__poly .grid__col--3 {\n  background-color: #D6EEF5; }\n\n/*# sourceMappingURL=application.css.map */\n\n/* Tabs */\n.tabs input[type=radio] {\n  display: none;\n}\n.tabs {\n  float: none;\n  list-style: none;\n  position: relative;\n  padding: 0;\n}\n.tabs li {\n  float: left;\n}\n.tabs label {\n  display: inline-block;\n  margin: 0 0.625em 2em 0.625em;\n  cursor: pointer;\n  font-weight: 300;\n  text-align: center;\n  font-size: 1.125em;\n  display: block;\n  padding: 0.4em;\n  border-bottom: 1px solid transparent;\n}\n.tabs label:hover {\n  color: #0B0B0B;\n  border-color: #52BAB3;\n}\n.tab-content {\n  z-index: 2;\n  display: none;\n  left: 0;\n  width: 100%;\n  padding: 1em 0.4em;\n  position: absolute;\n  box-sizing: border-box;\n  background: #fff;\n}\n[id^=tab]:checked + label {\n  font-weight: 300;\n  text-align: center;\n  font-size: 1.125em;\n  display: block;\n  padding: 0.4em;\n  border-bottom: 1px solid #52BAB3;\n}\n[id^=tab]:checked ~ [id^=tab-content] {\n  display: block;\n}\n\n/* Accordion */\n.accordion input[type=radio] {\n  display: none;\n}\n.accordion {\n  float: none;\n  list-style: none;\n  position: relative;\n  padding: 0;\n  margin-top: 1.25em;\n}\n.accordion label {\n  display: block;\n  margin: 0 0.625em 2em 0.625em;\n  cursor: pointer;\n  font-weight: 300;\n  text-align: center;\n  font-size: 1.125em;\n  display: block;\n  padding: 0.4em;\n  border-bottom: 1px solid transparent;\n}\n.accordion label:hover {\n  color: #0B0B0B;\n  border-color: #52BAB3;\n}\n.acc-content {\n  z-index: 2;\n  display: none;\n  width: 100%;\n  padding: 1em 0.4em;\n  box-sizing: border-box;\n  background: #fff;\n}\n[id^=acc]:checked + label {\n  font-weight: 300;\n  text-align: center;\n  font-size: 1.125em;\n  display: block;\n  padding: 0.4em;\n  border-bottom: 1px solid #52BAB3;\n}\n[id^=acc]:checked ~ [id^=acc-content] {\n  display: block;\n}\n.grid {\n  text-align: left;\n}\n");
         jsEditor.setValue("$(document).ready(function() {\n  $(\".download\").on(\"click\", function() {\n    var zip = new JSZip();\n    zip.file(\"Hello.txt\", \"Hello World\\n\");\n    var folder = zip.folder(\"images\");\n    folder.file(\"folder.txt\", \"I'm a file in a new folder\");\n    var content = zip.generate({type:\"blob\"});\n    // see FileSaver.js\n    saveAs(content, \"example.zip\");\n  });\n});\n");
+      } else if ($.inArray($val.toLowerCase(), ["password generator"]) > -1) {
+        htmlEditor.setValue("<!DOCTYPE html>\n<html>\n  <head>\n    <title>Password Generator</title>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\" />\n    <link type=\"text/css\" rel=\"stylesheet\" href=\"http://necolas.github.io/normalize.css/3.0.1/normalize.css\" />\n    <script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-latest.min.js\"></script>\n  </head>\n  <body>\n    <input type=\"text\" />\n    <button>\n      Generate Password\n    </button>\n  </body>\n</html>");
+        cssEditor.setValue("");
+        jsEditor.setValue("$(document).ready(function() {\n  $(\"button\").click(function() {\n    var char = \"0123456789abcdefghijklmnopqrstuvwxyz\";\n    var fullchar = \"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    var genHash = \"\";\n    var i;\n    \n    for (i = 0; i < 8; i++) {\n      var rnum = Math.floor(Math.random() * char.length);\n      genHash += char.substring(rnum, rnum + 1);\n    }\n    \n    $(\"input\").val(genHash);\n  }).click();\n});");
       } else if ($.inArray($val.toLowerCase(), ["pdf embed"]) > -1) {
         htmlEditor.setValue("<!DOCTYPE html>\n<html>\n  <head>\n    <title>Embed a PDF Example</title>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\" />\n    <link type=\"text/css\" rel=\"stylesheet\" href=\"http://necolas.github.io/normalize.css/3.0.1/normalize.css\" />\n  </head>\n  <body>\n    <embed width=\"100%\" height=\"100%\" name=\"plugin\" src=\"http://www.usconstitution.net/const.pdf\" type=\"application/pdf\">\n  </body>\n</html>");
         cssEditor.setValue("");
@@ -2068,7 +2112,7 @@ $(document).ready(function() {
       }
     });
   });
-
+  
   $(window).on("beforeunload", function() {
     return "Are you sure you wish to leave? All your changes will be lost.";
   });
