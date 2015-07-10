@@ -515,10 +515,10 @@ $(document).ready(function() {
   $(function() {
 
     // Download as Android Project
-    $(".download-as-droid-proj").on("click", function() {
+    $(".download-as-droid-app").on("click", function() {
       $(".download").trigger("click");
       
-      JSZipUtils.getBinaryContent('YourAndroidProject.zip', function(err, data) {
+      JSZipUtils.getBinaryContent('YourAndroidApp.zip', function(err, data) {
         if(err) {
           throw err; // or handle err
         }
@@ -551,7 +551,42 @@ $(document).ready(function() {
         saveAs(content, $('.projectname').val() + "-android.zip");
       });
     });
-
+    
+    // Download as iOS App
+    $(".download-as-ios-app").on("click", function() {
+      $(".download").trigger("click");
+      
+      JSZipUtils.getBinaryContent('YouriOSApp.zip', function(err, data) {
+        if(err) {
+          throw err; // or handle err
+        }
+        
+        var zip = new JSZip(data);
+        
+        var htmlContent = htmlEditor.getValue();
+        var cssContent = cssEditor.getValue();
+        var jsContent = jsEditor.getValue();
+        
+        var cssLink="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
+        var jsLink="    <"+"script type=\"text/javascript\" src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+        
+        cssLink = cssLink + "</head>";
+        jsLink = jsLink + "</body>";
+        
+        htmlContent = htmlContent.replace("</head>",cssLink);
+        htmlContent = htmlContent.replace("</body>",jsLink);
+        
+        // Your Web App
+        zip.file("www/css/style.css", cssContent);
+        zip.file("www/js/script.js", jsContent);
+        zip.file("www/index.html", htmlContent);
+        zip.file("config.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\n Licensed to the Apache Software Foundation (ASF) under one\n or more contributor license agreements.  See the NOTICE file\n distributed with this work for additional information\n regarding copyright ownership.  The ASF licenses this file\n to you under the Apache License, Version 2.0 (the\n \"License\"); you may not use this file except in compliance\n with the License.  You may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing,\n software distributed under the License is distributed on an\n \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n KIND, either express or implied.  See the License for the\n specific language governing permissions and limitations\n under the License.\n-->\n<widget xmlns     = \"http://www.w3.org/ns/widgets\"\n        id        = \"io.kodeweave."+ $('.projectname').val() +"\"\n        version   = \"2.0.0\">\n    <name>"+ $('.projectname').val() +"</name>\n\n    <description>\n        This application for iOS was exported using kodeWeave.\n    </description>\n\n    <author href=\"http://cordova.io\" email=\"dev@cordova.apache.org\">\n        Apache Cordova Team\n    </author>\n\n    <access origin=\"*\"/>\n\n    <!-- <content src=\"http://mysite.com/myapp.html\" /> for external pages -->\n    <content src=\"index.html\" />\n\n    <!-- Preferences for iOS -->\n    <preference name=\"AllowInlineMediaPlayback\" value=\"false\" />\n    <preference name=\"AutoHideSplashScreen\" value=\"true\" />\n    <preference name=\"BackupWebStorage\" value=\"cloud\" />\n    <preference name=\"DisallowOverscroll\" value=\"false\" />\n    <preference name=\"EnableLocation\" value=\"false\" /><!-- DEPRECATED -->\n    <preference name=\"EnableViewportScale\" value=\"false\" />\n    <preference name=\"FadeSplashScreen\" value=\"true\" />\n    <preference name=\"FadeSplashScreenDuration\" value=\".25\" />\n    <preference name=\"HideKeyboardFormAccessoryBar\" value=\"false\" />\n    <preference name=\"KeyboardDisplayRequiresUserAction\" value=\"true\" />\n    <preference name=\"KeyboardShrinksView\" value=\"false\" />\n    <preference name=\"MediaPlaybackRequiresUserAction\" value=\"false\" />\n    <preference name=\"ShowSplashScreenSpinner\" value=\"true\" />\n    <preference name=\"SuppressesIncrementalRendering\" value=\"false\" />\n    <preference name=\"TopActivityIndicator\" value=\"gray\" />\n\n\n    <feature name=\"Geolocation\">\n      <param name=\"ios-package\" value=\"CDVLocation\"/>\n    </feature>\n    <feature name=\"Device\">\n      <param name=\"ios-package\" value=\"CDVDevice\"/>\n    </feature>\n    <feature name=\"Accelerometer\">\n      <param name=\"ios-package\" value=\"CDVAccelerometer\"/>\n    </feature>\n    <feature name=\"Compass\">\n      <param name=\"ios-package\" value=\"CDVLocation\"/>\n    </feature>\n    <feature name=\"Media\">\n      <param name=\"ios-package\" value=\"CDVSound\"/>\n    </feature>\n    <feature name=\"Camera\">\n      <param name=\"ios-package\" value=\"CDVCamera\"/>\n    </feature>\n    <feature name=\"Contacts\">\n      <param name=\"ios-package\" value=\"CDVContacts\"/>\n    </feature>\n    <feature name=\"File\">\n      <param name=\"ios-package\"  value=\"CDVFile\"/>\n    </feature>\n    <feature name=\"NetworkStatus\">\n      <param name=\"ios-package\" value=\"CDVConnection\"/>\n    </feature>\n    <feature name=\"Notification\">\n      <param name=\"ios-package\" value=\"CDVNotification\"/>\n    </feature>\n    <feature name=\"FileTransfer\">\n      <param name=\"ios-package\" value=\"CDVFileTransfer\"/>\n    </feature>\n    <feature name=\"Capture\">\n      <param name=\"ios-package\" value=\"CDVCapture\"/>\n    </feature>\n    <feature name=\"Battery\">\n      <param name=\"ios-package\" value=\"CDVBattery\"/>\n    </feature>\n    <feature name=\"SplashScreen\">\n      <param name=\"ios-package\" value=\"CDVSplashScreen\"/>\n    </feature>\n    <feature name=\"Echo\">\n      <param name=\"ios-package\" value=\"CDVEcho\"/>\n    </feature>\n    <feature name=\"Globalization\">\n      <param name=\"ios-package\" value=\"CDVGlobalization\"/>\n    </feature>\n    <feature name=\"InAppBrowser\">\n      <param name=\"ios-package\" value=\"CDVInAppBrowser\"/>\n    </feature>\n    <feature name=\"Logger\">\n      <param name=\"ios-package\" value=\"CDVLogger\"/>\n    </feature>\n    <feature name=\"LocalStorage\">\n        <param name=\"ios-package\" value=\"CDVLocalStorage\"/>\n    </feature>\n</widget>\n");
+        zip.file("README", "If kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
+        var content = zip.generate({type:"blob"});
+        saveAs(content, $('.projectname').val() + "-ios.zip");
+      });
+    });
+    
     // Download as Windows App
     $(".download-as-win-app").on("click", function() {
       $(".download").trigger("click");
@@ -577,11 +612,45 @@ $(document).ready(function() {
         htmlContent = htmlContent.replace("</body>",jsLink);
         
         // Your Web App
-        zip.file("YourWinApp/YourWinApp/bin/Debug/app/css/style.css", cssContent);
-        zip.file("YourWinApp/YourWinApp/bin/Debug/app/js/script.js", jsContent);
-        zip.file("YourWinApp/YourWinApp/bin/Debug/app/index.html", htmlContent);
+        zip.file("data/content/css/style.css", cssContent);
+        zip.file("data/content/js/script.js", jsContent);
+        zip.file("data/content/index.html", htmlContent);
         var content = zip.generate({type:"blob"});
+
         saveAs(content, $('.projectname').val() + "-win.zip");
+      });
+    });
+    
+    // Download as Mac App
+    $(".download-as-mac-app").on("click", function() {
+      $(".download").trigger("click");
+      
+      JSZipUtils.getBinaryContent('YourMacApp.zip', function(err, data) {
+        if(err) {
+          throw err; // or handle err
+        }
+        
+        var zip = new JSZip(data);
+        
+        var htmlContent = htmlEditor.getValue();
+        var cssContent = cssEditor.getValue();
+        var jsContent = jsEditor.getValue();
+        
+        var cssLink="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
+        var jsLink="    <"+"script type=\"text/javascript\" src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+        
+        cssLink = cssLink + "</head>";
+        jsLink = jsLink + "</body>";
+        
+        htmlContent = htmlContent.replace("</head>",cssLink);
+        htmlContent = htmlContent.replace("</body>",jsLink);
+        
+        // Your Web App
+        zip.file("data/content/css/style.css", cssContent);
+        zip.file("data/content/js/script.js", jsContent);
+        zip.file("data/content/index.html", htmlContent);
+        var content = zip.generate({type:"blob"});
+        saveAs(content, $('.projectname').val() + "-mac.zip");
       });
     });
     
@@ -610,11 +679,11 @@ $(document).ready(function() {
         htmlContent = htmlContent.replace("</body>",jsLink);
         
         // Your Web App
-        zip.file("/app/css/style.css", cssContent);
-        zip.file("/app/js/script.js", jsContent);
-        zip.file("/app/index.html", htmlContent);
-        zip.file("/source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $('.projectname').val() + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $('.projectname').val() + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
-        zip.file("/README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
+        zip.file("app/css/style.css", cssContent);
+        zip.file("app/js/script.js", jsContent);
+        zip.file("app/index.html", htmlContent);
+        zip.file("source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $('.projectname').val() + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $('.projectname').val() + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
+        zip.file("README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
         var content = zip.generate({type:"blob"});
         saveAs(content, $('.projectname').val() + "-lin.zip");
       });
