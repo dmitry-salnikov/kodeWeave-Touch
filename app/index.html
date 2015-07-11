@@ -240,35 +240,75 @@
       <div class="dialog fl hide">
         <input class="projectname heading hide" type="text" value="ProjectName" placeholder="ProjectName" />
         
+        <div class="txtcenter">
+          <input type="file" class="load" accept="image/jpeg, image/png" />
+          <br /><br />
+        </div>
+        
+        <div class="fill check hide" align="center">
+          <canvas class="n16 hide" width="16" height="16"></canvas>
+          <canvas class="n32 hide" width="32" height="32"></canvas>
+          <canvas class="n64 hide" width="64" height="64"></canvas>
+          <canvas class="holder" width="128" height="128"></canvas>
+          <br /><br />
+        </div>
+        
   <!--
-        <a class="download-as-droid-app">
-          Download as Android PhoneGap Project
-        </a><br />
-        <a class="download-as-ios-app">
-          Download as iOS PhoneGap Project
-        </a><br />
+        <div class="check hide">
+          <a class="download-as-droid-app">
+            Download as Android PhoneGap Project
+          </a>
+        </div>
+        <div class="check hide">
+          <a class="download-as-ios-app">
+            Download as iOS PhoneGap Project
+          </a>
+        </div>
   -->
-        <a href="http://build.phonegap.com/" target="_blank">
-          Export for mobile devices
-        </a><br />
-        <a class="download-as-win-app">
-          Download as Windows App (AppJS)
-        </a><br />
-        <a class="download-as-lin-app">
-          Download as Linux App (C)
-        </a><br />
-        <a class="download-as-mac-app">
-          Download as Mac App (AppJS)
-        </a><br />
-        <a class="download-as-pygtk-app">
-          Download as PyGTK (Cross Platform)
-        </a><br />
-        <a class="download-html">
-          Download as single .html
-        </a><br />
-        <a class="download-zip">
-          Download as .zip
-        </a><br />
+        <ul>
+          <li>
+            <a href="http://build.phonegap.com/" target="_blank">
+              Export for mobile devices
+            </a>
+          </li>
+          <li class="check hide">
+            <a class="download-as-win-app">
+              Download as Windows App (AppJS)
+            </a>
+          </li>
+          <li class="check hide">
+            <a class="download-as-mac-app">
+              Download as Mac App (AppJS)
+            </a>
+          </li>
+          <li>
+            <a class="download-as-lin-app">
+              Download as Linux App (C)
+            </a>
+          </li>
+          <li class="check hide">
+            <a class="download-as-chrome-app">
+              Download as Chrome App
+            </a>
+          </li>
+<!--
+          <li class="check hide">
+            <a class="download-as-pygtk-app">
+              Download as PyGTK (Cross Platform)
+            </a>
+          </li>
+-->
+          <li>
+            <a class="download-html">
+              Download as single .html
+            </a>
+          </li>
+          <li>
+            <a class="download-zip">
+              Download as .zip
+            </a>
+          </li>
+        </ul>
       </div>
       
       <!-- Code Section -->
@@ -454,7 +494,7 @@
         <i class="fa fa-columns"></i>
       </a>
     </header>
-
+    
     <!-- Editor/Preview -->
     <div id="splitContainer">
       <div>
@@ -499,6 +539,40 @@
       </div>
     </div>        
     
+    <!-- Main Dialog -->
+    <div class="dialog-bg chromedialog column hide">
+      <div>
+        <nav>
+          <div class="grid chromeappwindow">
+            <div class="grid__col--12"> 
+              <form class="form">
+                <input class="form__input input name" type="text" placeholder="Application Name">
+
+                <textarea class="form__input descr" placeholder="Description" rows="7"></textarea>
+                
+                <h4>
+                  Offline:
+                </h4>
+                
+                <p class="onoffswitch">
+                  <input type="checkbox" name="onoffswitch" class="offline-mode" id="myonoffswitch" checked>
+                  <label class="onoffswitch-label" for="myonoffswitch">
+                    <span class="onoffswitch-inner"></span>
+                    <span class="onoffswitch-switch"></span>
+                  </label>
+                </p>
+              </form>
+                
+              <div class="txtcenter">
+                <a class="btn--default confirm">Confirm</a>
+                <a class="btn--warning cancel">Cancel</a>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+    
     <script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxsplitter.js"></script>
     
@@ -518,6 +592,9 @@
     <script src="addon/fold/brace-fold.js"></script>
     <script src="addon/fold/xml-fold.js"></script>
     <script src="addon/fold/comment-fold.js"></script>
+    <script src="addon/search/search.js"></script>
+    <script src="addon/search/searchcursor.js"></script>
+    <script src="addon/dialog/dialog.js"></script>
     
     <script src="lib/jshint.js"></script>
     <script src="lib/csslint.js"></script>
