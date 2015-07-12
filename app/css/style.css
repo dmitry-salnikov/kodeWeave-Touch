@@ -272,9 +272,14 @@ ul.ldd-menu ul li a {
   background: rgba(255, 255, 255, 0.25);
 }
 .chromeappwindow {
-  padding: 2em 3em 2em 2em;
+  padding: 2em;
   border-radius: 0.4em;
   background: rgb(255, 255, 255);
+}
+.chromeappwindow input .chromeappwindow textarea {
+  display: block;
+  margin-left: 0;
+  margin-right: 0;
 }
 .column > div {
   display: table;
@@ -295,6 +300,9 @@ nav {
 }
 .txtcenter {
   text-align: center;
+}
+textarea {
+  resize: vertical;
 }
 
 @media all and (max-width:680px) {
