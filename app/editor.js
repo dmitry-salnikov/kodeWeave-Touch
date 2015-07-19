@@ -565,79 +565,6 @@ $(document).ready(function() {
       var reader = new FileReader();
 
       reader.onload = function(e) {
-        // Download as Android Project
-        $(".download-as-droid-app").on("click", function() {
-          $(".download").trigger("click");
-          
-          JSZipUtils.getBinaryContent('YourAndroidApp.zip', function(err, data) {
-            if(err) {
-              throw err; // or handle err
-            }
-            
-            var zip = new JSZip(data);
-            
-            var htmlContent = htmlEditor.getValue();
-            var cssContent = cssEditor.getValue();
-            var jsContent = jsEditor.getValue();
-            
-            var cssLink="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
-            var jsLink="    <"+"script type=\"text/javascript\" src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-            
-            cssLink = cssLink + "</head>";
-            jsLink = jsLink + "</body>";
-            
-            htmlContent = htmlContent.replace("</head>",cssLink);
-            htmlContent = htmlContent.replace("</body>",jsLink);
-            
-            // Your Android Files
-            zip.file("AndroidManifest.xml", "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    android:windowSoftInputMode=\"adjustPan\"\n	package=\"com.kodeweave."+ $(".projectname").val() +"\"\n    android:versionName=\"1.0.0\" android:versionCode=\"1\"\n	android:hardwareAccelerated=\"true\">\n	\n	<support-screens\n		android:xlargeScreens=\"true\"\n		android:largeScreens=\"true\"\n		android:normalScreens=\"true\"\n		android:smallScreens=\"true\"\n		android:anyDensity=\"true\" />\n	\n	<uses-permission android:name=\"android.permission.INTERNET\" />\n	<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\n	\n    <application\n        android:icon=\"@drawable/logo\"\n        android:label=\"@string/app_name\" \n		android:hardwareAccelerated=\"true\">\n        <activity\n            android:name=\".MainActivity\"\n            android:label=\"@string/app_name\"\n			android:configChanges=\"orientation|keyboardHidden|keyboard|screenSize|locale\"\n			>\n            <intent-filter >\n                <action android:name=\"android.intent.action.MAIN\" />\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n    </application>\n\n    <uses-sdk \n        android:minSdkVersion=\"7\" \n        android:targetSdkVersion=\"17\" />\n\n</manifest>\n");
-            zip.file("src/com/kodeweave/" + $(".projectname").val() + "/MainActivity.java", "package com.kodeweave." + $(".projectname").val() + ";\n\nimport android.os.Bundle;\nimport org.apache.cordova.*;\n\npublic class MainActivity extends DroidGap\n{\n    /** Called when the activity is first created. */\n    @Override\n    public void onCreate(Bundle savedInstanceState)\n	{\n        super.onCreate(savedInstanceState);\n        // Set by <content src=\"index.html\" /> in config.xml\n		super.loadUrl(Config.getStartUrl());\n		// super.loadUrl(\"file://android_asset/www/index.html\")\n    }\n}\n");
-            zip.file("res/values/strings.xml", "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n    <string name=\"app_name\">" + $(".projectname").val() + "</string>\n</resources>\n");
-            
-            // Your Web App
-            zip.file("assets/www/css/style.css", cssContent);
-            zip.file("assets/www/js/script.js", jsContent);
-            zip.file("assets/www/index.html", htmlContent);
-            var content = zip.generate({type:"blob"});
-            saveAs(content, $(".projectname").val() + "-android.zip");
-          });
-        });
-        
-        // Download as iOS App
-        $(".download-as-ios-app").on("click", function() {
-          $(".download").trigger("click");
-          
-          JSZipUtils.getBinaryContent('YouriOSApp.zip', function(err, data) {
-            if(err) {
-              throw err; // or handle err
-            }
-            
-            var zip = new JSZip(data);
-            
-            var htmlContent = htmlEditor.getValue();
-            var cssContent = cssEditor.getValue();
-            var jsContent = jsEditor.getValue();
-            
-            var cssLink="    <"+"link type=\"text/css\" rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
-            var jsLink="    <"+"script type=\"text/javascript\" src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-            
-            cssLink = cssLink + "</head>";
-            jsLink = jsLink + "</body>";
-            
-            htmlContent = htmlContent.replace("</head>",cssLink);
-            htmlContent = htmlContent.replace("</body>",jsLink);
-            
-            // Your Web App
-            zip.file("www/css/style.css", cssContent);
-            zip.file("www/js/script.js", jsContent);
-            zip.file("www/index.html", htmlContent);
-            zip.file("config.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\n Licensed to the Apache Software Foundation (ASF) under one\n or more contributor license agreements.  See the NOTICE file\n distributed with this work for additional information\n regarding copyright ownership.  The ASF licenses this file\n to you under the Apache License, Version 2.0 (the\n \"License\"); you may not use this file except in compliance\n with the License.  You may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing,\n software distributed under the License is distributed on an\n \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n KIND, either express or implied.  See the License for the\n specific language governing permissions and limitations\n under the License.\n-->\n<widget xmlns     = \"http://www.w3.org/ns/widgets\"\n        id        = \"io.kodeweave."+ $(".projectname").val() +"\"\n        version   = \"2.0.0\">\n    <name>"+ $(".projectname").val() +"</name>\n\n    <description>\n        This application for iOS was exported using kodeWeave.\n    </description>\n\n    <author href=\"http://cordova.io\" email=\"dev@cordova.apache.org\">\n        Apache Cordova Team\n    </author>\n\n    <access origin=\"*\"/>\n\n    <!-- <content src=\"http://mysite.com/myapp.html\" /> for external pages -->\n    <content src=\"index.html\" />\n\n    <!-- Preferences for iOS -->\n    <preference name=\"AllowInlineMediaPlayback\" value=\"false\" />\n    <preference name=\"AutoHideSplashScreen\" value=\"true\" />\n    <preference name=\"BackupWebStorage\" value=\"cloud\" />\n    <preference name=\"DisallowOverscroll\" value=\"false\" />\n    <preference name=\"EnableLocation\" value=\"false\" /><!-- DEPRECATED -->\n    <preference name=\"EnableViewportScale\" value=\"false\" />\n    <preference name=\"FadeSplashScreen\" value=\"true\" />\n    <preference name=\"FadeSplashScreenDuration\" value=\".25\" />\n    <preference name=\"HideKeyboardFormAccessoryBar\" value=\"false\" />\n    <preference name=\"KeyboardDisplayRequiresUserAction\" value=\"true\" />\n    <preference name=\"KeyboardShrinksView\" value=\"false\" />\n    <preference name=\"MediaPlaybackRequiresUserAction\" value=\"false\" />\n    <preference name=\"ShowSplashScreenSpinner\" value=\"true\" />\n    <preference name=\"SuppressesIncrementalRendering\" value=\"false\" />\n    <preference name=\"TopActivityIndicator\" value=\"gray\" />\n\n\n    <feature name=\"Geolocation\">\n      <param name=\"ios-package\" value=\"CDVLocation\"/>\n    </feature>\n    <feature name=\"Device\">\n      <param name=\"ios-package\" value=\"CDVDevice\"/>\n    </feature>\n    <feature name=\"Accelerometer\">\n      <param name=\"ios-package\" value=\"CDVAccelerometer\"/>\n    </feature>\n    <feature name=\"Compass\">\n      <param name=\"ios-package\" value=\"CDVLocation\"/>\n    </feature>\n    <feature name=\"Media\">\n      <param name=\"ios-package\" value=\"CDVSound\"/>\n    </feature>\n    <feature name=\"Camera\">\n      <param name=\"ios-package\" value=\"CDVCamera\"/>\n    </feature>\n    <feature name=\"Contacts\">\n      <param name=\"ios-package\" value=\"CDVContacts\"/>\n    </feature>\n    <feature name=\"File\">\n      <param name=\"ios-package\"  value=\"CDVFile\"/>\n    </feature>\n    <feature name=\"NetworkStatus\">\n      <param name=\"ios-package\" value=\"CDVConnection\"/>\n    </feature>\n    <feature name=\"Notification\">\n      <param name=\"ios-package\" value=\"CDVNotification\"/>\n    </feature>\n    <feature name=\"FileTransfer\">\n      <param name=\"ios-package\" value=\"CDVFileTransfer\"/>\n    </feature>\n    <feature name=\"Capture\">\n      <param name=\"ios-package\" value=\"CDVCapture\"/>\n    </feature>\n    <feature name=\"Battery\">\n      <param name=\"ios-package\" value=\"CDVBattery\"/>\n    </feature>\n    <feature name=\"SplashScreen\">\n      <param name=\"ios-package\" value=\"CDVSplashScreen\"/>\n    </feature>\n    <feature name=\"Echo\">\n      <param name=\"ios-package\" value=\"CDVEcho\"/>\n    </feature>\n    <feature name=\"Globalization\">\n      <param name=\"ios-package\" value=\"CDVGlobalization\"/>\n    </feature>\n    <feature name=\"InAppBrowser\">\n      <param name=\"ios-package\" value=\"CDVInAppBrowser\"/>\n    </feature>\n    <feature name=\"Logger\">\n      <param name=\"ios-package\" value=\"CDVLogger\"/>\n    </feature>\n    <feature name=\"LocalStorage\">\n        <param name=\"ios-package\" value=\"CDVLocalStorage\"/>\n    </feature>\n</widget>\n");
-            zip.file("README", "If kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
-            var content = zip.generate({type:"blob"});
-            saveAs(content, $(".projectname").val() + "-ios.zip");
-          });
-        });
-        
         // Download as Windows App
         $(".download-as-win-app").on("click", function() {
           $(".download").trigger("click");
@@ -760,14 +687,23 @@ $(document).ready(function() {
             zip.file("assets/64.png", Img64.split('base64,')[1],{base64: true});
             zip.file("assets/128.png", Img128.split('base64,')[1],{base64: true});
             
-            zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'index.html',\n    {\n      id: 'mainWindow',\n      bounds: {width: 800, height: 600}\n    }\n  );\n});");
             zip.file("css/style.css", "html, body {\n  margin: 0;\n  padding: 0;\n  width: 100%;\n  height: 100%;\n}\n\nwebview, iframe {\n  width: 100%;\n  height: 100%;\n  border: 0;\n}");
             zip.file("index.html", "<!DOCTYPE html>\n<html>\n  <head>\n    <title>"+ $(".name").val() +"</title>\n    <link rel=\"stylesheet\" href=\"css/style.css\" />\n  </head>\n  <body>\n    <iframe src=\"app/index.html\">\n      Your Chromebook does not support the iFrame html element.\n    </iframe>\n  </body>\n</html>");
             
             if ( $(".offline-mode").is(":checked") ) {
               zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $(".name").val() +'",\n  "short_name": "'+ $(".name").val() +'",\n  "description": "'+ $(".descr").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": true,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
+              if ( $(".frame-mode").is(":checked") ) {
+                zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      frame: 'none',\n      id: 'mainWindow',\n      bounds: {width: 800, height: 600}\n    }\n  );\n});");
+              } else {
+                zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      id: 'mainWindow',\n      bounds: {width: 800, height: 600}\n    }\n  );\n});");
+              }
             } else {
               zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $(".name").val() +'",\n  "short_name": "'+ $(".name").val() +'",\n  "description": "'+ $(".descr").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": false,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
+              if ( $(".frame-mode").is(":checked") ) {
+                zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      frame: 'none',\n      id: 'mainWindow',\n      bounds: {width: 800, height: 600}\n    }\n  );\n});");
+              } else {
+                zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      id: 'mainWindow',\n      bounds: {width: 800, height: 600}\n    }\n  );\n});");
+              }
             }
             
             // Your Web App

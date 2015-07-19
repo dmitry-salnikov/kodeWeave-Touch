@@ -408,13 +408,12 @@ textarea {
   bottom: 15px;
 }
 
-
-
-/* Toggle Switch */
+/* Toggle Online Switch */
 .onoffswitch {
   position: relative; width: 90px;
   -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
 }
+
 .offline-mode {
   display: none;
 }
@@ -451,9 +450,60 @@ textarea {
   -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
   -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s; 
 }
+    
 .offline-mode:checked + .onoffswitch-label .onoffswitch-inner {
   margin-left: 0;
 }
 .offline-mode:checked + .onoffswitch-label .onoffswitch-switch {
+  right: 0; 
+}
+
+/* Toggle Frame Switch */
+.theframeswitch {
+  position: relative; width: 90px;
+  -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+    
+.offline-mode, .frame-mode {
+  display: none;
+}
+.frameswitch-label {
+  display: block; overflow: hidden; cursor: pointer;
+  border: 2px solid #999999; border-radius: 20px;
+}
+.frameswitch-inner {
+  display: block; width: 200%; margin-left: -100%;
+  -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+  -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+}
+.frameswitch-inner:before, .frameswitch-inner:after {
+  display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+  font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+.frameswitch-inner:before {
+  content: "Yes";
+  padding-left: 10px;
+  background-color: #34A7C1; color: #FFFFFF;
+}
+.frameswitch-inner:after {
+  content: "No";
+  padding-right: 10px;
+  background-color: #EEEEEE; color: #999999;
+  text-align: right;
+}
+.frameswitch-switch {
+  display: block; width: 18px; margin: 6px;
+  background: #FFFFFF;
+  border: 2px solid #999999; border-radius: 20px;
+  position: absolute; top: 0; bottom: 0; right: 56px;
+  -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+  -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s; 
+}
+    
+.frame-mode:checked + .frameswitch-label .frameswitch-inner {
+  margin-left: 0;
+}
+.frame-mode:checked + .frameswitch-label .frameswitch-switch {
   right: 0; 
 }
