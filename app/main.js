@@ -63,7 +63,7 @@ var htmlEditor = CodeMirror(document.getElementById("htmlEditor"), {
   foldGutter: true,
   dragDrop: true,
   gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  value: "<!DOCTYPE html>\n<html>\n  <head>\n    <title>site name</title>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\" />\n    <link type=\"text/css\" rel=\"stylesheet\" href=\"http://necolas.github.io/normalize.css/3.0.1/normalize.css\" />\n  </head>\n  <body>\n    <!-- comment -->\n    hello world!\n  </body>\n</html>"
+  value: "<!DOCTYPE html>\n<html>\n  <head>\n    <title>site name</title>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\" />\n    <link rel=\"stylesheet\" href=\"http://necolas.github.io/normalize.css/3.0.1/normalize.css\" />\n  </head>\n  <body>\n    <!-- comment -->\n    hello world!\n  </body>\n</html>"
 });
 var cssEditor = CodeMirror(document.getElementById("cssEditor"), {
   mode: "text/css",
@@ -149,11 +149,11 @@ function saveTextAsHTML() {
   var cssContent = cssEditor.getValue();
   var jsContent = jsEditor.getValue();
   
-  var cssLink="  <"+"style type=\"text/css\">\n" + cssContent + "</style\>"+"\n";
-  var jsLink="  <"+"script type=\"text/javascript\">\n" + jsContent + "</script\>"+"\n";
+  var cssLink="  <"+"style type=\"text/css\">\n" + cssContent + "\n    </style\>"+"\n";
+  var jsLink="  <"+"script type=\"text/javascript\">\n" + jsContent + "\n    </script\>"+"\n";
   
-  cssLink = cssLink + "</head>";
-  jsLink = jsLink + "</body>";
+  cssLink = cssLink + "  </head>";
+  jsLink = jsLink + "  </body>";
   
   htmlContent = htmlContent.replace("</head>",cssLink);
   htmlContent = htmlContent.replace("</body>",jsLink);
