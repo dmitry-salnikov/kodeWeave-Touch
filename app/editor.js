@@ -44,7 +44,7 @@ $(document).ready(function() {
   var myarray = [],
       current = 1,
       activeEditor = $(".activeEditor");
-      
+
   $("#htmlEditor, #cssEditor, #jsEditor").on("mouseup touchend", function() {
     if ( $(this).attr("id") === "htmlEditor" ) {
       activeEditor.val("htmlEditor");
@@ -54,11 +54,11 @@ $(document).ready(function() {
       activeEditor.val("jsEditor");
     }
   });
-  
+
   $('#splitContainer, #leftSplitter, #rightSplitter').jqxSplitter({
     theme: 'metro'
   });
-  
+
   // Load Files Into Editor
   $(window).load(function() {
     $(".open-html").click(function() {
@@ -97,7 +97,7 @@ $(document).ready(function() {
           };
         reader.readAsText(input[0]);
       };
-      
+
       try {
         $('#loadhtml').on('change', function() {
           loadHTML(this.files);
@@ -118,7 +118,7 @@ $(document).ready(function() {
     } else {
       alert('The File APIs are not fully supported in this browser.');
     }
-    
+
   }).on("load resize", function() {
     if ( $(this).width() < 681 ) {
       if ( $(this).height() < 600 ) {
@@ -144,18 +144,18 @@ $(document).ready(function() {
       }
     }
   });
-  
+
   // Team up / Collaborate
   $("#collaborate").click(function() {
     TogetherJS(this); return false;
   });
-  
+
   // Reset inputs & selects onload
   function resetInputs() {
     $("#search-libraries, select").val("");
   }
   resetInputs();
-  
+
   function reset() {
     alertify.set({
       labels : {
@@ -168,7 +168,7 @@ $(document).ready(function() {
     });
   }
   reset();
-  
+
   // Choose Grid Scheme
   $(".grid-alignment").click(function() {
     $("#htmlEditor, #cssEditor, #jsEditor").css("style", "");
@@ -261,11 +261,11 @@ $(document).ready(function() {
   $("header a:not(#collaborate, .dialog a, .grid-alignment)").on("click", function() {
     $(this).not(".dialog a").toggleClass("active");
     $(this).next(":not(.download-zip, #collaborate, .grid-alignment)").not(".dialog a").toggleClass("hide");
-    
+
     if ( $(".tools.active").is(":visible") || $(".add-source.active").is(":visible") || $(".download.active").is(":visible") || $(".open-demos.active").is(":visible")) {
       $("header a:not(#collaborate, .grid-alignment)").not(".dialog a").not(this).removeClass("active").next().addClass("hide");
     }
-    
+
     $(".dialog.fl").css({
       "left": $(this).offset().left
     });
@@ -273,7 +273,7 @@ $(document).ready(function() {
       //"left": $(this).offset().left - $(".dialog.fr").width() + $(this).width()
     //});
   });
-  
+
   // Append JS library to HTML <head>
   function appendLib(txt) {
     var textArea = htmlEditor.getValue();
@@ -308,7 +308,7 @@ $(document).ready(function() {
       return false;
     }
   }
-  
+
   // Grids
   function GridScheme() {
     if ( $(".is-horizontal").is(":visible") ) {
@@ -393,7 +393,7 @@ $(document).ready(function() {
       return false;
     }
   }
-  
+
   // Fullscreen Editor
   $(function() {
     $(".fullscreen-html-toggle").click(function() {
@@ -529,7 +529,7 @@ $(document).ready(function() {
       }
     });
   });
-  
+
   // Hotkeys
   $(function() {
     // New Document
@@ -543,16 +543,16 @@ $(document).ready(function() {
       $(".download-zip").trigger("click");
       $(".download").trigger("click");
     });
-    
+
     var dest = $(".projectname");
     var content =  htmlEditor.getValue();
     var openTagIndex = content.search(/<title/);
     var closeTagIndex = content.search(/<\/title>/);
     var titleTag = content.slice(openTagIndex , closeTagIndex);
-    var editorTitle = titleTag.slice(titleTag.search(/>/) + 1);  
+    var editorTitle = titleTag.slice(titleTag.search(/>/) + 1);
     dest.val(editorTitle).val(dest.val().split(" ").join(""));
   });
-  
+
   // Check Application Fields (For Download)
   $(".load").on("change", function(evt) {
     if ($(this).val() === "") {
@@ -561,34 +561,34 @@ $(document).ready(function() {
       $(".check").removeClass("hide");
       var file = evt.target.files[0];
       displayPreview(file);
-      
+
       var reader = new FileReader();
 
       reader.onload = function(e) {
         // Download as Windows App
         $(".download-as-win-app").on("click", function() {
           $(".download").trigger("click");
-          
+
           JSZipUtils.getBinaryContent('YourWinApp.zip', function(err, data) {
             if(err) {
               throw err; // or handle err
             }
-            
+
             var zip = new JSZip(data);
-            
+
             var htmlContent = htmlEditor.getValue();
             var cssContent = cssEditor.getValue();
             var jsContent = jsEditor.getValue();
-            
+
             var cssLink="    <"+"link rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
-            var jsLink="    <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-            
-            cssLink = cssLink + "</head>";
-            jsLink = jsLink + "</body>";
-            
+            var jsLink="  <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+
+            cssLink = cssLink + "  </head>";
+            jsLink = jsLink + "  </body>";
+
             htmlContent = htmlContent.replace("</head>",cssLink);
             htmlContent = htmlContent.replace("</body>",jsLink);
-            
+
             // Your Web App
             var Img16 = c16[0].toDataURL("image/png");
             var Img32 = c32[0].toDataURL("image/png");
@@ -606,31 +606,31 @@ $(document).ready(function() {
             saveAs(content, $(".projectname").val() + "-win.zip");
           });
         });
-        
+
         // Download as Mac App
         $(".download-as-mac-app").on("click", function() {
           $(".download").trigger("click");
-          
+
           JSZipUtils.getBinaryContent('YourMacApp.zip', function(err, data) {
             if(err) {
               throw err; // or handle err
             }
-            
+
             var zip = new JSZip(data);
-            
+
             var htmlContent = htmlEditor.getValue();
             var cssContent = cssEditor.getValue();
             var jsContent = jsEditor.getValue();
-            
+
             var cssLink="    <"+"link rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
-            var jsLink="    <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-            
-            cssLink = cssLink + "</head>";
-            jsLink = jsLink + "</body>";
-            
+            var jsLink="  <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+
+            cssLink = cssLink + "  </head>";
+            jsLink = jsLink + "  </body>";
+
             htmlContent = htmlContent.replace("</head>",cssLink);
             htmlContent = htmlContent.replace("</body>",jsLink);
-            
+
             // Your Web App
             var Img16 = c16[0].toDataURL("image/png");
             var Img32 = c32[0].toDataURL("image/png");
@@ -647,7 +647,7 @@ $(document).ready(function() {
             saveAs(content, $(".projectname").val() + "-mac.zip");
           });
         });
-        
+
         // Download as Chrome App
         $(".download-as-chrome-app").on("click", function() {
           $(".download").trigger("click");
@@ -661,19 +661,20 @@ $(document).ready(function() {
             alertify.error("Download failed! Please fill in all required fields.");
           } else {
             var zip = new JSZip();
+
             var htmlContent = htmlEditor.getValue();
             var cssContent = cssEditor.getValue();
             var jsContent = jsEditor.getValue();
-            
+
             var cssLink="    <"+"link rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
-            var jsLink="    <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-            
-            cssLink = cssLink + "</head>";
-            jsLink = jsLink + "</body>";
-            
+            var jsLink="  <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+
+            cssLink = cssLink + "  </head>";
+            jsLink = jsLink + "  </body>";
+
             htmlContent = htmlContent.replace("</head>",cssLink);
             htmlContent = htmlContent.replace("</body>",jsLink);
-            
+
             // Your Web App
             zip.file("app/css/style.css", cssContent);
             zip.file("app/js/script.js", jsContent);
@@ -686,10 +687,10 @@ $(document).ready(function() {
             zip.file("assets/32.png", Img32.split('base64,')[1],{base64: true});
             zip.file("assets/64.png", Img64.split('base64,')[1],{base64: true});
             zip.file("assets/128.png", Img128.split('base64,')[1],{base64: true});
-            
+
             zip.file("css/style.css", "html, body {\n  margin: 0;\n  padding: 0;\n  width: 100%;\n  height: 100%;\n}\n\nwebview, iframe {\n  width: 100%;\n  height: 100%;\n  border: 0;\n}");
             zip.file("index.html", "<!DOCTYPE html>\n<html>\n  <head>\n    <title>"+ $(".name").val() +"</title>\n    <link rel=\"stylesheet\" href=\"css/style.css\" />\n  </head>\n  <body>\n    <iframe src=\"app/index.html\">\n      Your Chromebook does not support the iFrame html element.\n    </iframe>\n  </body>\n</html>");
-            
+
             if ( $(".offline-mode").is(":checked") ) {
               zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $(".name").val() +'",\n  "short_name": "'+ $(".name").val() +'",\n  "description": "'+ $(".descr").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": true,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
               if ( $(".frame-mode").is(":checked") ) {
@@ -705,41 +706,13 @@ $(document).ready(function() {
                 zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      id: 'mainWindow',\n      bounds: {width: 800, height: 600}\n    }\n  );\n});");
               }
             }
-            
+
             // Your Web App
             var content = zip.generate({type:"blob"});
             saveAs(content, $(".projectname").val() + "-chrome.zip");
             $(".dialog-bg").fadeOut();
           }
           return false;
-        });
-        
-        // Download as PyGTK App
-        $(".download-as-pygtk-app").on("click", function() {
-          $(".download").trigger("click");
-          var zip = new JSZip();
-          
-          var htmlContent = htmlEditor.getValue();
-          var cssContent = cssEditor.getValue();
-          var jsContent = jsEditor.getValue();
-          
-          var cssLink="    <"+"link rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
-          var jsLink="    <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-          
-          cssLink = cssLink + "</head>";
-          jsLink = jsLink + "</body>";
-          
-          htmlContent = htmlContent.replace("</head>",cssLink);
-          htmlContent = htmlContent.replace("</body>",jsLink);
-          
-          // Your Web App
-          zip.file($(".projectname").val() + "/app/css/style.css", cssContent);
-          zip.file($(".projectname").val() + "/app/js/script.js", jsContent);
-          zip.file($(".projectname").val() + "/app/index.html", htmlContent);
-          zip.file($(".projectname").val() + "/app.py", "#!/usr/bin/env python\n\nimport webkit, pygtk, gtk, os\n\nif gtk.pygtk_version < (2,3,90):\n  print \"Please upgrade pygtk\"\n  raise SystemExit\n\nclass "+ $(".projectname").val() +":\n  def __init__(self):\n      \n    def reload_page(frame, event):\n      if event.keyval == gtk.keysyms.F5:\n        web.reload()\n      \n    def fill_screen(self, event):\n      if event.keyval == gtk.keysyms.F11:\n        if full.get_active() == False:\n          full.set_active(True)\n          win.fullscreen()\n        else:\n          full.set_active(False)\n          win.unfullscreen()\n      \n    win = gtk.Window(gtk.WINDOW_TOPLEVEL)\n    win.set_title(\""+ $(".projectname").val() +"\")\n    win.resize(800,600)\n    win.connect(\"destroy\", lambda w: gtk.main_quit())\n    win.connect(\"key-press-event\", reload_page)\n    win.connect(\"key-press-event\", fill_screen)\n    \n    vbox = gtk.VBox()\n    hbox = gtk.HBox()\n    mb = gtk.MenuBar()\n    viewmenu = gtk.Menu()\n    vm = gtk.MenuItem(\"View\")\n    vm.set_submenu(viewmenu)\n\n    full = gtk.CheckMenuItem()\n    full.set_label(\"Fullscreen\")\n    full.set_active(False)\n    full.connect(\"activate\", fill_screen)\n    viewmenu.append(full)\n    mb.append(vm)\n\n    vbox = gtk.VBox(False, 0)\n    win.add(vbox)\n       \n    scroller = gtk.ScrolledWindow()\n    vbox.pack_start(scroller, 1)\n    web = webkit.WebView()\n    path=os.getcwd()\n    print path\n    web.open(\"file://\" + path + \"/app/index.html\")\n    web.props.settings.props.enable_default_context_menu = True\n    scroller.add(web)\n    win.show_all()\n\n"+ $(".projectname").val() +"()\ngtk.main()\n");
-          zip.file($(".projectname").val() + "/README", "PyGTK information - http://www.pygtk.org/downloads.html\nUbuntu Webkit information - https://help.ubuntu.com/community/WebKit\n\nThis PyGTK application relies on webkit, pygtk, gtk, os\n  sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n\n~~~...For Linux users...~~~\nUsing `apt-cache search your_package` is handy when you cannot find a package.\n\nOpen your terminal and navigate to it using...\ncd Desktop/AppName\n\nTo run type ./app.py or python app.py\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
-          var content = zip.generate({type:"blob"});
-          saveAs(content, $(".projectname").val() + "-pygtk.zip");
         });
 
         return false;
@@ -749,42 +722,89 @@ $(document).ready(function() {
   });
 
   // Download as Linux App
-  $(".download-as-lin-app").on("click", function() {
+  $(".download-as-lin-app-32").on("click", function() {
     $(".download").trigger("click");
-    
+
     JSZipUtils.getBinaryContent('YourLinApp.zip', function(err, data) {
       if(err) {
         throw err; // or handle err
       }
-      
+
       var zip = new JSZip(data);
-      
+
       var htmlContent = htmlEditor.getValue();
       var cssContent = cssEditor.getValue();
       var jsContent = jsEditor.getValue();
-      
+
       var cssLink="    <"+"link rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
-      var jsLink="    <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-      
-      cssLink = cssLink + "</head>";
-      jsLink = jsLink + "</body>";
-      
+      var jsLink="  <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+
+      cssLink = cssLink + "  </head>";
+      jsLink = jsLink + "  </body>";
+
       htmlContent = htmlContent.replace("</head>",cssLink);
       htmlContent = htmlContent.replace("</body>",jsLink);
-      
+
       // Your Web App
+      var Img16 = c16[0].toDataURL("image/png");
+      var Img32 = c32[0].toDataURL("image/png");
+      var Img64 = c64[0].toDataURL("image/png");
       var Img128 = canvas[0].toDataURL("image/png");
-      zip.file("app/logo.png", Img128.split('base64,')[1],{base64: true});
-      zip.file("app/css/style.css", cssContent);
-      zip.file("app/js/script.js", jsContent);
-      zip.file("app/index.html", htmlContent);
-      zip.file("source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $(".projectname").val() + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $(".projectname").val() + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
-      zip.file("README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
+      zip.file("data/content/icons/16.png", Img16.split('base64,')[1],{base64: true});
+      zip.file("data/content/icons/32.png", Img32.split('base64,')[1],{base64: true});
+      zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
+      zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
+      zip.file("data/content/css/style.css", cssContent);
+      zip.file("data/content/js/script.js", jsContent);
+      zip.file("data/content/index.html", htmlContent);
+      // zip.file("source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $(".projectname").val() + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $(".projectname").val() + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
+      // zip.file("README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
       var content = zip.generate({type:"blob"});
-      saveAs(content, $(".projectname").val() + "-lin.zip");
+      saveAs(content, $(".projectname").val() + "-32lin.zip");
     });
   });
-  
+  $(".download-as-lin-app-64").on("click", function() {
+    $(".download").trigger("click");
+
+    JSZipUtils.getBinaryContent('YourLinApp.zip', function(err, data) {
+      if(err) {
+        throw err; // or handle err
+      }
+
+      var zip = new JSZip(data);
+
+      var htmlContent = htmlEditor.getValue();
+      var cssContent = cssEditor.getValue();
+      var jsContent = jsEditor.getValue();
+
+      var cssLink="    <"+"link rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
+      var jsLink="  <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+
+      cssLink = cssLink + "  </head>";
+      jsLink = jsLink + "  </body>";
+
+      htmlContent = htmlContent.replace("</head>",cssLink);
+      htmlContent = htmlContent.replace("</body>",jsLink);
+
+      // Your Web App
+      var Img16 = c16[0].toDataURL("image/png");
+      var Img32 = c32[0].toDataURL("image/png");
+      var Img64 = c64[0].toDataURL("image/png");
+      var Img128 = canvas[0].toDataURL("image/png");
+      zip.file("data/content/icons/16.png", Img16.split('base64,')[1],{base64: true});
+      zip.file("data/content/icons/32.png", Img32.split('base64,')[1],{base64: true});
+      zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
+      zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
+      zip.file("data/content/css/style.css", cssContent);
+      zip.file("data/content/js/script.js", jsContent);
+      zip.file("data/content/index.html", htmlContent);
+      // zip.file("source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $(".projectname").val() + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $(".projectname").val() + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
+      // zip.file("README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
+      var content = zip.generate({type:"blob"});
+      saveAs(content, $(".projectname").val() + "-64lin.zip");
+    });
+  });
+
   // Download as html
   $(".download-html").on("click", function() {
     $(".download").trigger("click");
@@ -800,17 +820,17 @@ $(document).ready(function() {
   // Download function
   function downloadZip() {
     var zip = new JSZip();
-    
+
     var htmlContent = htmlEditor.getValue();
     var cssContent = cssEditor.getValue();
     var jsContent = jsEditor.getValue();
-    
+
     var cssLink="    <"+"link rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
     var jsLink="  <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
-    
+
     cssLink = cssLink + "  </head>";
     jsLink = jsLink + "  </body>";
-    
+
     htmlContent = htmlContent.replace("</head>",cssLink);
     htmlContent = htmlContent.replace("</body>",jsLink);
 
@@ -821,7 +841,7 @@ $(document).ready(function() {
     // see FileSaver.js
     saveAs(content, "source.zip");
   }
-    
+
   // Generators
   $(function() {
     // Text generator (Lorem Ipsum)
@@ -841,7 +861,7 @@ $(document).ready(function() {
         jsEditor.focus();
       }
     });
-    
+
     // Color Picker
     $(".picker").spectrum({
       preferredFormat: "hex",
@@ -870,18 +890,18 @@ $(document).ready(function() {
     // Tidy Up/Beautify Code
     $(".tidy").click(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
-        var htmlLines = htmlEditor.lineCount();  
+        var htmlLines = htmlEditor.lineCount();
         htmlEditor.autoFormatRange({line:0, ch:0}, {line:htmlLines});
       } else if ( activeEditor.val() === "cssEditor" ) {
-        var cssLines = cssEditor.lineCount();  
+        var cssLines = cssEditor.lineCount();
         cssEditor.autoFormatRange({line:0, ch:0}, {line:cssLines});
       } else if ( activeEditor.val() === "jsEditor" ) {
-        var jsLines = jsEditor.lineCount();  
+        var jsLines = jsEditor.lineCount();
         jsEditor.autoFormatRange({line:0, ch:0}, {line:jsLines});
       }
       $(".tools.active").trigger("click");
     });
-    
+
     // Minify Code
     $(".minify").click(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
@@ -894,7 +914,7 @@ $(document).ready(function() {
       $(".tools.active").trigger("click");
     });
   });
-  
+
   // Add Libraries
   $(function() {
     $("#add-library").on("click", function() {
@@ -903,7 +923,7 @@ $(document).ready(function() {
       var findJS = myjs.substr(myjs.length - 3); // => ".js"
       var mycss = ".css";
       var findCSS = mycss.substr(mycss.length - 4); // => ".css"
-      
+
       if ( $val === "" ) {
         alertify.error("Access denied! No value set.");
       } else if ($.inArray($val.toLowerCase(), ["angularjs"]) > -1) {
@@ -1030,18 +1050,18 @@ $(document).ready(function() {
         txt="    <"+"link rel=\"stylesheet\" href=\""+ $val +"\" />";
         appendLib(txt);
       }
-      
+
       if ( $val === "" ) {
         // error alert specified earlier
       } else {
         alertify.success("Successfully added library");
       }
-      
+
       htmlEditor.focus();
       resetInputs();
       $(".open-libraries").trigger("click");
     });
-    
+
     $(".addlibrary-tablets a").on("click", function() {
       $("#search-libraries").val( $(this).parent().prop("id") );
       $("#add-library").trigger("click");
@@ -1058,12 +1078,12 @@ $(document).ready(function() {
       }
     });
   });
-  
+
   // Demos
   $(function() {
     $("#add-demo").on("click", function() {
       var $val = $("#search-demos").val();
-      
+
       if ( $val === "" ) {
         alertify.error("Sorry! No demo picked.");
       } else if ($.inArray($val.toLowerCase(), ["360deg angle slider"]) > -1) {
@@ -1223,13 +1243,13 @@ $(document).ready(function() {
         cssEditor.setValue("a {\n  font-size: 20px;\n  text-decoration: none;\n  padding: 0 10px 0 10px;\n}\n\n.nav {\n  display: inline-block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  padding: 5px 0;\n  height: 35px;\n  overflow-y: hidden;\n  overflow-x: auto;\n  white-space: nowrap;\n}\n\niframe[name=richTextField], textarea[name=myTextArea] {\n  position: absolute;\n  top: 50px;\n  height: 90%;\n  border: #000 1px solid;\n  width: 50%;\n}\n  \n  \niframe[name=richTextField] {\n  left: 0;\n}\n\ntextarea[name=myTextArea] {\n  right: 0;\n  padding: 0;\n  resize: none;\n}");
         jsEditor.setValue("window.onload = function() {\n  richTextField.document.designMode = 'On';\n};\n\nfunction iUndo() {\n  richTextField.document.execCommand('undo',false,null);\n}\n\nfunction iRedo() {\n  richTextField.document.execCommand('redo',false,null);\n}\n\nfunction iCut() {\n  richTextField.document.execCommand('cut',false,null);\n}\n\nfunction iCopy() {\n  richTextField.document.execCommand('copy',false,null);\n}\n\nfunction iPaste() {\n  richTextField.document.execCommand('paste',false,null);\n}\n\nfunction iSelectAll() {\n  richTextField.document.execCommand('selectAll',false,null);\n}\n\nfunction iDelete() {\n  richTextField.document.execCommand('delete',false,null);\n}\n\nfunction iRemoveFormat() {\n  richTextField.document.execCommand('removeFormat',false,null);\n}\n\nfunction iBold() {\n  richTextField.document.execCommand('bold',false,null);\n}\n\nfunction iItalic() {\n  richTextField.document.execCommand('italic',false,null);\n}\n\nfunction iUnderline() {\n  richTextField.document.execCommand('underline',false,null);\n}\n\nfunction iStrike() {\n  richTextField.document.execCommand('strikethrough',false,null);\n}\n\nfunction iFontFamily() {\n  var font = prompt('Enter a font', '');\n  richTextField.document.execCommand('FontName',false,font);\n}\n\nfunction iFontSize() {\n  var size = prompt('Enter a size 1 - 7', '');\n  richTextField.document.execCommand('FontSize',false,size);\n}\n\nfunction iForeColor() {\n  var color = prompt('Define a basic color or apply a hexadecimal color code for advanced colors:', '');\n  richTextField.document.execCommand('ForeColor',false,color);\n}\n\nfunction iBackColor() {\n  var color = prompt('Define a basic color or apply a hexadecimal color code for advanced colors:', '');\n  richTextField.document.execCommand('BackColor',false,color);\n}\n\nfunction iAlignLeft() {\n  richTextField.document.execCommand(\"justifyLeft\", false, null);\n}\n\nfunction iAlignCenter() {\n  richTextField.document.execCommand(\"justifyCenter\", false, null);\n}\n\nfunction iAlignRight() {\n  richTextField.document.execCommand(\"justifyRight\", false, null);\n}\n\nfunction iIndent() {\n  richTextField.document.execCommand(\"indent\", false, null);\n}\n\nfunction iOutdent() {\n  richTextField.document.execCommand(\"outdent\", false, null);\n}\n\nfunction iParagraph() {\n  richTextField.document.execCommand(\"insertParagraph\", false, null);\n}\n\nfunction iHorizontalRule() {\n  richTextField.document.execCommand('inserthorizontalrule',false,null);\n}\n\nfunction iUnorderedList() {\n  richTextField.document.execCommand(\"InsertOrderedList\", false,\"newOL\");\n}\n\nfunction iOrderedList() {\n  richTextField.document.execCommand(\"InsertUnorderedList\", false,\"newUL\");\n}\n\nfunction iSuperScript() {\n  richTextField.document.execCommand(\"superscript\", false,null);\n}\n\nfunction iSubScript() {\n  richTextField.document.execCommand(\"subscript\", false,null);\n}\n\nfunction iLink() {\n  var linkURL = prompt(\"Enter the URL for this link:\", \"http://\");\n  richTextField.document.execCommand(\"CreateLink\", false, linkURL);\n}\n\nfunction iUnLink() {\n  richTextField.document.execCommand(\"Unlink\", false, null);\n}\n\nfunction iImage() {\n  var imgSrc = prompt('Enter image location', '');\n  if(imgSrc !== null){\n    richTextField.document.execCommand('insertimage', false, imgSrc);\n  }\n}\n\nfunction submit_form() {\n  var theForm = document.getElementById(\"myform\");\n  theForm.elements[\"myTextArea\"].value = window.frames['richTextField'].document.body.innerHTML;\n  theForm.onclick();\n}");
       }
-      
+
       if ( $val === "" ) {
         // Already applied above
       } else {
         alertify.success("Enjoy the free demo :)");
       }
-      
+
       resetInputs();
       $(".open-demos").trigger("click");
     });
@@ -1238,12 +1258,12 @@ $(document).ready(function() {
       $("#search-demos").val( $(this).parent().prop("id") );
       $("#add-demo").trigger("click");
     });
-    
+
     $("#search-select-libraries").on("change", function() {
       $("#search-libraries").val( $(this).val() );
     });
   });
-  
+
   // Handles Character Generation
   $(function() {
     $("#undo").on("click", function() {
@@ -1280,14 +1300,14 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange("<>", htmlEditor.getCursor());
         htmlEditor.focus();
         var str = ">";
         var mynum = str.length;
         var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1298,14 +1318,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange("<>", cssEditor.getCursor());
         cssEditor.focus();
         var str = ">";
         var mynum = str.length;
         var start_cursor = cssEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1316,14 +1336,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange("<>", jsEditor.getCursor());
         jsEditor.focus();
         var str = ">";
         var mynum = str.length;
         var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1337,14 +1357,14 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange("{}", htmlEditor.getCursor());
         htmlEditor.focus();
         var str = "]";
         var mynum = str.length;
         var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1355,14 +1375,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange("{}", cssEditor.getCursor());
         cssEditor.focus();
         var str = "]";
         var mynum = str.length;
         var start_cursor = cssEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1373,14 +1393,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange("{}", jsEditor.getCursor());
         jsEditor.focus();
         var str = "]";
         var mynum = str.length;
         var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1394,14 +1414,14 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange('""', htmlEditor.getCursor());
         htmlEditor.focus();
         var str = '"';
         var mynum = str.length;
         var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1412,14 +1432,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange('""', cssEditor.getCursor());
         cssEditor.focus();
         var str = '"';
         var mynum = str.length;
         var start_cursor = cssEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1430,14 +1450,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange('""', jsEditor.getCursor());
         jsEditor.focus();
         var str = '"';
         var mynum = str.length;
         var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1451,14 +1471,14 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange("''", htmlEditor.getCursor());
         htmlEditor.focus();
         var str = "'";
         var mynum = str.length;
         var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1469,14 +1489,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange("''", cssEditor.getCursor());
         cssEditor.focus();
         var str = "'";
         var mynum = str.length;
         var start_cursor = cssEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1487,14 +1507,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange("''", jsEditor.getCursor());
         jsEditor.focus();
         var str = "'";
         var mynum = str.length;
         var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1508,21 +1528,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "+", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "+", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "+", jsEditor.getCursor());
         jsEditor.focus();
@@ -1532,21 +1552,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "-", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "-", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "-", jsEditor.getCursor());
         jsEditor.focus();
@@ -1556,21 +1576,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + ".", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + ".", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + ".", jsEditor.getCursor());
         jsEditor.focus();
@@ -1580,14 +1600,14 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange("()", htmlEditor.getCursor());
         htmlEditor.focus();
         var str = ")";
         var mynum = str.length;
         var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1598,14 +1618,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange("()", cssEditor.getCursor());
         cssEditor.focus();
         var str = ")";
         var mynum = str.length;
         var start_cursor = cssEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1616,14 +1636,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange("()", jsEditor.getCursor());
         jsEditor.focus();
         var str = ")";
         var mynum = str.length;
         var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1637,21 +1657,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + ":", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + ":", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + ":", jsEditor.getCursor());
         jsEditor.focus();
@@ -1661,21 +1681,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + ";", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + ";", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + ";", jsEditor.getCursor());
         jsEditor.focus();
@@ -1685,21 +1705,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "_", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "_", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "_", jsEditor.getCursor());
         jsEditor.focus();
@@ -1709,14 +1729,14 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange("[]", htmlEditor.getCursor());
         htmlEditor.focus();
         var str = "]";
         var mynum = str.length;
         var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1727,14 +1747,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange("[]", cssEditor.getCursor());
         cssEditor.focus();
         var str = "]";
         var mynum = str.length;
         var start_cursor = cssEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1745,14 +1765,14 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange("[]", jsEditor.getCursor());
         jsEditor.focus();
         var str = "]";
         var mynum = str.length;
         var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -1766,21 +1786,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "|", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "|", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "|", jsEditor.getCursor());
         jsEditor.focus();
@@ -1790,21 +1810,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "/", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "/", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "/", jsEditor.getCursor());
         jsEditor.focus();
@@ -1814,21 +1834,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "\\", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "\\", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "\\", jsEditor.getCursor());
         jsEditor.focus();
@@ -1838,21 +1858,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "?", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "?", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "?", jsEditor.getCursor());
         jsEditor.focus();
@@ -1862,21 +1882,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "*", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "*", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "*", jsEditor.getCursor());
         jsEditor.focus();
@@ -1886,7 +1906,7 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "\\n", htmlEditor.getCursor());
         htmlEditor.focus();
@@ -1895,7 +1915,7 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "\\n", jsEditor.getCursor());
         jsEditor.focus();
@@ -1905,21 +1925,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "&", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "&", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "&", jsEditor.getCursor());
         jsEditor.focus();
@@ -1929,21 +1949,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "%", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "%", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "%", jsEditor.getCursor());
         jsEditor.focus();
@@ -1953,7 +1973,7 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "$", htmlEditor.getCursor());
         htmlEditor.focus();
@@ -1962,7 +1982,7 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "$", jsEditor.getCursor());
         jsEditor.focus();
@@ -1972,7 +1992,7 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "&cent;", htmlEditor.getCursor());
         htmlEditor.focus();
@@ -1981,7 +2001,7 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "&cent;", jsEditor.getCursor());
         jsEditor.focus();
@@ -1991,7 +2011,7 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "&pound;", htmlEditor.getCursor());
         htmlEditor.focus();
@@ -2000,7 +2020,7 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "&pound;", jsEditor.getCursor());
         jsEditor.focus();
@@ -2010,7 +2030,7 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "&yen;", htmlEditor.getCursor());
         htmlEditor.focus();
@@ -2019,7 +2039,7 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "&yen;", jsEditor.getCursor());
         jsEditor.focus();
@@ -2029,7 +2049,7 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "&euro;", htmlEditor.getCursor());
         htmlEditor.focus();
@@ -2038,7 +2058,7 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "&euro;", jsEditor.getCursor());
         jsEditor.focus();
@@ -2048,21 +2068,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "@", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "@", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "@", jsEditor.getCursor());
         jsEditor.focus();
@@ -2072,21 +2092,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "=", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "=", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "=", jsEditor.getCursor());
         jsEditor.focus();
@@ -2096,21 +2116,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "#", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "#", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "#", jsEditor.getCursor());
         jsEditor.focus();
@@ -2120,21 +2140,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + ",", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + ",", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + ",", jsEditor.getCursor());
         jsEditor.focus();
@@ -2144,21 +2164,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "!", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "!", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "!", jsEditor.getCursor());
         jsEditor.focus();
@@ -2168,21 +2188,21 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "^", htmlEditor.getCursor());
         htmlEditor.focus();
       } else if ( activeEditor.val() === "cssEditor" ) {
         var selected_text = cssEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         cssEditor.replaceSelection("", cssEditor.getCursor());
         cssEditor.replaceRange(selected_text + "^", cssEditor.getCursor());
         cssEditor.focus();
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "^", jsEditor.getCursor());
         jsEditor.focus();
@@ -2192,7 +2212,7 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "&copy;", htmlEditor.getCursor());
         htmlEditor.focus();
@@ -2201,7 +2221,7 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "&copy;", jsEditor.getCursor());
         jsEditor.focus();
@@ -2211,7 +2231,7 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "&reg;", htmlEditor.getCursor());
         htmlEditor.focus();
@@ -2220,7 +2240,7 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "&reg;", jsEditor.getCursor());
         jsEditor.focus();
@@ -2230,7 +2250,7 @@ $(document).ready(function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         htmlEditor.replaceSelection("", htmlEditor.getCursor());
         htmlEditor.replaceRange(selected_text + "&trade;", htmlEditor.getCursor());
         htmlEditor.focus();
@@ -2239,7 +2259,7 @@ $(document).ready(function() {
       } else if ( activeEditor.val() === "jsEditor" ) {
         var selected_text = jsEditor.getSelection();  // Need to grab the Active Selection
         console.log(selected_text);  // Active Selection
-        
+
         jsEditor.replaceSelection("", jsEditor.getCursor());
         jsEditor.replaceRange(selected_text + "&trade;", jsEditor.getCursor());
         jsEditor.focus();
@@ -2252,7 +2272,7 @@ $(document).ready(function() {
         var str = "}";
         var mynum = str.length;
         var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -2266,7 +2286,7 @@ $(document).ready(function() {
         var str = "}";
         var mynum = str.length;
         var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
-        console.log(start_cursor);  // Cursor position 
+        console.log(start_cursor);  // Cursor position
         var cursorLine = start_cursor.line;
         var cursorCh = start_cursor.ch;
 
@@ -2275,7 +2295,7 @@ $(document).ready(function() {
       }
     });
   });
-  
+
   $(window).on("beforeunload", function() {
     return "Are you sure you wish to leave? All your changes will be lost.";
   });
