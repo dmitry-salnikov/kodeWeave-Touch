@@ -1,17 +1,22 @@
 @import url("normalize.css");
 @import url("fonts/font-awesome.css");
-@import url("../lib/jquery-ui.css");
-@import url("../lib/codemirror.css");
-@import url("../addon/fold/foldgutter.css");
-@import url("../addon/lint/lint.css");
+@import url("../libraries/jqueryui/jqueryui.css");
 @import url("../lib/spectrum.css");
-@import url("../alertify/themes/alertify.core.css");
-@import url("../alertify/themes/alertify.default.css");
+@import url("../codemirror/codemirror.css");
+@import url("../codemirror/addon/fold/foldgutter.css");
+@import url("../codemirror/addon/lint/lint.css");
+@import url("../codemirror/addon/dialog/dialog.css");
+@import url("../libraries/alertify/themes/alertify.core.css");
+@import url("../libraries/alertify/themes/alertify.default.css");
 @import url("../jqwidgets/styles/jqx.base.css");
 @import url("../jqwidgets/styles/jqx.metro.css");
-@import url("../addon/dialog/dialog.css");
 @import url("polyui.css");
-@import url("http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900");
+/* @import url("http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900"); */
+
+@font-face {
+  font-family: Lato;
+  src: url("fonts/Lato-Light.ttf");
+}
 
 html, body {
   height: 100%;
@@ -179,32 +184,20 @@ input[type=text].heading {
 .libraries-dialog, .demos-dialog {
   overflow-x: hidden;
 }
-.libraries-dialog select, .libraries-dialog input, .demos-dialog select {
-  display: block; 
-  position: relative;
-  float: left;
-  padding: 0;
-  margin: 0 5px 0 0;
-  font: 1.2em Arial;
-}
-.libraries-dialog select, .libraries-dialog input {
-  left: 5px;
-  width: 45%;
-}
 .demos-dialog {
   left: auto;
   right: 15px;
 }
-.demos-dialog select {
-  top: 2px;
-  width: 90%;
-}
 .addlibrary-tablets, .adddemos-tablets {
   display: block;
   text-align: left;
+}
+.addlibrary-tablets {
   width: 600px;
 }
-
+.adddemos-tablets {
+  width: 390px;
+}
 .addlibrary-tablets li a, .adddemos-tablets li a {
   float: none;
   text-align: left;
@@ -216,15 +209,20 @@ ul.ldd-menu {
   list-style: none;
   padding: 0;
 }
-
 ul.ldd-menu .ldd-submenu {
   font-size: 10px;
 }
-
 ul.ldd-menu a {
   text-decoration: none;
 }
-
+ul.ldd-menu ul li a {
+  font-family: Arial, serif;
+  font-size: 11px;
+  line-height: 20px;
+  color: #000;
+  padding: 1px 3px;
+  font-weight: normal;
+}
 ul.ldd-menu ul li a:hover{
   background: #2882CA;
   color: #fff;
@@ -234,7 +232,6 @@ ul.ldd-menu ul li a:hover{
 */
   font-weight: normal;
 }
-
 ul.ldd-menu ul {
   list-style: outside none none;
   float: left;
@@ -243,26 +240,42 @@ ul.ldd-menu ul {
   padding: 10px;
   width: 170px;
 }
-
 .ldd-heading {
   font-family: Georgia, serif;
   font-size: 18px;
   font-style: italic;
   color: #0080FF;
 }
-
-ul.ldd-menu ul li a {
-  font-family: Arial, serif;
-  font-size: 11px;
-  line-height: 20px;
-  color: #000;
-  padding: 1px 3px;
-  font-weight: normal;
-}
-
 .new {
   color: #0CF;
   font-size: 10px;
+}
+
+@media all and (max-width:924px) {
+  .addlibrary-tablets {
+    width: 100%;
+  }
+  
+  .addlibrary-tablets .ldd-menu ul {
+    display: block!important;
+    border-left: 0!important;
+    border-top: 1px solid #DDD!important;
+    margin: 0!important;
+    width: 100%!important;
+  }
+}
+@media all and (max-width:530px) {
+  .adddemos-tablets {
+    width: 100%;
+  }
+  
+  .adddemos-tablets .ldd-menu ul {
+    display: block!important;
+    border-left: 0!important;
+    border-top: 1px solid #DDD!important;
+    margin: 0!important;
+    width: 100%!important;
+  }
 }
 
 /* Chrome Dialog */
@@ -303,22 +316,6 @@ nav {
 }
 textarea {
   resize: vertical;
-}
-
-@media all and (max-width:680px) {
-  .addlibrary-tablets, .adddemos-tablets {
-    display: none;
-  }
-
-  .libraries-dialog select, .libraries-dialog input, .demos-dialog select, .demos-dialog input {
-    display: inline-block; 
-    position: static;
-    left: 0;
-    width: auto;
-    padding: 5px;
-    margin: 0 5px 0 0;
-    font: 12px Arial;
-  }
 }
 
 /* Editor */
@@ -468,4 +465,83 @@ textarea {
 .offline-mode:checked + .onoffswitch-label .onoffswitch-switch,
 .frame-mode:checked + .frameswitch-label .frameswitch-switch {
   right: 0; 
+}
+
+
+
+
+
+
+
+
+
+/* Custom Checkbox Styling */
+/* Base for label styling */
+.check:not(:checked),
+.check:checked {
+  position: absolute;
+  left: -9999px;
+}
+.check:not(:checked) + label,
+.check:checked + label {
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+}
+/* checkbox aspect */
+.check:not(:checked) + label:before,
+.check:checked + label:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  border: 1px solid #aaa;
+  background: #f8f8f8;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.3);
+}
+/* checked mark aspect */
+.check:not(:checked) + label:after,
+.check:checked + label:after {
+  content: '✔';
+  position: absolute;
+  top: -5px;
+  left: 5px;
+  font-size: 14px;
+  transition: all .2s;
+  color: #0080FF;
+}
+/* checked mark aspect changes */
+.check:not(:checked) + label:after {
+  opacity: 0;
+  transform: scale(0);
+}
+.check:checked + label:after {
+  opacity: 1;
+  transform: scale(1);
+}
+.check:disabled:checked + label:after {
+  color: #999;
+}
+.check:disabled + label {
+  color: #aaa;
+}
+/* disabled checkbox */
+.check:disabled:not(:checked) + label:before,
+.check:disabled:checked + label:before {
+  box-shadow: none;
+  border-color: #bbb;
+  background-color: #ddd;
+}
+
+/* accessibility */
+.check:checked:focus + label:before,
+.check:not(:checked):focus + label:before {
+  border: 1px dotted blue;
+}
+/* hover style just for information */
+label:hover:before {
+  border: 1px solid #4778d9!important;
 }
