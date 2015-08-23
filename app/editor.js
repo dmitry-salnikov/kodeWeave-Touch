@@ -254,7 +254,7 @@ $(document).ready(function() {
         $("[data-action=alphabetizer]").on("click", function() {
           $(".check").attr("checked", false).trigger("change");
           $("[data-action=sitetitle]").val("Alphabetizer");
-          htmlEditor.setValue("<div class=\"grid\">\n  <div class=\"grid__col--12\">\n    <a class=\"btn--default\" data-action=\"alphabetize\">Alphabetize</a>\n    <textarea class=\"form__input\" data-action=\"input-list\" rows=\"7\" placeholder=\"Alphabetize your text here...\">China\nIndia\nUnited States of America\nIndonesia\nBrazil\nPakistan\nNigeria\nBangladesh\nRussia\nJapan\nMexico\nPhilippines\nEthiopia\nVietnam\nEgypt\nGermany\nIran\nTurkey\nDemocratic Republic of the Congo\nFrance</textarea>\n  </div>\n</div>");
+          htmlEditor.setValue("<div class=\"grid\">\n  <div class=\"grid__col--12\">\n    <button class=\"btn--default\" data-action=\"alphabetize\">Alphabetize</button>\n    <textarea class=\"form__input\" data-action=\"input-list\" rows=\"7\" placeholder=\"Alphabetize your text here...\">China\nIndia\nUnited States of America\nIndonesia\nBrazil\nPakistan\nNigeria\nBangladesh\nRussia\nJapan\nMexico\nPhilippines\nEthiopia\nVietnam\nEgypt\nGermany\nIran\nTurkey\nDemocratic Republic of the Congo\nFrance</textarea>\n  </div>\n</div>");
           cssEditor.setValue("");
           jsEditor.setValue("var txt = document.querySelector(\"[data-action=input-list]\");\ndocument.querySelector(\"[data-action=alphabetize]\").addEventListener(\"click\", function() {\n  txt.value = (txt.value.split(\"\\n\").sort(caseInsensitive).join(\"\\n\"));\n\n  function caseInsensitive(a, b) {\n    return a.toLowerCase().localeCompare(b.toLowerCase());\n  }\n});\n");
           $(".open-demos, #polyui").trigger("click");
@@ -1771,9 +1771,9 @@ $(document).ready(function() {
   // Check Application Fields (For Download)
   $("[data-action=load]").on("change", function(evt) {
     if ( $(this).val() === "" ) {
-      $(".check").addClass("hide");
+      $(".watch").addClass("hide");
     } else {
-      $(".check").removeClass("hide");
+      $(".watch").removeClass("hide");
       var file = evt.target.files[0];
       displayPreview(file);
 
@@ -1802,7 +1802,7 @@ $(document).ready(function() {
             zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
             zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
             zip.file("data/content/css/index.css", cssEditor.getValue());
-            zip.file("data/content/js/script.js", jsEditor.getValue());
+            zip.file("data/content/js/index.js", jsEditor.getValue());
             zip.file("data/content/index.html", htmlContent);
             eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
             var content = zip.generate({type:"blob"});
@@ -1833,7 +1833,7 @@ $(document).ready(function() {
             zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
             zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
             zip.file("data/content/css/index.css", cssEditor.getValue());
-            zip.file("data/content/js/script.js", jsEditor.getValue());
+            zip.file("data/content/js/index.js", jsEditor.getValue());
             zip.file("data/content/index.html", htmlContent);
             eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
             var content = zip.generate({type:"blob"});
@@ -1845,7 +1845,7 @@ $(document).ready(function() {
         $("[data-action=download-as-lin-app-32]").on("click", function() {
           $("[data-action=download]").trigger("click");
 
-          JSZipUtils.getBinaryContent('YourLinApp.zip', function(err, data) {
+          JSZipUtils.getBinaryContent('YourLinApp-32bit.zip', function(err, data) {
             if(err) {
               throw err; // or handle err
             }
@@ -1863,7 +1863,7 @@ $(document).ready(function() {
             zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
             zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
             zip.file("data/content/css/index.css", cssEditor.getValue());
-            zip.file("data/content/js/script.js", jsEditor.getValue());
+            zip.file("data/content/js/index.js", jsEditor.getValue());
             zip.file("data/content/index.html", htmlContent);
             eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
             
@@ -1876,7 +1876,7 @@ $(document).ready(function() {
         $("[data-action=download-as-lin-app-64]").on("click", function() {
           $("[data-action=download]").trigger("click");
 
-          JSZipUtils.getBinaryContent('YourLinApp.zip', function(err, data) {
+          JSZipUtils.getBinaryContent('YourLinApp-64bit.zip', function(err, data) {
             if(err) {
               throw err; // or handle err
             }
@@ -1894,7 +1894,7 @@ $(document).ready(function() {
             zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
             zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
             zip.file("data/content/css/index.css", cssEditor.getValue());
-            zip.file("data/content/js/script.js", jsEditor.getValue());
+            zip.file("data/content/js/index.js", jsEditor.getValue());
             zip.file("data/content/index.html", htmlContent);
             eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
             // zip.file("source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $("[data-action=sitetitle]").val().split(" ").join("-") + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $("[data-action=sitetitle]").val().split(" ").join("-") + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
@@ -1921,7 +1921,7 @@ $(document).ready(function() {
             // Your Web App
             var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/index.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
             zip.file("app/css/index.css", cssEditor.getValue());
-            zip.file("app/js/script.js", jsEditor.getValue());
+            zip.file("app/js/index.js", jsEditor.getValue());
             zip.file("app/index.html", htmlContent);
             var Img16 = c16[0].toDataURL("image/png");
             var Img32 = c32[0].toDataURL("image/png");
@@ -1978,7 +1978,7 @@ $(document).ready(function() {
       // Your Web App
       var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/index.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
       zip.file("css/index.css", cssEditor.getValue());
-      zip.file("js/script.js", jsEditor.getValue());
+      zip.file("js/index.js", jsEditor.getValue());
       zip.file("index.html", htmlContent);
       eval( $("[data-action=ziplibs]").val() );
       var content = zip.generate({type:"blob"});
