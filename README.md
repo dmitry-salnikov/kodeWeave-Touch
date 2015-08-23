@@ -20,7 +20,9 @@ kodeWeave Touch uses a number of open source projects to work properly:
 * [JQWidgets](http://www.jqwidgets.com/jquery-widgets-demo/demos/jqxsplitter/index.htm#demos/jqxsplitter/nested-splitters.htm) - awesome plugin for resizable columns 
 * [Codemirror](http://codemirror.net/) - awesome web-based text editor
 * [AppJS](http://appjs.com/) - makes web apps run on desktops (comes built with [node.js](http://nodejs.org/))
-* [Spectrum](http://bgrins.github.io/spectrum/) - awesome color picker that supports alpha transparency
+* [Inlet](https://github.com/enjalot/Inlet) - awesome inline color picker and numeric slider for Codemirror
+* [CSSLint](http://csslint.net/) - for css syntax validation
+* [JSHint](http://jslint.com/) - for javascript syntax validation
 
 ### Development
 
