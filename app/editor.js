@@ -1781,8 +1781,8 @@ $(document).ready(function() {
 
       reader.onload = function(e) {
         // Download as Windows App
-        $("[data-action=download-as-win-app]").on("click", function() {
-          $("[data-action=download]").trigger("click");
+        $(".download-as-win-app").on("click", function() {
+          $(".download").trigger("click");
 
           JSZipUtils.getBinaryContent('YourWinApp.zip', function(err, data) {
             if(err) {
@@ -1791,8 +1791,20 @@ $(document).ready(function() {
 
             var zip = new JSZip(data);
 
+            var htmlContent = htmlEditor.getValue();
+            var cssContent = cssEditor.getValue();
+            var jsContent = jsEditor.getValue();
+
+            var cssLink="    <"+"link rel=\"stylesheet\" href=\"css/style.css\""+"/>"+"\n";
+            var jsLink="  <"+"script src=\"js/script.js\">"+"</"+"script"+">"+"\n";
+
+            cssLink = cssLink + "  </head>";
+            jsLink = jsLink + "  </body>";
+
+            htmlContent = htmlContent.replace("</head>",cssLink);
+            htmlContent = htmlContent.replace("</body>",jsLink);
+
             // Your Web App
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/index.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
             var Img16 = c16[0].toDataURL("image/png");
             var Img32 = c32[0].toDataURL("image/png");
             var Img64 = c64[0].toDataURL("image/png");
@@ -1801,13 +1813,12 @@ $(document).ready(function() {
             zip.file("data/content/icons/32.png", Img32.split('base64,')[1],{base64: true});
             zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
             zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
-            zip.file("data/content/css/index.css", cssEditor.getValue());
-            zip.file("data/content/js/index.js", jsEditor.getValue());
+            zip.file("data/content/css/style.css", cssContent);
+            zip.file("data/content/js/script.js", jsContent);
             zip.file("data/content/index.html", htmlContent);
-            eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
             var content = zip.generate({type:"blob"});
 
-            saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-win.zip");
+            saveAs(content, $(".projectname").val() + "-win.zip");
           });
         });
 
@@ -1842,10 +1853,10 @@ $(document).ready(function() {
         });
 
         // Download as Linux App
-        $("[data-action=download-as-lin-app-32]").on("click", function() {
+        $("[data-action=download-as-lin-app]").on("click", function() {
           $("[data-action=download]").trigger("click");
 
-          JSZipUtils.getBinaryContent('YourLinApp-32bit.zip', function(err, data) {
+          JSZipUtils.getBinaryContent('YourLinApp.zip', function(err, data) {
             if(err) {
               throw err; // or handle err
             }
@@ -1858,49 +1869,21 @@ $(document).ready(function() {
             var Img32 = c32[0].toDataURL("image/png");
             var Img64 = c64[0].toDataURL("image/png");
             var Img128 = canvas[0].toDataURL("image/png");
-            zip.file("data/content/icons/16.png", Img16.split('base64,')[1],{base64: true});
-            zip.file("data/content/icons/32.png", Img32.split('base64,')[1],{base64: true});
-            zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
-            zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
-            zip.file("data/content/css/index.css", cssEditor.getValue());
-            zip.file("data/content/js/index.js", jsEditor.getValue());
-            zip.file("data/content/index.html", htmlContent);
-            eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
+            zip.file("resources/default_app/icons/16.png", Img16.split('base64,')[1],{base64: true});
+            zip.file("resources/default_app/icons/32.png", Img32.split('base64,')[1],{base64: true});
+            zip.file("resources/default_app/icons/64.png", Img64.split('base64,')[1],{base64: true});
+            zip.file("resources/default_app/icons/128.png", Img128.split('base64,')[1],{base64: true});
+            zip.file("resources/default_app/css/index.css", cssEditor.getValue());
+            zip.file("resources/default_app/js/index.js", jsEditor.getValue());
+            zip.file("resources/default_app/index.html", htmlContent);
+            zip.file($("[data-action=sitetitle]").val().split(" ").join("-") +".desktop", "[Desktop Entry]\nName="+ $("[data-action=sitetitle]").val() +"\nPath=/home/kodeweave/"+ $("[data-action=sitetitle]").val().split(" ").join("-") +"\nActions=sudo;\nExec=./"+ $("[data-action=sitetitle]").val().split(" ").join("-") +"/electron\nIcon=/home/kodeweave/"+ $("[data-action=sitetitle]").val().split(" ").join("-") +"/resources/default_app/icons/128.png\nTerminal=true\nType=Application\nStartupNotify=true\n\n");
+            zip.file("resources/default_app/package.json", "{\n  \"name\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"productName\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"version\": \"0.1.0\",\n  \"main\": \"default_app.js\",\n  \"license\": \"BSD-2-Clause\"\n}\n");
+            eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"resources/default_app/libraries") );
             
             // zip.file("source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $("[data-action=sitetitle]").val().split(" ").join("-") + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $("[data-action=sitetitle]").val().split(" ").join("-") + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
             // zip.file("README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
             var content = zip.generate({type:"blob"});
-            saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-32lin.zip");
-          });
-        });
-        $("[data-action=download-as-lin-app-64]").on("click", function() {
-          $("[data-action=download]").trigger("click");
-
-          JSZipUtils.getBinaryContent('YourLinApp-64bit.zip', function(err, data) {
-            if(err) {
-              throw err; // or handle err
-            }
-
-            var zip = new JSZip(data);
-
-            // Your Web App
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/index.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-            var Img16 = c16[0].toDataURL("image/png");
-            var Img32 = c32[0].toDataURL("image/png");
-            var Img64 = c64[0].toDataURL("image/png");
-            var Img128 = canvas[0].toDataURL("image/png");
-            zip.file("data/content/icons/16.png", Img16.split('base64,')[1],{base64: true});
-            zip.file("data/content/icons/32.png", Img32.split('base64,')[1],{base64: true});
-            zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
-            zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
-            zip.file("data/content/css/index.css", cssEditor.getValue());
-            zip.file("data/content/js/index.js", jsEditor.getValue());
-            zip.file("data/content/index.html", htmlContent);
-            eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
-            // zip.file("source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $("[data-action=sitetitle]").val().split(" ").join("-") + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $("[data-action=sitetitle]").val().split(" ").join("-") + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
-            // zip.file("README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
-            var content = zip.generate({type:"blob"});
-            saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-64lin.zip");
+            saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-lin.zip");
           });
         });
 
@@ -1913,7 +1896,7 @@ $(document).ready(function() {
           $("[data-action=chromedialog]").fadeOut();
         });
         $("[data-action=confirm]").on("click", function() {
-          if ( ($("[data-action=name]").val() === "") || ($("[data-action=descr]").val() === "") ) {
+          if ( ($("[data-action=sitetitle]").val() === "") || ($("[data-action=descr]").val() === "") ) {
             alertify.error("Download failed! Please fill in all required fields.");
           } else {
             var zip = new JSZip();
@@ -1933,17 +1916,17 @@ $(document).ready(function() {
             zip.file("assets/128.png", Img128.split('base64,')[1],{base64: true});
             eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"app/libraries") );
             zip.file("css/index.css", "html, body {\n  margin: 0;\n  padding: 0;\n  width: 100%;\n  height: 100%;\n}\n\nwebview, iframe {\n  width: 100%;\n  height: 100%;\n  border: 0;\n}");
-            zip.file("index.html", "<!DOCTYPE html>\n<html>\n  <head>\n    <title>"+ $("[data-action=name]").val() +"</title>\n    <link rel=\"stylesheet\" href=\"css/index.css\" />\n  </head>\n  <body>\n    <iframe src=\"app/index.html\">\n      Your Chromebook does not support the iFrame html element.\n    </iframe>\n  </body>\n</html>");
+            zip.file("index.html", "<!DOCTYPE html>\n<html>\n  <head>\n    <title>"+ $("[data-action=sitetitle]").val() +"</title>\n    <link rel=\"stylesheet\" href=\"css/index.css\" />\n  </head>\n  <body>\n    <iframe src=\"app/index.html\">\n      Your Chromebook does not support the iFrame html element.\n    </iframe>\n  </body>\n</html>");
 
             if ( $(".offline-mode").is(":checked") ) {
-              zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $("[data-action=name]").val() +'",\n  "short_name": "'+ $("[data-action=name]").val() +'",\n  "description": "'+ $("[data-action=descr]").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": true,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
+              zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $("[data-action=sitetitle]").val() +'",\n  "short_name": "'+ $("[data-action=sitetitle]").val() +'",\n  "description": "'+ $("[data-action=descr]").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": true,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
               if ( $(".frame-mode").is(":checked") ) {
                 zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      frame: 'none',\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
               } else {
                 zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
               }
             } else {
-              zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $("[data-action=name]").val() +'",\n  "short_name": "'+ $("[data-action=name]").val() +'",\n  "description": "'+ $("[data-action=descr]").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": false,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
+              zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $("[data-action=sitetitle]").val() +'",\n  "short_name": "'+ $("[data-action=sitetitle]").val() +'",\n  "description": "'+ $("[data-action=descr]").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": false,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
               if ( $(".frame-mode").is(":checked") ) {
                 zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      frame: 'none',\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
               } else {
