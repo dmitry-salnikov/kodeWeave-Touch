@@ -22,18 +22,22 @@ function displayPreview(file) {
     img64.src = e.target.result;
     img16.onload = function() {
       // x, y, width, height
+      ctx16.clearRect(0, 0, 16, 16);
       ctx16.drawImage(img16, 0, 0, 16, 16);
     };
     img32.onload = function() {
       // x, y, width, height
+      ctx32.clearRect(0, 0, 32, 32);
       ctx32.drawImage(img32, 0, 0, 32, 32);
     };
     img64.onload = function() {
       // x, y, width, height
+      ctx64.clearRect(0, 0, 64, 64);
       ctx64.drawImage(img64, 0, 0, 64, 64);
     };
     img.onload = function() {
       // x, y, width, height
+      ctx.clearRect(0, 0, 128, 128);
       ctx.drawImage(img, 0, 0, 128, 128);
     };
   };
@@ -1816,6 +1820,7 @@ $(document).ready(function() {
             zip.file("data/content/css/style.css", cssContent);
             zip.file("data/content/js/script.js", jsContent);
             zip.file("data/content/index.html", htmlContent);
+            eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
             var content = zip.generate({type:"blob"});
 
             saveAs(content, $(".projectname").val() + "-win.zip");
