@@ -10,7 +10,7 @@ There is also kodeWeave Editor [[public repository]](https://github.com/mikethed
 MIT
 
 ### Availability
-kodeWeave Touch is available for [Windows](http://sourceforge.net/projects/kodeweave/files/latest/download?source=navbar), [Mac](http://sourceforge.net/projects/kodeweave/files/latest/download?source=navbar), [Linux](http://sourceforge.net/projects/kodeweave/files/latest/download?source=navbar) and as a [Chrome](https://chrome.google.com/webstore/detail/kodeweave/pdooakoifjbjkjhjgfhlknnildhbnncl) Application.
+kodeWeave Touch is available for [Windows](http://sourceforge.net/projects/kodeweave/files/v1/kodeWeaveTouch-win.zip/download), [Mac](http://sourceforge.net/projects/kodeweave/files/latest/download?source=navbar), [Linux](http://sourceforge.net/projects/kodeweave/files/v1/kodeWeaveTouch-lin.tar.gz/download) and as a [Chrome](https://chrome.google.com/webstore/detail/kodeweave-touch/blcgppajmopfndnmegepihhkilaejipf) Application.
 
 ### Tech
 kodeWeave Touch uses a number of open source projects to work properly:
@@ -19,8 +19,10 @@ kodeWeave Touch uses a number of open source projects to work properly:
 * [TogetherJS](https://togetherjs.com/) - awesome collaboration tool
 * [JQWidgets](http://www.jqwidgets.com/jquery-widgets-demo/demos/jqxsplitter/index.htm#demos/jqxsplitter/nested-splitters.htm) - awesome plugin for resizable columns 
 * [Codemirror](http://codemirror.net/) - awesome web-based text editor
+* [Electron](http://electron.atom.io/) - makes web apps run on desktops (comes built with [node.js](http://nodejs.org/))
 * [AppJS](http://appjs.com/) - makes web apps run on desktops (comes built with [node.js](http://nodejs.org/))
 * [Inlet](https://github.com/enjalot/Inlet) - awesome inline color picker and numeric slider for Codemirror
+* [HTMLHint](http://htmlhint.com/) - for html syntax validation
 * [CSSLint](http://csslint.net/) - for css syntax validation
 * [JSHint](http://jslint.com/) - for javascript syntax validation
 
