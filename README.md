@@ -22,7 +22,6 @@ kodeWeave Touch uses a number of open source projects to work properly:
 * [Electron](http://electron.atom.io/) - makes web apps run on desktops (comes built with [node.js](http://nodejs.org/))
 * [AppJS](http://appjs.com/) - makes web apps run on desktops (comes built with [node.js](http://nodejs.org/))
 * [Inlet](https://github.com/enjalot/Inlet) - awesome inline color picker and numeric slider for Codemirror
-* [HTMLHint](http://htmlhint.com/) - for html syntax validation
 * [CSSLint](http://csslint.net/) - for css syntax validation
 * [JSHint](http://jslint.com/) - for javascript syntax validation
 
