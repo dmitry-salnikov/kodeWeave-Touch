@@ -1788,7 +1788,9 @@ $(document).ready(function() {
       reader.onload = function(e) {
         // Download as Windows App
         $("[data-action=download-as-win-app]").on("click", function() {
-          $("[data-action=download]").trigger("click");
+          if ( $("[data-action=download]").hasClass("active") ) {
+            $("[data-action=download]").trigger("click");
+          }
 
           JSZipUtils.getBinaryContent('YourWinApp.zip', function(err, data) {
             if(err) {
@@ -1800,7 +1802,11 @@ $(document).ready(function() {
             appName.load(data);
 
             // Your Web App
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/style.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+            var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
+                replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
+            
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/style.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
             var Img16 = c16[0].toDataURL("image/png");
             var Img32 = c32[0].toDataURL("image/png");
             var Img64 = c64[0].toDataURL("image/png");
@@ -1823,7 +1829,9 @@ $(document).ready(function() {
 
         // Download as Mac App
         $("[data-action=download-as-mac-app]").on("click", function() {
-          $("[data-action=download]").trigger("click");
+          if ( $("[data-action=download]").hasClass("active") ) {
+            $("[data-action=download]").trigger("click");
+          }
 
           JSZipUtils.getBinaryContent('YourMacApp.zip', function(err, data) {
             if(err) {
@@ -1833,7 +1841,11 @@ $(document).ready(function() {
             var zip = new JSZip(data);
 
             // Your Web App
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/style.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+            var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
+                replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
+            
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/style.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
             var Img16 = c16[0].toDataURL("image/png");
             var Img32 = c32[0].toDataURL("image/png");
             var Img64 = c64[0].toDataURL("image/png");
@@ -1842,7 +1854,7 @@ $(document).ready(function() {
             zip.file("data/content/icons/32.png", Img32.split('base64,')[1],{base64: true});
             zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
             zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
-            zip.file("data/content/css/style.css", cssEditor.getValue());
+            zip.file("data/content/css/index.css", cssEditor.getValue());
             zip.file("data/content/js/index.js", jsEditor.getValue());
             zip.file("data/content/index.html", htmlContent);
             eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
@@ -1853,7 +1865,9 @@ $(document).ready(function() {
 
         // Download as Linux App
         $("[data-action=download-as-lin-app]").on("click", function() {
-          $("[data-action=download]").trigger("click");
+          if ( $("[data-action=download]").hasClass("active") ) {
+            $("[data-action=download]").trigger("click");
+          }
 
           JSZipUtils.getBinaryContent('YourLinApp.zip', function(err, data) {
             if(err) {
@@ -1865,7 +1879,11 @@ $(document).ready(function() {
             appName.load(data);
             
             // Your Web App
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/style.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+            var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
+                replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
+            
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/style.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
             var Img16 = c16[0].toDataURL("image/png");
             var Img32 = c32[0].toDataURL("image/png");
             var Img64 = c64[0].toDataURL("image/png");
@@ -1874,7 +1892,7 @@ $(document).ready(function() {
             appName.file("resources/default_app/icons/32.png", Img32.split('base64,')[1],{base64: true});
             appName.file("resources/default_app/icons/64.png", Img64.split('base64,')[1],{base64: true});
             appName.file("resources/default_app/icons/128.png", Img128.split('base64,')[1],{base64: true});
-            appName.file("resources/default_app/css/style.css", cssEditor.getValue());
+            appName.file("resources/default_app/css/index.css", cssEditor.getValue());
             appName.file("resources/default_app/js/index.js", jsEditor.getValue());
             appName.file("resources/default_app/index.html", htmlContent);
             appName.file("resources/default_app/package.json", "{\n  \"name\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"productName\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"version\": \"1.0.0\",\n  \"main\": \"default_app.js\",\n  \"license\": \"MIT\"\n}\n");
@@ -1892,7 +1910,9 @@ $(document).ready(function() {
 
         // Download as Chrome App
         $("[data-action=download-as-chrome-app]").on("click", function() {
-          $("[data-action=download]").trigger("click");
+          if ( $("[data-action=download]").hasClass("active") ) {
+            $("[data-action=download]").trigger("click");
+          }
           $("[data-action=chromedialog]").fadeIn();
         });
         $("[data-action=cancel]").on("click", function() {
@@ -1910,8 +1930,8 @@ $(document).ready(function() {
               var zip = new JSZip(data);
 
               // Your Web App
-              var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/style.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-              zip.file("app/css/style.css", cssEditor.getValue());
+              var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/index.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+              zip.file("app/css/index.css", cssEditor.getValue());
               zip.file("app/js/index.js", jsEditor.getValue());
               zip.file("app/index.html", htmlContent);
               var Img16 = c16[0].toDataURL("image/png");
@@ -1923,8 +1943,8 @@ $(document).ready(function() {
               zip.file("assets/64.png", Img64.split('base64,')[1],{base64: true});
               zip.file("assets/128.png", Img128.split('base64,')[1],{base64: true});
               eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"app/libraries") );
-              zip.file("css/style.css", "html, body {\n  margin: 0;\n  padding: 0;\n  width: 100%;\n  height: 100%;\n}\n\nwebview, iframe {\n  width: 100%;\n  height: 100%;\n  border: 0;\n}");
-              zip.file("index.html", "<!DOCTYPE html>\n<html>\n  <head>\n    <title>"+ $("[data-action=sitetitle]").val() +"</title>\n    <link rel=\"stylesheet\" href=\"css/style.css\" />\n  </head>\n  <body>\n    <iframe src=\"app/index.html\">\n      Your Chromebook does not support the iFrame html element.\n    </iframe>\n  </body>\n</html>");
+              zip.file("css/index.css", "html, body {\n  margin: 0;\n  padding: 0;\n  width: 100%;\n  height: 100%;\n}\n\nwebview, iframe {\n  width: 100%;\n  height: 100%;\n  border: 0;\n}");
+              zip.file("index.html", "<!DOCTYPE html>\n<html>\n  <head>\n    <title>"+ $("[data-action=sitetitle]").val() +"</title>\n    <link rel=\"stylesheet\" href=\"css/index.css\" />\n  </head>\n  <body>\n    <iframe src=\"app/index.html\">\n      Your Chromebook does not support the iFrame html element.\n    </iframe>\n  </body>\n</html>");
 
               if ( $(".offline-mode").is(":checked") ) {
                 zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $("[data-action=sitetitle]").val() +'",\n  "short_name": "'+ $("[data-action=sitetitle]").val() +'",\n  "description": "'+ $("[data-action=descr]").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": true,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
