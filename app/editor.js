@@ -1858,6 +1858,10 @@ $(document).ready(function() {
             zip.file("data/content/js/index.js", jsEditor.getValue());
             zip.file("data/content/index.html", htmlContent);
             eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
+
+            zip.file("data/package.json", '{\n  "main"   : "content/index.html",\n  "name"   : "'+ $("[data-action=sitetitle]").val() +'",\n  "window" : {\n    "toolbar": false\n  }\n}');
+            zip.file("run.sh", "open -a /Applications/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app/Contents/data/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app");
+
             var content = zip.generate({type:"blob"});
             saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-mac.zip");
           });
