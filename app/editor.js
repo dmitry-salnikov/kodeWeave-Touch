@@ -326,6 +326,14 @@ $(document).ready(function() {
           jsEditor.setValue("document.addEventListener(\"DOMContentLoaded\", function() {\n  document.querySelector(\"[data-output=os]\").innerHTML = \"<strong>Operating System</strong>: \" + navigator.platform;\n});");
           $(".open-demos").trigger("click");
         });
+        $("[data-action=markdowneditor]").on("click", function() {
+          $(".check").attr("checked", false).trigger("change");
+          $(".vprojectname").val("Live Markdown Editor");
+          htmlEditor.setValue("<div class=\"editor-and-preview-container\">\n  <div class=\"editor-container\">Markdown Editor</div>\n  <div class=\"preview-container\">Preview</div>\n</div>\n<div class=\"editor-and-preview-container\">\n  <div class=\"editor-container\">\n    <textarea id=\"editor\">Welcome!\n===================\n\n![Placer text](http://kodeweave.sourceforge.net/logo.png)  \n\nHey! I'm your placement Markdown text.\n\n----------\n\n\nTypography\n-------------\n\n[kodeWeave Link](http://kodeweave.sourceforge.net/)  \n**bold text**  \n*italic text*  \n\n### Blockquote:\n\n> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n### Bullet List\n\n - Green\n - Eggs\n - and\n - Ham\n\n### Numbered List\n\n 1. Green\n 2. Eggs\n 3. and\n 4. Ham\n</textarea>\n  </div>\n  <div class=\"preview-container\">\n    <div id=\"preview\"></div>\n  </div>\n</div>");
+          cssEditor.setValue("* {\n  box-sizing: border-box;\n}\n\nbody {\n  line-height: 1.4;\n}\n\n.editor-and-preview-container {\n  padding: 1em;\n  width: 100%;\n  height: 100%;\n}\n\n.editor-container, .preview-container {\n  display: inline;\n  overflow: hidden;\n  float: left;\n  width: 50%;\n  height: 100%;\n}\n\n#editor {\n  display: inline-block;\n  width: 100%;\n  height: 500px;\n  resize: none;\n  padding: 1em;\n  line-height: 1.5;\n}\n#editor:focus {\n  outline: none;\n}\n\n#preview {\n  width: 100%;\n  height: 500px;\n  border: 1px green solid;\n  padding: 0 1em;\n  overflow: auto;\n}");
+          jsEditor.setValue('var mdconverter = new Showdown.converter();\nvar editor = $("#editor");\nvar preview = $("#preview");\nfunction updatePreview() {\n  preview.html(mdconverter.makeHtml(editor.val()));\n}\nupdatePreview();\neditor.on("keyup", function () {\n  updatePreview();\n});');
+          $(".open-demos, #normalize, #jquery, #showdown").trigger("click");
+        });
         $("[data-action=keylogger]").on("click", function() {
           $(".check").attr("checked", false).trigger("change");
           $("[data-action=sitetitle]").val("Keylogger");
@@ -1545,10 +1553,10 @@ $(document).ready(function() {
     
     // Dropdown Styles Demos
     if ( $(this).width() > 530 ) {
-      if ( $(this).height() > 425 ) {
+      if ( $(this).height() > 475 ) {
         $(".demos-dialog").css({
           "width": "auto",
-          "height": "330px",
+          "height": "385px",
           "overflow-y": "visible"
         });
       } else {
@@ -1828,12 +1836,12 @@ $(document).ready(function() {
         });
 
         // Download as Mac App
-        $("[data-action=download-as-mac-app]").on("click", function() {
+        $("[data-action=download-as-mac-app-32]").on("click", function() {
           if ( $("[data-action=download]").hasClass("active") ) {
             $("[data-action=download]").trigger("click");
           }
 
-          JSZipUtils.getBinaryContent('YourMacApp.zip', function(err, data) {
+          JSZipUtils.getBinaryContent('YourMacApp-32bit.zip', function(err, data) {
             if(err) {
               throw err; // or handle err
             }
@@ -1850,16 +1858,19 @@ $(document).ready(function() {
             var Img32 = c32[0].toDataURL("image/png");
             var Img64 = c64[0].toDataURL("image/png");
             var Img128 = canvas[0].toDataURL("image/png");
-            zip.file("data/content/icons/16.png", Img16.split('base64,')[1],{base64: true});
-            zip.file("data/content/icons/32.png", Img32.split('base64,')[1],{base64: true});
-            zip.file("data/content/icons/64.png", Img64.split('base64,')[1],{base64: true});
-            zip.file("data/content/icons/128.png", Img128.split('base64,')[1],{base64: true});
-            zip.file("data/content/css/index.css", cssEditor.getValue());
-            zip.file("data/content/js/index.js", jsEditor.getValue());
-            zip.file("data/content/index.html", htmlContent);
-            eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/libraries") );
+            zip.file("data/content/app/icons/16.png", Img16.split('base64,')[1],{base64: true});
+            zip.file("data/content/app/icons/32.png", Img32.split('base64,')[1],{base64: true});
+            zip.file("data/content/app/icons/64.png", Img64.split('base64,')[1],{base64: true});
+            zip.file("data/content/app/icons/128.png", Img128.split('base64,')[1],{base64: true});
+            zip.file("data/content/app/css/index.css", cssEditor.getValue());
+            zip.file("data/content/app/js/index.js", jsEditor.getValue());
+            zip.file("data/content/app/index.html", htmlContent);
+            eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/app/libraries") );
 
-            zip.file("data/package.json", '{\n  "main"   : "content/index.html",\n  "name"   : "'+ $("[data-action=sitetitle]").val() +'",\n  "window" : {\n    "toolbar": false\n  }\n}');
+            zip.file("data/package.json", '{\n  "main"  : "content/index.html",\n  "name"  : "'+ $("[data-action=sitetitle]").val() +'",\n  "window": {\n    "toolbar"    : false,\n    "frame"      : false,\n    "transparent": true\n  }\n}');
+            zip.file("data/content/index.html", '<!doctype html>\n<html>\n <head>\n    <title>'+ $("[data-action=sitetitle]").val() +'</title>\n    <link rel="stylesheet" href="css/style.css">\n  </head>\n <body>\n    <div class="container">\n      <div class="titlebar txtcenter">\n        <div class="fl menubtns">\n          <a class="fl close">\n            <i class="fa fa-times"></i>\n          </a>\n          <a class="fl minimize">\n            <i class="fa fa-minus"></i>\n          </a>\n          <a class="fl maximize">\n            <i class="maxtr fa fa-caret-left"></i>\n            <i class="maxbl fa fa-caret-left"></i>\n          </a>\n        </div>\n        \n        <span data-set="appname"></span>\n      </div>\n\n      <iframe src="app/index.html"></iframe>\n    </div>\n\n    <script src="js/main.js"></script>\n  </body>\n</html>');
+            zip.file("data/content/js/main.js", 'document.addEventListener("DOMContentLoaded", function() {\n  // Load library\n  var gui = require("nw.gui");\n\n  // Reference to window\n  var win = gui.Window.get();\n\n  document.querySelector(".close").onclick = function() {\n    window.close();\n  };\n\n  document.querySelector(".minimize").onclick = function() {\n    win.minimize();\n  };\n\n  document.querySelector(".titlebar").addEventListener("dblclick", function() {\n    if (win.isMaximized) {\n      win.unmaximize();\n      win.isMaximized = false;\n    } else {\n      win.maximize();\n    }\n  });\n\n  document.querySelector(".maximize").onclick = function() {\n    if (win.isMaximized) {\n      win.unmaximize();\n      win.isMaximized = false;\n    } else {\n      win.maximize();\n    }\n  };\n\n  win.on("maximize", function() {\n    win.isMaximized = true;\n  });\n  win.on("unmaximize", function() {\n    win.isMaximized = false;\n  });\n  win.on("enter-fullscreen", function() {\n    document.querySelector(".titlebar").classList.toggle("hide");\n    document.querySelector("iframe").style.top = 0;\n    document.querySelector("iframe").style.height = "100%";\n  });\n  win.on("leave-fullscreen", function() {\n    document.querySelector(".titlebar").classList.toggle("hide");\n    document.querySelector("iframe").style.top = 28 + "px";\n    document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n  });\n  document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n\n  window.addEventListener("keydown", function(e) {\n  // Reload App (CMD+R)\n    if ( e.metaKey && e.keyCode == 82 ) {\n      location.reload(true);\n    } else \n  // Hide Mac App (CMD+W)\n    if ( e.metaKey && e.keyCode == 87 ) {\n      win.hide();\n    }\n    // else\n  // Toggle fullscreen window (CTRL+CMD+F)\n    // if ( e.shiftKey && e.metaKey && e.keyCode == 70 ) {\n      // win.toggleFullscreen();\n    // }\n  });\n\n  // Close buttons hides app\n  // var hidden = false;\n  // gui.App.on("reopen", function(){\n  //   hidden = false;\n  //   win.show();\n  // })\n\n  // win.on("close", function(){\n  //   if (hidden == true) {\n  //     gui.App.quit();\n  //   } else {\n  //     win.hide();\n  //     hidden = true;\n  //   }\n  // });\n\n  // Create menu container\n  var Menu = new gui.Menu({\n    type: "menubar"\n  });\n\n  //initialize default mac menu\n  Menu.createMacBuiltin("'+ $("[data-action=sitetitle]").val() +'");\n\n  // Get the root menu from the default mac menu\n  var rootMenu = Menu.items[2].submenu;\n\n  // Append new item to root menu\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Toggle Fullscreen",\n      key: "F",\n      modifiers: "cmd",\n      click : function () {\n        win.toggleFullscreen();\n      }\n    })\n  );\n\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Reload App",\n      key: "R",\n      modifiers: "shift-cmd",\n      click : function () {\n        location.reload(true);\n      }\n    })\n  );\n\n  // Append Menu to Window\n  gui.Window.get().menu = Menu;\n\n  // Show app name in titlebar\n  document.querySelector("[data-set=appname]").innerHTML = document.title;\n\n  // Responsive UI\n  window.addEventListener("resize", function() {\n    document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n  });\n});');
+
             zip.file("run.sh", "open -a /Applications/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app/Contents/data/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app");
 
             var content = zip.generate({type:"blob"});
@@ -2208,6 +2219,14 @@ $(document).ready(function() {
       $(".requirejszip").val("zip.file('libraries/require/require.js', $(\".requirejs\").val());");
     } else {
       $('.requirejs, .requirejszip').clear();
+    }
+    if ( $("#showdown").is(":checked") ) {
+      $('.showdown').clear();
+      download_to_textbox('libraries/showdown/Showdown.min.js', $('.showdown'));
+      $('.showdown').trigger("change");
+      $(".showdownzip").val("zip.file('libraries/showdown/Showdown.min.js', $(\".showdown\").val());");
+    } else {
+      $('.showdown, .showdownzip').clear();
     }
     if ( $("#scriptaculous").is(":checked") ) {
       $('.scriptaculous').clear();
