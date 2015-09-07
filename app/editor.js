@@ -1553,10 +1553,10 @@ $(document).ready(function() {
     
     // Dropdown Styles Demos
     if ( $(this).width() > 530 ) {
-      if ( $(this).height() > 475 ) {
+      if ( $(this).height() > 465 ) {
         $(".demos-dialog").css({
           "width": "auto",
-          "height": "385px",
+          "height": "355px",
           "overflow-y": "visible"
         });
       } else {
