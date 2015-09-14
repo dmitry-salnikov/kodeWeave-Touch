@@ -78,9 +78,10 @@ var htmlEditor = CodeMirror(document.getElementById("htmlEditor"), {
   // lint: true,
   // gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  value: "<!-- comment -->\nhello world!"
+  value: "<!-- comment -->\nHello world!"
 });
-var inlet = Inlet(htmlEditor);
+Inlet(htmlEditor);
+emmetCodeMirror(htmlEditor);
 var cssEditor = CodeMirror(document.getElementById("cssEditor"), {
   mode: "text/css",
   tabMode: "indent",
@@ -93,7 +94,8 @@ var cssEditor = CodeMirror(document.getElementById("cssEditor"), {
   lint: true,
   gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 });
-var inlet = Inlet(cssEditor);
+Inlet(cssEditor);
+emmetCodeMirror(cssEditor);
 var jsEditor = CodeMirror(document.getElementById("jsEditor"), {
   mode: "text/javascript",
   tabMode: "indent",
@@ -106,7 +108,8 @@ var jsEditor = CodeMirror(document.getElementById("jsEditor"), {
   lint: true,
   gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 });
-var inlet = Inlet(jsEditor);
+Inlet(jsEditor);
+// emmetCodeMirror(jsEditor);
 
 // Initialize Open and Close for HTML editor
 var openHTML = CodeMirror(document.querySelector("#openHTML"), {
