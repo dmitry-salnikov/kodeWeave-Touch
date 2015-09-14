@@ -322,6 +322,7 @@ var myarray = [],
         $(".check").attr("checked", false).trigger("change");
         $("[data-action=sitetitle]").val("Detect Operating System");
         htmlEditor.setValue("<div data-output=\"os\"></div>");
+        cssEditor.setValue("");
         jsEditor.setValue("document.addEventListener(\"DOMContentLoaded\", function() {\n  document.querySelector(\"[data-output=os]\").innerHTML = \"<strong>Operating System</strong>: \" + navigator.platform;\n});");
         $(".open-demos").trigger("click");
       });
