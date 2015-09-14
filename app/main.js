@@ -78,7 +78,8 @@ var htmlEditor = CodeMirror(document.getElementById("htmlEditor"), {
   // lint: true,
   // gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  value: "<!-- comment -->\nHello world!"
+  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+  value: "<!-- comment -->\nhello world!"
 });
 Inlet(htmlEditor);
 emmetCodeMirror(htmlEditor);
@@ -92,7 +93,8 @@ var cssEditor = CodeMirror(document.getElementById("cssEditor"), {
   foldGutter: true,
   dragDrop: true,
   lint: true,
-  gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+  gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }}
 });
 Inlet(cssEditor);
 emmetCodeMirror(cssEditor);
@@ -106,7 +108,8 @@ var jsEditor = CodeMirror(document.getElementById("jsEditor"), {
   foldGutter: true,
   dragDrop: true,
   lint: true,
-  gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+  gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }}
 });
 Inlet(jsEditor);
 // emmetCodeMirror(jsEditor);
@@ -170,24 +173,7 @@ function updatePreview() {
   preview.write(htmlContent);
   preview.close();
 }
+
 setTimeout(updatePreview, 300);
 setTimeout(updateCSSHints, 300);
 setTimeout(updateJSHints, 300);
-
-(function() {
-  function scrollMenu(e) {
-    e = window.event || e;
-    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-    document.getElementById('charmenu').scrollLeft -= (delta*40); // Multiplied by 40
-    return false;
-  }
-  if (document.getElementById('charmenu').addEventListener) {
-    // IE9, Chrome, Safari, Opera
-    document.getElementById('charmenu').addEventListener('mousewheel', scrollMenu, false);
-    // Firefox
-    document.getElementById('charmenu').addEventListener('DOMMouseScroll', scrollMenu, false);
-  } else {
-    // IE 6/7/8
-    document.getElementById('charmenu').attachEvent('onmousewheel', scrollMenu);
-  }
-})();

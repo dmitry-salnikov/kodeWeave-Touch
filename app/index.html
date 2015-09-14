@@ -15,6 +15,7 @@
     <script src="lib/jszip/jszip.min.js"></script>
     <script src="lib/jszip/jszip-utils.js"></script>
     <script src="lib/jszip/FileSaver.js"></script>
+    <script src="libraries/alertify/alertify.min.js"></script>
     
     <script src="codemirror/codemirror.js"></script>
     <script src="codemirror/javascripts/code-completion.js"></script>
@@ -74,7 +75,7 @@
       <div class="dialog toolbox hide">
         <!-- Website Title -->
         <div class="txtcenter">
-          <input type="text" class="heading" data-action="sitetitle" placeholder="site title" value="site title">
+          <input type="text" class="heading" data-action="sitetitle" placeholder="site title" value="site title" accept="text/html, text/css, application/x-javascript">
         </div>
       
         <!--
@@ -116,7 +117,8 @@
       <div class="libraries-dialog dialog fl hide">
         <div class="hide">
           <div id="closeRefs"></div>
-          <textarea class="hide" data-action="library-code" placeholder="full library's code"></textarea>
+          <textarea class="hide" data-action="library-code" placeholder="full library code"></textarea>
+          <textarea class="hide" data-action="libstextarea" placeholder="trigger click on library for online storage"></textarea>
           <textarea class="hide" data-action="ziplibs"></textarea>
         </div>
 
@@ -135,6 +137,7 @@
                       <textarea class="libsources hide">    &lt;link rel="stylesheet" href="libraries/alertify/themes/alertify.core.css" /&gt;
     &lt;link rel="stylesheet" href="libraries/alertify/themes/alertify.default.css" /&gt;
     &lt;script src="libraries/alertify/alertify.min.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#alertify").trigger("click");</textarea>
                       <textarea class="alertifyjs alertifyjs1 hide"></textarea>
                       <textarea class="alertifyjs alertifyjs2 hide"></textarea>
                       <textarea class="alertifyjs alertifyjs3 hide"></textarea>
@@ -152,6 +155,7 @@
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;link rel="stylesheet" href="libraries/bootstrap/bootstrap.css" /&gt;
     &lt;script src="libraries/bootstrap/bootstrap.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#bootstrap").trigger("click");</textarea>
                       <textarea class="bootstrap bootstrap1 hide"></textarea>
                       <textarea class="bootstrap bootstrap2 hide"></textarea>
                       <textarea class="bootstrapzip jszipcode hide"></textarea>
@@ -166,6 +170,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/chartjs/chart.min.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#chartjs").trigger("click");</textarea>
                       <textarea class="chartjs hide"></textarea>
                       <textarea class="chartjszip jszipcode hide"></textarea>
                     </div>
@@ -181,6 +186,7 @@
     &lt;script src="libraries/createjs/tweenjs.min.js"&gt;&lt;/script&gt;
     &lt;script src="libraries/createjs/soundjs.min.js"&gt;&lt;/script&gt;
     &lt;script src="libraries/createjs/preloadjs.min.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#createjs").trigger("click");</textarea>
                       <textarea class="createjs createjs1 hide"></textarea>
                       <textarea class="createjs createjs2 hide"></textarea>
                       <textarea class="createjs createjs3 hide"></textarea>
@@ -198,6 +204,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/d3/d3.js"&gt;&lt;/script&gt;"&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#d3").trigger("click");</textarea>
                       <textarea class="d3 hide"></textarea>
                       <textarea class="d3zip jszipcode hide"></textarea>
                     </div>
@@ -209,6 +216,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/dojo/dojo.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#dojo").trigger("click");</textarea>
                       <textarea class="dojo hide"></textarea>
                       <textarea class="dojozip jszipcode hide"></textarea>
                     </div>
@@ -222,6 +230,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/fabric/fabric.min.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#fabricjs").trigger("click");</textarea>
                       <textarea class="fabricjs hide"></textarea>
                       <textarea class="fabricjszip jszipcode hide"></textarea>
                     </div>
@@ -235,6 +244,7 @@
                     <span class="new">&nbsp; Popular !</span>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/jquery/jquery.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#jquery").trigger("click");</textarea>
                       <textarea class="jquery hide"></textarea>
                       <textarea class="jqueryzip jszipcode hide"></textarea>
                     </div>
@@ -248,6 +258,7 @@
                       <textarea class="libsources hide">    &lt;link rel="stylesheet" href="libraries/jqueryui/jqueryui.css" /&gt;
     &lt;script src="libraries/jqueryui/jqueryui.min.js"&gt;&lt;/script&gt;
     &lt;script src="libraries/jqueryui/jquery.ui.touch-punch.min.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#jqueryui").trigger("click");</textarea>
                       <textarea class="jqueryui jqueryui1 hide"></textarea>
                       <textarea class="jqueryui jqueryui2 hide"></textarea>
                       <textarea class="jqueryui jqueryui3 hide"></textarea>
@@ -261,6 +272,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/jquerytools/jquery.tools.min.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#jquerytools").trigger("click");</textarea>
                       <textarea class="jquerytools hide"></textarea>
                       <textarea class="jquerytoolszip jszipcode hide"></textarea>
                     </div>
@@ -275,6 +287,7 @@
                       <textarea class="libsources hide">    &lt;script src="libraries/jszip/jszip.min.js"&gt;&lt;/script&gt;
     &lt;script src="libraries/jszip/jszip-utils.js"&gt;&lt;/script&gt;
     &lt;script src="libraries/jszip/FileSaver.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#jszip").trigger("click");</textarea>
                       <textarea class="jszip jszip1 hide"></textarea>
                       <textarea class="jszip jszip2 hide"></textarea>
                       <textarea class="jszip jszip3 hide"></textarea>
@@ -292,6 +305,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/kinetic/kinetic.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#kinetic").trigger("click");</textarea>
                       <textarea class="kinetic hide"></textarea>
                       <textarea class="kineticzip jszipcode hide"></textarea>
                     </div>
@@ -303,6 +317,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/knockout/knockout.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#knockout").trigger("click");</textarea>
                       <textarea class="knockout hide"></textarea>
                       <textarea class="knockoutzip jszipcode hide"></textarea>
                     </div>
@@ -316,6 +331,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/modernizer/modernizer.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#modernizer").trigger("click");</textarea>
                       <textarea class="modernizer hide"></textarea>
                       <textarea class="modernizerzip jszipcode hide"></textarea>
                     </div>
@@ -327,6 +343,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/mootools/mootools-yui-compressed.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#mootools").trigger("click");</textarea>
                       <textarea class="mootools hide"></textarea>
                       <textarea class="mootoolszip jszipcode hide"></textarea>
                     </div>
@@ -341,6 +358,7 @@
                     <span class="new">&nbsp; Popular !</span>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;link rel="stylesheet" href="libraries/normalize/normalize.css" /&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#normalize").trigger("click");</textarea>
                       <textarea class="normalize hide"></textarea>
                       <textarea class="normalizezip jszipcode hide"></textarea>
                     </div>
@@ -354,6 +372,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/paperjs/paperjs.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#paperjs").trigger("click");</textarea>
                       <textarea class="paperjs hide"></textarea>
                       <textarea class="paperjszip jszipcode hide"></textarea>
                     </div>
@@ -365,6 +384,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;link rel="stylesheet" href="libraries/polyui/polyui.css"&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#polyui").trigger("click");</textarea>
                       <textarea class="polyui hide"></textarea>
                       <textarea class="polyuizip jszipcode hide"></textarea>
                     </div>
@@ -376,6 +396,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/processingjs/processingjs.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#processingjs").trigger("click");</textarea>
                       <textarea class="processingjs hide"></textarea>
                       <textarea class="processingjsszip jszipcode hide"></textarea>
                     </div>
@@ -387,6 +408,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/prototypejs/prototypejs.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#prototypejs").trigger("click");</textarea>
                       <textarea class="prototypejs hide"></textarea>
                       <textarea class="prototypejszip jszipcode hide"></textarea>
                     </div>
@@ -400,6 +422,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/qooxdoo/qooxdoo.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#qooxdoo").trigger("click");</textarea>
                       <textarea class="qooxdoo hide"></textarea>
                       <textarea class="qooxdooszip jszipcode hide"></textarea>
                     </div>
@@ -414,6 +437,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/raphael/raphael.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#raphael").trigger("click");</textarea>
                       <textarea class="raphael hide"></textarea>
                       <textarea class="raphaelzip jszipcode hide"></textarea>
                     </div>
@@ -425,6 +449,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/require/require.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#requirejs").trigger("click");</textarea>
                       <textarea class="requirejs hide"></textarea>
                       <textarea class="requirejszip jszipcode hide"></textarea>
                     </div>
@@ -438,6 +463,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/showdown/Showdown.min.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#showdown").trigger("click");</textarea>
                       <textarea class="showdown hide"></textarea>
                       <textarea class="showdownzip jszipcode hide"></textarea>
                     </div>
@@ -449,6 +475,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/scriptaculous/scriptaculous.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#scriptaculous").trigger("click");</textarea>
                       <textarea class="scriptaculous hide"></textarea>
                       <textarea class="scriptaculouszip jszipcode hide"></textarea>
                     </div>
@@ -460,6 +487,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/snap-svg/snap-svg.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#snapsvg").trigger("click");</textarea>
                       <textarea class="snapsvg hide"></textarea>
                       <textarea class="snapsvgzip jszipcode hide"></textarea>
                     </div>
@@ -471,6 +499,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/svg-js/svg-js.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#svgjs").trigger("click");</textarea>
                       <textarea class="svgjs hide"></textarea>
                       <textarea class="svgjszip jszipcode hide"></textarea>
                     </div>
@@ -484,6 +513,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/threejs/three.min.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#threejs").trigger("click");</textarea>
                       <textarea class="threejs hide"></textarea>
                       <textarea class="threejszip jszipcode hide"></textarea>
                     </div>
@@ -497,6 +527,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/underscore/underscore.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#underscorejs").trigger("click");</textarea>
                       <textarea class="underscorejs hide"></textarea>
                       <textarea class="underscorejszip jszipcode hide"></textarea>
                     </div>
@@ -510,6 +541,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/webfont/webfont.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#webfontloader").trigger("click");</textarea>
                       <textarea class="webfontloader hide"></textarea>
                       <textarea class="webfontloaderzip jszipcode hide"></textarea>
                     </div>
@@ -523,6 +555,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/yui/yui.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#yui").trigger("click");</textarea>
                       <textarea class="yui hide"></textarea>
                       <textarea class="yuizip jszipcode hide"></textarea>
                     </div>
@@ -536,6 +569,7 @@
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/zepto/zepto.js"&gt;&lt;/script&gt;</textarea>
+                      <textarea class="combinelibs hide">$("#zepto").trigger("click");</textarea>
                       <textarea class="zepto hide"></textarea>
                       <textarea class="zeptozip jszipcode hide"></textarea>
                     </div>
@@ -567,6 +601,11 @@
         </div>
         
         <ul>
+          <li>
+            <a data-action="save-online">
+              Save to the Cloud
+            </a>
+          </li>
           <li>
             <a href="http://build.phonegap.com/" target="_blank">
               Export for mobile devices
@@ -794,12 +833,12 @@
       </div>
     </div>
     
-    <script src="libraries/alertify/alertify.min.js"></script>
     <script src="jqwidgets/jqxcore.js"></script>
     <script src="jqwidgets/jqxsplitter.js"></script>
     
     <script src="lib/shortcut.js"></script>
     <script src="main.js"></script>
     <script src="editor.js"></script>
+    <script src="lib/hscroll.js"></script>
   </body>
 </html>
