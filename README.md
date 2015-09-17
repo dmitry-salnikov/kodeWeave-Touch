@@ -44,4 +44,3 @@ Of course kodeWeave is free and open source, so you can always fork the project 
 ### Todos
 
  - Add Mac 64bit export (utilizing Electron framework)
- - Update weaves stored in the cloud to new ui
