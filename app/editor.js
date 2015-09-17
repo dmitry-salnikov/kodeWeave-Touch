@@ -67,12 +67,8 @@ var myarray = [],
         cssEditor.setValue("");
         jsEditor.setValue("");
       });
-      // Save Weave Online hotkey
-      shortcut.add("Ctrl+S", function() {
-        $("[data-action=save-online]").trigger("click");
-      });
       // Export layout hotkey
-      shortcut.add("Ctrl+E", function() {
+      shortcut.add("Ctrl+S", function() {
         $("[data-action=download-zip]").trigger("click");
       });
       window.addEventListener("keydown", function(e) {
@@ -84,13 +80,8 @@ var myarray = [],
           jsEditor.setValue("");
           mdEditor.setValue("");
         }
-      // Save Online (CMD+S)
+      // Export as Zip (CMD+S)
         if ( e.metaKey && e.keyCode == 83 ) {
-          $("[data-action=save-online]").trigger("click");
-        }
-        else 
-      // Export as Zip (CMD+E)
-        if ( e.metaKey && e.keyCode == 69 ) {
           $("[data-action=download-zip]").trigger("click");
         }
       });
@@ -2544,46 +2535,6 @@ $("[data-action=check]").on("change", function() {
   
   setTimeout(updatePreview, 300);
 });
-
-// Save to the Cloud
-$("[data-action=save-online]").click(function() {
-  if ( $("[data-action=download]").hasClass("active") ) {
-    $("[data-action=download]").trigger("click");
-  }
-  
-  var char = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  var genHash = "";
-  var i;
-  
-  for (i = 0; i < 8; i++) {
-    var rnum = Math.floor(Math.random() * char.length);
-    genHash += char.substring(rnum, rnum + 1);
-  }
-  
-  var filename = genHash + ".html";
-  
-  var yourContent = $("[data-action=libstextarea]").val() +"\n        htmlEditor.setValue(\"" + htmlEditor.getValue().split('\\').join('\\\\').replace(/\"/g,'\\\"').replace(/\n/g,'\\n') + "\");\n        cssEditor.setValue(\"" + cssEditor.getValue().split('\\').join('\\\\').replace(/\"/g,'\\\"').replace(/\n/g,'\\n') + "\");\n        jsEditor.setValue(\"" + jsEditor.getValue().split('\\').join('\\\\').replace(/\"/g,'\\\"').replace(/\n/g,'\\n') + "\");\n";
-  var outputstring = "<!DOCTYPE html>\n<html>\n  <head>\n    <title>kodeWeave Touch</title>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\" />\n    <link rel=\"stylesheet\" href=\"../css/style.css\" />\n    <link rel=\"icon\" type=\"image/vnd.microsoft.icon\" href=\"favicon.ico\">\n    <link rel=\"SHORTCUT ICON\" href=\"favicon.ico\">\n    <script src=\"https://togetherjs.com/togetherjs-min.js\"></script>\n    <script src=\"../libraries/jquery/jquery.js\"></script>\n    <script src=\"../libraries/jqueryui/jqueryui.min.js\"></script>\n    <script src=\"../libraries/jqueryui/jquery.ui.touch-punch.min.js\"></script>\n    <script src=\"../lib/jszip/jszip.min.js\"></script>\n    <script src=\"../lib/jszip/jszip-utils.js\"></script>\n    <script src=\"../lib/jszip/FileSaver.js\"></script>\n    <script src=\"../libraries/alertify/alertify.min.js\"></script>\n    \n    \n    <script src=\"../codemirror/codemirror.js\"></script>\n    <script src=\"../codemirror/javascripts/code-completion.js\"></script>\n    <script src=\"../codemirror/javascripts/css-completion.js\"></script>\n    <script src=\"../codemirror/javascripts/html-completion.js\"></script>\n    <script src=\"../codemirror/mode/javascript/javascript.js\"></script>\n    <script src=\"../codemirror/mode/xml/xml.js\"></script>\n    <script src=\"../codemirror/mode/css/css.js\"></script>\n    <script src=\"../codemirror/mode/htmlmixed/htmlmixed.js\"></script>\n    <script src=\"../codemirror/addon/edit/closetag.js\"></script>\n    <script src=\"../codemirror/addon/edit/matchbrackets.js\"></script>\n    <script src=\"../codemirror/addon/selection/active-line.js\"></script>\n    <script src=\"../codemirror/addon/fold/foldcode.js\"></script>\n    <script src=\"../codemirror/addon/fold/foldgutter.js\"></script>\n    <script src=\"../codemirror/addon/fold/brace-fold.js\"></script>\n    <script src=\"../codemirror/addon/fold/xml-fold.js\"></script>\n    <script src=\"../codemirror/addon/fold/comment-fold.js\"></script>\n    <script src=\"../codemirror/addon/search/search.js\"></script>\n    <script src=\"../codemirror/addon/search/searchcursor.js\"></script>\n    <script src=\"../codemirror/addon/dialog/dialog.js\"></script>\n    <script src=\"../codemirror/addon/formatting.js\"></script>\n    \n    <script src=\"../codemirror/htmlhint.js\"></script>\n    <script src=\"../codemirror/csslint.js\"></script>\n    <script src=\"../codemirror/jshint.js\"></script>\n    <script src=\"../codemirror/addon/lint/lint.js\"></script>\n    <script src=\"../codemirror/addon/lint/html-lint.js\"></script>\n    <script src=\"../codemirror/addon/lint/css-lint.js\"></script>\n    <script src=\"../codemirror/addon/lint/javascript-lint.js\"></script>\n    <script src=\"../codemirror/inlet.min.js\"></script>\n    <script src=\"../codemirror/emmet.js\"></script>>\n    <script src=\"contents.js\"></script>\n    <script>\n      TogetherJSConfig_siteName=\"kodeWeave\";\n      TogetherJSConfig_toolName=\"Teamwork\";\n      TogetherJSConfig_suppressJoinConfirmation = true;\n      TogetherJSConfig_includeHashInUrl = true;\n      TogetherJSConfig_dontShowClicks = true;\n    </script>\n  </head>\n  <body>\n    \n    <script src=\"../jqwidgets/jqxcore.js\"></script>\n    <script src=\"../jqwidgets/jqxsplitter.js\"></script>\n    \n    <script src=\"../lib/shortcut.js\"></script>\n    <script src=\"../main.js\"></script>\n    <script src=\"editor.js\"></script>\n    <script src=\"../lib/hscroll.js\"></script>\n    <script>\n      $(document).ready(function() {\n        $(\"[data-action=sitetitle]\").val(\"" + $("[data-action=sitetitle]").val()+ "\");\n        " + yourContent + "      });\n    </script>\n  </body>\n</html>";
-
-  $.ajax({
-    type: "GET",
-    url: 'save.php',
-    data: {
-      "filename": filename,
-      "outputstring": outputstring,
-    },
-    cache: false,
-    success: function(msg) {
-      // alertify.success(msg);
-      setTimeout(300, window.location.href = "exports/" + genHash + ".html");
-    },
-    error: function(XMLHttpRequest, textStatus, errorThrown) {
-      alertify.error("Sorry: kodeWeave Touch could not generate your weave :(");
-    }
-  });
-  // window.location.href = "exports/" + genHash + ".html";
-});
-
 
 shortcutKeys();
 initGenerators();
