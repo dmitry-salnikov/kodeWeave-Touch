@@ -65,6 +65,117 @@ var ruleSets = {
   "attr-no-duplication": true
 };
 
+var applyLowercase = function() {
+  if ( activeEditor.val() === "htmlEditor" ) {
+    var selected_text = htmlEditor.getSelection().toLowerCase();  // Need to grab the Active Selection
+
+    htmlEditor.replaceSelection("", htmlEditor.getCursor());
+    htmlEditor.replaceRange("", htmlEditor.getCursor());
+    htmlEditor.focus();
+    var str = "";
+    var mynum = str.length;
+    var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
+    console.log(start_cursor);  // Cursor position
+    var cursorLine = start_cursor.line;
+    var cursorCh = start_cursor.ch;
+
+    // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+    htmlEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+    htmlEditor.replaceRange(selected_text, htmlEditor.getCursor());
+    htmlEditor.focus();
+  } else if ( activeEditor.val() === "cssEditor" ) {
+    var selected_text = cssEditor.getSelection().toLowerCase();  // Need to grab the Active Selection
+
+    cssEditor.replaceSelection("", cssEditor.getCursor());
+    cssEditor.replaceRange("", cssEditor.getCursor());
+    cssEditor.focus();
+    var str = "";
+    var mynum = str.length;
+    var start_cursor = cssEditor.getCursor();  // Need to get the cursor position
+    console.log(start_cursor);  // Cursor position
+    var cursorLine = start_cursor.line;
+    var cursorCh = start_cursor.ch;
+
+    // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+    cssEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+    cssEditor.replaceRange(selected_text, cssEditor.getCursor());
+    cssEditor.focus();
+  } else if ( activeEditor.val() === "jsEditor" ) {
+    var selected_text = jsEditor.getSelection().toLowerCase();  // Need to grab the Active Selection
+
+    jsEditor.replaceSelection("", jsEditor.getCursor());
+    jsEditor.replaceRange("", jsEditor.getCursor());
+    jsEditor.focus();
+    var str = "";
+    var mynum = str.length;
+    var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
+    console.log(start_cursor);  // Cursor position
+    var cursorLine = start_cursor.line;
+    var cursorCh = start_cursor.ch;
+
+    // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+    jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+    jsEditor.replaceRange(selected_text, jsEditor.getCursor());
+    jsEditor.focus();
+  }
+};
+var applyUppercase = function() {
+  if ( activeEditor.val() === "htmlEditor" ) {
+    var selected_text = htmlEditor.getSelection().toUpperCase();  // Need to grab the Active Selection
+
+    htmlEditor.replaceSelection("", htmlEditor.getCursor());
+    htmlEditor.replaceRange("", htmlEditor.getCursor());
+    htmlEditor.focus();
+    var str = "";
+    var mynum = str.length;
+    var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
+    console.log(start_cursor);  // Cursor position
+    var cursorLine = start_cursor.line;
+    var cursorCh = start_cursor.ch;
+
+    // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+    htmlEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+    htmlEditor.replaceRange(selected_text, htmlEditor.getCursor());
+    htmlEditor.focus();
+  } else if ( activeEditor.val() === "cssEditor" ) {
+    var selected_text = cssEditor.getSelection().toUpperCase();  // Need to grab the Active Selection
+
+    cssEditor.replaceSelection("", cssEditor.getCursor());
+    cssEditor.replaceRange("", cssEditor.getCursor());
+    cssEditor.focus();
+    var str = "";
+    var mynum = str.length;
+    var start_cursor = cssEditor.getCursor();  // Need to get the cursor position
+    console.log(start_cursor);  // Cursor position
+    var cursorLine = start_cursor.line;
+    var cursorCh = start_cursor.ch;
+
+    // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+    cssEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+    cssEditor.replaceRange(selected_text, cssEditor.getCursor());
+    cssEditor.focus();
+  } else if ( activeEditor.val() === "jsEditor" ) {
+    var selected_text = jsEditor.getSelection().toUpperCase();  // Need to grab the Active Selection
+
+    jsEditor.replaceSelection("", jsEditor.getCursor());
+    jsEditor.replaceRange("", jsEditor.getCursor());
+    jsEditor.focus();
+    var str = "";
+    var mynum = str.length;
+    var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
+    console.log(start_cursor);  // Cursor position
+    var cursorLine = start_cursor.line;
+    var cursorCh = start_cursor.ch;
+
+    // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+    jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+    jsEditor.replaceRange(selected_text, jsEditor.getCursor());
+    jsEditor.focus();
+  }
+};
+
+
+
 // Initialize HTML editor
 var htmlEditor = CodeMirror(document.getElementById("htmlEditor"), {
   mode: "text/html",
@@ -78,7 +189,10 @@ var htmlEditor = CodeMirror(document.getElementById("htmlEditor"), {
   // lint: true,
   // gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+    "Ctrl-'": function(){ applyLowercase(); },
+    "Ctrl-\\": function(){ applyUppercase(); }
+  },
   value: "<!-- comment -->\nhello world!"
 });
 Inlet(htmlEditor);
@@ -94,7 +208,11 @@ var cssEditor = CodeMirror(document.getElementById("cssEditor"), {
   dragDrop: true,
   lint: true,
   gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }}
+  extraKeys: {
+    "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+    "Ctrl-'": function(){ applyLowercase(); },
+    "Ctrl-\\": function(){ applyUppercase(); }
+  }
 });
 Inlet(cssEditor);
 emmetCodeMirror(cssEditor);
@@ -109,7 +227,10 @@ var jsEditor = CodeMirror(document.getElementById("jsEditor"), {
   dragDrop: true,
   lint: true,
   gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }}
+  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+    "Ctrl-'": function(){ applyLowercase(); },
+    "Ctrl-\\": function(){ applyUppercase(); }
+  }
 });
 var mdEditor = CodeMirror.fromTextArea(document.getElementById("mdEditor"), {
   mode: "text/x-markdown",
@@ -121,7 +242,10 @@ var mdEditor = CodeMirror.fromTextArea(document.getElementById("mdEditor"), {
   foldGutter: true,
   dragDrop: true,
   gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }}
+  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+    "Ctrl-'": function(){ applyLowercase(); },
+    "Ctrl-\\": function(){ applyUppercase(); }
+  }
 });
 Inlet(jsEditor);
 // emmetCodeMirror(jsEditor);
@@ -206,10 +330,3 @@ setTimeout(markdownPreview, 300);
 setTimeout(updatePreview, 300);
 setTimeout(updateCSSHints, 300);
 setTimeout(updateJSHints, 300);
-
-
-
-
-
-
-

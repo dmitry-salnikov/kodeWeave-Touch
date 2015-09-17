@@ -141,6 +141,16 @@ var myarray = [],
         }
         $("[data-action=tools].active").trigger("click");
       });
+      
+      $("[data-action=lowercase]").click(function() {
+        applyLowercase();
+        $("[data-action=tools].active").trigger("click");
+      });
+
+      $("[data-action=uppercase]").click(function() {
+        applyUppercase();
+        $("[data-action=tools].active").trigger("click");
+      });
     },
     fullscreenEditor = function() {
       $(".fullscreen-html-toggle").click(function() {
