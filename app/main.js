@@ -111,6 +111,18 @@ var jsEditor = CodeMirror(document.getElementById("jsEditor"), {
   gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }}
 });
+var mdEditor = CodeMirror.fromTextArea(document.getElementById("mdEditor"), {
+  mode: "text/x-markdown",
+  tabMode: "indent",
+  styleActiveLine: true,
+  lineNumbers: true,
+  lineWrapping: true,
+  autoCloseTags: true,
+  foldGutter: true,
+  dragDrop: true,
+  gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }}
+});
 Inlet(jsEditor);
 // emmetCodeMirror(jsEditor);
 
@@ -153,6 +165,10 @@ jsEditor.on("change", function() {
   delay = setTimeout(updatePreview, 300);
   jsWaiting = setTimeout(updateJSHints, 300);
 });
+mdEditor.on("change", function() {
+  clearTimeout(delay);
+  delay = setTimeout(markdownPreview, 300);
+});
 
 // Don't add to code, replace with new drop file's code
 htmlEditor.on("drop", function() {
@@ -164,6 +180,9 @@ cssEditor.on("drop", function() {
 jsEditor.on("drop", function() {
   jsEditor.setValue("");
 });
+mdEditor.on("drop", function() {
+  mdEditor.setValue("");
+});
 
 function updatePreview() {
   var previewFrame = document.getElementById("preview");
@@ -174,6 +193,23 @@ function updatePreview() {
   preview.close();
 }
 
+function markdownPreview() {
+  var mdconverter = new Showdown.converter(),
+      previewFrame = document.getElementById("preview"),
+      preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+
+  preview.open();
+  preview.write( mdconverter.makeHtml( mdEditor.getValue() ) );
+  preview.close();
+}
+setTimeout(markdownPreview, 300);
 setTimeout(updatePreview, 300);
 setTimeout(updateCSSHints, 300);
 setTimeout(updateJSHints, 300);
+
+
+
+
+
+
+

@@ -67,9 +67,32 @@ var myarray = [],
         cssEditor.setValue("");
         jsEditor.setValue("");
       });
-      // Export layout hotkey
+      // Save Weave Online hotkey
       shortcut.add("Ctrl+S", function() {
+        $("[data-action=save-online]").trigger("click");
+      });
+      // Export layout hotkey
+      shortcut.add("Ctrl+E", function() {
         $("[data-action=download-zip]").trigger("click");
+      });
+      window.addEventListener("keydown", function(e) {
+      // New Document (CMD+N)
+        if ( e.metaKey && e.keyCode == 78 ) {
+          $(".check").attr("checked", false).trigger("change");
+          htmlEditor.setValue("<!-- comment -->\nhello world!");
+          cssEditor.setValue("");
+          jsEditor.setValue("");
+          mdEditor.setValue("");
+        }
+      // Save Online (CMD+S)
+        if ( e.metaKey && e.keyCode == 83 ) {
+          $("[data-action=save-online]").trigger("click");
+        }
+        else 
+      // Export as Zip (CMD+E)
+        if ( e.metaKey && e.keyCode == 69 ) {
+          $("[data-action=download-zip]").trigger("click");
+        }
       });
     },
     initGenerators = function() {
@@ -93,23 +116,32 @@ var myarray = [],
 
       // Tidy Up/Beautify Code
       $("[data-action=tidy]").click(function() {
+        // if ( activeEditor.val() === "htmlEditor" ) {
+        //   var htmlLines = htmlEditor.lineCount();
+        //   htmlEditor.autoFormatRange({line:0, ch:0}, {line:htmlLines});
+        // } else if ( activeEditor.val() === "cssEditor" ) {
+        //   var cssLines = cssEditor.lineCount();
+        //   cssEditor.autoFormatRange({line:0, ch:0}, {line:cssLines});
+        // } else if ( activeEditor.val() === "jsEditor" ) {
+        //   var jsLines = jsEditor.lineCount();
+        //   jsEditor.autoFormatRange({line:0, ch:0}, {line:jsLines});
+        // }
+        
         if ( activeEditor.val() === "htmlEditor" ) {
-          var htmlLines = htmlEditor.lineCount();
-          htmlEditor.autoFormatRange({line:0, ch:0}, {line:htmlLines});
+          beautifyHTML();
         } else if ( activeEditor.val() === "cssEditor" ) {
-          var cssLines = cssEditor.lineCount();
-          cssEditor.autoFormatRange({line:0, ch:0}, {line:cssLines});
+          beautifyCSS();
         } else if ( activeEditor.val() === "jsEditor" ) {
-          var jsLines = jsEditor.lineCount();
-          jsEditor.autoFormatRange({line:0, ch:0}, {line:jsLines});
+          beautifyJS();
         }
+        
         $("[data-action=tools].active").trigger("click");
       });
 
       // Minify Code
       $("[data-action=minify]").click(function() {
         if ( activeEditor.val() === "htmlEditor" ) {
-          htmlEditor.setValue( "\n" + htmlEditor.getValue() + "\n".replace(/\<\!--\s*?[^\s?\[][\s\S]*?--\>/g,"").replace(/\>\s*\</g,"><").replace(/\n/g,"") );
+          htmlEditor.setValue(htmlEditor.getValue().replace(/\<\!--\s*?[^\s?\[][\s\S]*?--\>/g,'').replace(/\>\s*\</g,'><'));
           $("[data-action=tools].active").trigger("click");
         } else if ( activeEditor.val() === "cssEditor" ) {
           cssEditor.setValue( cssEditor.getValue().replace(/\/\*.*\*\/|\/\*[\s\S]*?\*\/|\n|\t|\v|\s{2,}/g,"").replace(/\s*\{\s*/g,"{").replace(/\s*\}\s*/g,"}").replace(/\s*\:\s*/g,":").replace(/\s*\;\s*/g,";").replace(/\s*\,\s*/g,",").replace(/\s*\~\s*/g,"~").replace(/\s*\>\s*/g,">").replace(/\s*\+\s*/g,"+").replace(/\s*\!\s*/g,"!") );
@@ -127,6 +159,14 @@ var myarray = [],
           GridScheme();
         } else if ( $(".fullscreen-html-toggle.fill").is(":visible") ) {
           $(this).html('<span class="fa fa-compress" id="fullscreen-html"></span>');
+          $("#mainSplitter").jqxSplitter({
+            height: "auto",
+            width: "100%",
+            orientation: "vertical",
+            showSplitBar: false,
+            panels: [{ size: '0%' },
+                     { size: '100%',collapsible:false }]
+          });
           $("#splitContainer").jqxSplitter({
             height: "auto",
             width: "100%",
@@ -160,6 +200,14 @@ var myarray = [],
           GridScheme();
         } else if ( $(".fullscreen-css-toggle.fill").is(":visible") ) {
           $(this).html('<span class="fa fa-compress" id="fullscreen-css"></span>');
+          $("#mainSplitter").jqxSplitter({
+            height: "auto",
+            width: "100%",
+            orientation: "vertical",
+            showSplitBar: false,
+            panels: [{ size: '0%' },
+                     { size: '100%',collapsible:false }]
+          });
           $("#splitContainer").jqxSplitter({
             height: "auto",
             width: "100%",
@@ -193,6 +241,14 @@ var myarray = [],
           GridScheme();
         } else if ( $(".fullscreen-js-toggle.fill").is(":visible") ) {
           $(this).html('<span class="fa fa-compress" id="fullscreen-js"></span>');
+          $("#mainSplitter").jqxSplitter({
+            height: "auto",
+            width: "100%",
+            orientation: "vertical",
+            showSplitBar: false,
+            panels: [{ size: '0%' },
+                     { size: '100%',collapsible:false }]
+          });
           $("#splitContainer").jqxSplitter({
             height: "auto",
             width: "100%",
@@ -219,6 +275,31 @@ var myarray = [],
           });
         }
       });
+      $(".fullscreen-md-toggle").click(function() {
+        $(this).toggleClass("fill unfill");
+        if ( $(".fullscreen-md-toggle.unfill").is(":visible") ) {
+          $(this).html('<span class="fa fa-expand" id="fullscreen-md"></span>');
+          GridScheme();
+        } else if ( $(".fullscreen-md-toggle.fill").is(":visible") ) {
+          $(this).html('<span class="fa fa-compress" id="fullscreen-md"></span>');
+          $("#mainSplitter").jqxSplitter({
+            height: "auto",
+            width: "100%",
+            orientation: "vertical",
+            showSplitBar: false,
+            panels: [{ size: '100%' },
+                     { size: '0%',collapsible:false }]
+          });
+          $("#splitContainer").jqxSplitter({
+            height: "auto",
+            width: "100%",
+            orientation: "vertical",
+            showSplitBar: false,
+            panels: [{ size: "0%" },
+                     { size: "0%" }]
+          });
+        }
+      });
       $(".preview-mode-toggle").click(function() {
         $(this).toggleClass("fill unfill");
         if ( $(".preview-mode-toggle.unfill").is(":visible") ) {
@@ -226,6 +307,14 @@ var myarray = [],
           GridScheme();
         } else if ( $(".preview-mode-toggle.fill").is(":visible") ) {
           $(this).html('<span class="fa fa-compress" id="preview-mode"></span>');
+          $("#mainSplitter").jqxSplitter({
+            height: "auto",
+            width: "100%",
+            orientation: "vertical",
+            showSplitBar: false,
+            panels: [{ size: '0%' },
+                     { size: '100%',collapsible:false }]
+          });
           $("#splitContainer").jqxSplitter({
             height: "auto",
             width: "100%",
@@ -1443,7 +1532,7 @@ var myarray = [],
 // Load Files, Grid Alignment
 $(window).load(function() {
   // Splitter Theme
-  $("#splitContainer, #leftSplitter, #rightSplitter").jqxSplitter({
+  $("#mainSplitter, #splitContainer, #leftSplitter, #rightSplitter").jqxSplitter({
     theme: "metro"
   });
 
@@ -1587,6 +1676,26 @@ $(window).load(function() {
   }
 });
 
+// Toggle Theme
+// $("#call-theme").click(function() {
+//   $(this).toggleClass("darkTheme");
+//   if ( $(this).hasClass("darkTheme") ) {
+//     $("link[rel=stylesheet]").attr({href : "css/dark.css"});
+
+//     // Splitter Theme
+//     $("#splitContainer, #leftSplitter, #rightSplitter").jqxSplitter({
+//       theme: "metrodark"
+//     });
+//   } else {
+//     $("link[rel=stylesheet]").attr({href : "css/light.css"});
+    
+//     // Splitter Theme
+//     $("#splitContainer, #leftSplitter, #rightSplitter").jqxSplitter({
+//       theme: "metro"
+//     });
+//   }
+// });
+
 // Team up / Collaborate
 $("#collaborate").click(function() {
   TogetherJS(this); return false;
@@ -1680,7 +1789,7 @@ $(".grid-alignment").click(function() {
     });
     return false;
   }
-}).click();
+});
 $("header a:not(.skip, .dialog a)").on("click", function() {
   $(this).not(".dialog a").toggleClass("active");
   $(this).next(":not([data-action=download-zip], #collaborate, .grid-alignment)").not(".dialog a").toggleClass("hide");
@@ -1699,88 +1808,52 @@ $("header a:not(.skip, .dialog a)").on("click", function() {
 
 // Grids
 function GridScheme() {
-  if ( $(".is-horizontal").is(":visible") ) {
-    $('#splitContainer').jqxSplitter({
-      height: "auto",
-      width: "100%",
-      orientation: 'horizontal',
-      showSplitBar: true,
-      panels: [{ size: '50%',collapsible:false },
-               { size: '50%' }]
-    });
-    $('#leftSplitter').jqxSplitter({
-      height: '100%',
-      width: '100%',
-      orientation: 'vertical',
-      showSplitBar: true,
-      panels: [{ size: '50%',collapsible:false },
-               { size: '50%'}]
-    });
-    $('#rightSplitter').jqxSplitter({
-      height: '100%',
-      width: '100%',
-      orientation: 'vertical',
-      showSplitBar: true,
-      panels: [{ size: '50%'},
-               { size: '50%',collapsible:false }]
-    });
-    return false;
-  }
-  if ( $(".is-vertical").is(":visible") ) {
-    $('#splitContainer').jqxSplitter({
-      height: "auto",
-      width: "100%",
-      orientation: 'horizontal',
-      showSplitBar: true,
-      panels: [{ size: '50%',collapsible:false },
-               { size: '50%' }]
-    });
-    $('#leftSplitter').jqxSplitter({
-      height: '100%',
-      width: '100%',
-      orientation: 'horizontal',
-      showSplitBar: true,
-      panels: [{ size: '50%',collapsible:false },
-               { size: '50%'}]
-    });
-    $('#rightSplitter').jqxSplitter({
-      height: '100%',
-      width: '100%',
-      orientation: 'horizontal',
-      showSplitBar: true,
-      panels: [{ size: '50%'},
-               { size: '50%',collapsible:false}]
-    });
-    return false;
-  }
-  if ( $(".is-squared").is(":visible") ) {
-    $('#splitContainer').jqxSplitter({
-      height: "auto",
-      width: "100%",
-      orientation: 'vertical',
-      showSplitBar: true,
-      panels: [{ size: '50%',collapsible:false },
-               { size: '50%' }]
-    });
-    $('#leftSplitter').jqxSplitter({
-      height: '100%',
-      width: '100%',
-      orientation: 'vertical',
-      showSplitBar: true,
-      panels: [{ size: '50%',collapsible:false },
-               { size: '50%'}]
-    });
-    $('#rightSplitter').jqxSplitter({
-      height: '100%',
-      width: '100%',
-      orientation: 'vertical',
-      showSplitBar: true,
-      panels: [{ size: '50%'},
-               { size: '50%'}]
-    });
-    return false;
-  }
-}
+  $("#mainSplitter").jqxSplitter({
+    height: "auto",
+    width: "100%",
+    orientation: "vertical",
+    showSplitBar: true,
+    panels: [{ size: '25%' },
+             { size: '75%',collapsible:false }]
+  });
+  $("#splitContainer").jqxSplitter({
+    height: "auto",
+    width: "100%",
+    orientation: "horizontal",
+    showSplitBar: true,
+    panels: [{ size: "50%",collapsible:false },
+             { size: "50%" }]
+  });
+  $("#leftSplitter").jqxSplitter({
+    width: "100%",
+    height: "100%",
+    orientation: "vertical",
+    showSplitBar: true,
+    panels: [{
+      size: "50%",
+      collapsible: false
+    }]
+  });
+  $("#rightSplitter").jqxSplitter({
+    width: "100%",
+    height: "100%",
+    orientation: "vertical",
+    showSplitBar: true,
+    panels: [{
+      size: "50%",
+      collapsible: false
+    }]
+  });
+};
+GridScheme();
+$("#mainSplitter").jqxSplitter({
+  height: "auto",
+  width: "100%",
+  orientation: "vertical",
+  showSplitBar: true,
+  panels: [{ size: '25%' },
+           { size: '75%',collapsible:false }]
+}).jqxSplitter("collapse");
 
 // Check Application Fields (For Download)
 $("[data-action=load]").on("change", function(evt) {
@@ -1813,8 +1886,6 @@ $("[data-action=load]").on("change", function(evt) {
           var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
               replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
           
-          closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-          var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
           var Img16 = c16[0].toDataURL("image/png");
           var Img32 = c32[0].toDataURL("image/png");
           var Img64 = c64[0].toDataURL("image/png");
@@ -1824,9 +1895,42 @@ $("[data-action=load]").on("change", function(evt) {
           appName.file("resources/default_app/icons/64.png", Img64.split('base64,')[1],{base64: true});
           appName.file("resources/default_app/icons/128.png", Img128.split('base64,')[1],{base64: true});
 
-          appName.file("resources/default_app/index.html", htmlContent);
-          appName.file("resources/default_app/css/index.css", cssEditor.getValue());
-          appName.file("resources/default_app/js/index.js", jsEditor.getValue());
+
+          // check if css editor has a value
+          if (cssEditor.getValue() !== "") {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
+      
+            appName.file("resources/default_app/css/index.css", cssEditor.getValue());
+            appName.file("resources/default_app/index.html", htmlContent);
+          }
+          // check if js editor has a value
+          if ( jsEditor.getValue() !== "") {
+            if (cssEditor.getValue() === "") {
+              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
+            } else {
+              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            }
+            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+      
+            appName.file("resources/default_app/js/index.js", jsEditor.getValue());
+            appName.file("resources/default_app/index.html", htmlContent);
+          }
+          // check if css and js editors have values
+          if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+      
+            appName.file("resources/default_app/css/index.css", cssEditor.getValue());
+            appName.file("resources/default_app/js/index.js", jsEditor.getValue());
+            appName.file("resources/default_app/index.html", htmlContent);
+          }
+          // check if markdown editor has a value
+          if ( mdEditor.getValue() !== "") {
+            appName.file("resources/default_app/README.md", mdEditor.getValue());
+          }
+          
+          
           appName.file("resources/default_app/package.json", "{\n  \"name\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"productName\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"version\": \"1.0.0\",\n  \"main\": \"default_app.js\",\n  \"license\": \"MIT\"\n}\n");
           eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"resources/default_app/libraries").replace(/zip.file/g,"appName.file") );
 
@@ -1862,9 +1966,43 @@ $("[data-action=load]").on("change", function(evt) {
           zip.file("data/content/app/icons/32.png", Img32.split('base64,')[1],{base64: true});
           zip.file("data/content/app/icons/64.png", Img64.split('base64,')[1],{base64: true});
           zip.file("data/content/app/icons/128.png", Img128.split('base64,')[1],{base64: true});
-          zip.file("data/content/app/css/index.css", cssEditor.getValue());
-          zip.file("data/content/app/js/index.js", jsEditor.getValue());
-          zip.file("data/content/app/index.html", htmlContent);
+
+
+          // check if css editor has a value
+          if (cssEditor.getValue() !== "") {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
+      
+            zip.file("data/content/app/css/index.css", cssEditor.getValue());
+            zip.file("data/content/app/index.html", htmlContent);
+          }
+          // check if js editor has a value
+          if ( jsEditor.getValue() !== "") {
+            if (zip.getValue() === "") {
+              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
+            } else {
+              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            }
+            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+      
+            zip.file("data/content/app/js/index.js", jsEditor.getValue());
+            zip.file("data/content/app/index.html", htmlContent);
+          }
+          // check if css and js editors have values
+          if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+      
+            zip.file("data/content/app/css/index.css", cssEditor.getValue());
+            zip.file("data/content/app/js/index.js", jsEditor.getValue());
+            zip.file("data/content/app/index.html", htmlContent);
+          }
+          // check if markdown editor has a value
+          if ( mdEditor.getValue() !== "") {
+            zip.file("resources/default_app/README.md", mdEditor.getValue());
+          }
+
+          
           eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/app/libraries") );
 
           zip.file("data/package.json", '{\n  "main"  : "content/index.html",\n  "name"  : "'+ $("[data-action=sitetitle]").val() +'",\n  "window": {\n    "toolbar"    : false,\n    "frame"      : false,\n    "transparent": true\n  }\n}');
@@ -1897,8 +2035,6 @@ $("[data-action=load]").on("change", function(evt) {
           var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
               replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
           
-          closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-          var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
           var Img16 = c16[0].toDataURL("image/png");
           var Img32 = c32[0].toDataURL("image/png");
           var Img64 = c64[0].toDataURL("image/png");
@@ -1907,9 +2043,43 @@ $("[data-action=load]").on("change", function(evt) {
           appName.file("resources/default_app/icons/32.png", Img32.split('base64,')[1],{base64: true});
           appName.file("resources/default_app/icons/64.png", Img64.split('base64,')[1],{base64: true});
           appName.file("resources/default_app/icons/128.png", Img128.split('base64,')[1],{base64: true});
-          appName.file("resources/default_app/css/index.css", cssEditor.getValue());
-          appName.file("resources/default_app/js/index.js", jsEditor.getValue());
-          appName.file("resources/default_app/index.html", htmlContent);
+
+          
+          // check if css editor has a value
+          if (cssEditor.getValue() !== "") {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
+      
+            appName.file("resources/default_app/css/index.css", cssEditor.getValue());
+            appName.file("resources/default_app/index.html", htmlContent);
+          }
+          // check if js editor has a value
+          if ( jsEditor.getValue() !== "") {
+            if (cssEditor.getValue() === "") {
+              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
+            } else {
+              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            }
+            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+      
+            appName.file("resources/default_app/js/index.js", jsEditor.getValue());
+            appName.file("resources/default_app/index.html", htmlContent);
+          }
+          // check if css and js editors have values
+          if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+      
+            appName.file("resources/default_app/css/index.css", cssEditor.getValue());
+            appName.file("resources/default_app/js/index.js", jsEditor.getValue());
+            appName.file("resources/default_app/index.html", htmlContent);
+          }
+          // check if markdown editor has a value
+          if ( mdEditor.getValue() !== "") {
+            appName.file("resources/default_app/README.md", mdEditor.getValue());
+          }
+          
+          
           appName.file("resources/default_app/package.json", "{\n  \"name\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"productName\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"version\": \"1.0.0\",\n  \"main\": \"default_app.js\",\n  \"license\": \"MIT\"\n}\n");
           eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"resources/default_app/libraries").replace(/zip.file/g,"appName.file") );
           
@@ -1945,10 +2115,40 @@ $("[data-action=load]").on("change", function(evt) {
             var zip = new JSZip(data);
 
             // Your Web App
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/index.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-            zip.file("app/css/index.css", cssEditor.getValue());
-            zip.file("app/js/index.js", jsEditor.getValue());
-            zip.file("app/index.html", htmlContent);
+            // check if css editor has a value
+            if (cssEditor.getValue() !== "") {
+              closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+              var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
+        
+              zip.file("app/css/index.css", cssEditor.getValue());
+              zip.file("app/index.html", htmlContent);
+            }
+            // check if js editor has a value
+            if ( jsEditor.getValue() !== "") {
+              if (cssEditor.getValue() === "") {
+                closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
+              } else {
+                closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+              }
+              var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+        
+              zip.file("app/js/index.js", jsEditor.getValue());
+              zip.file("app/index.html", htmlContent);
+            }
+            // check if css and js editors have values
+            if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
+              closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+              htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+        
+              zip.file("app/css/index.css", cssEditor.getValue());
+              zip.file("app/js/index.js", jsEditor.getValue());
+              zip.file("app/index.html", htmlContent);
+            }
+            // check if markdown editor has a value
+            if ( mdEditor.getValue() !== "") {
+              zip.file("README.md", mdEditor.getValue());
+            }
+            
             var Img16 = c16[0].toDataURL("image/png");
             var Img32 = c32[0].toDataURL("image/png");
             var Img64 = c64[0].toDataURL("image/png");
@@ -1993,7 +2193,9 @@ $("[data-action=load]").on("change", function(evt) {
 
 // Download as zip
 $("[data-action=download-zip]").on("click", function() {
-  $("[data-action=download]").trigger("click");
+  if ( $("[data-action=download]").hasClass("active") ) {
+    $("[data-action=download]").trigger("click");
+  }
 
   JSZipUtils.getBinaryContent("zips/font-awesome.zip", function(err, data) {
     if(err) {
@@ -2002,11 +2204,39 @@ $("[data-action=download-zip]").on("click", function() {
 
     var zip = new JSZip(data);
 
-    // Your Web App
-    var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + $("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\">\n" + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\">\n" + "    <link rel=\"stylesheet\" href=\"css/index.css\">\n" + closeRefs.getValue() + "\n" + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-    zip.file("css/index.css", cssEditor.getValue());
-    zip.file("js/index.js", jsEditor.getValue());
-    zip.file("index.html", htmlContent);
+    // check if css editor has a value
+    if (cssEditor.getValue() !== "") {
+      closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+      var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
+
+      zip.file("css/index.css", cssEditor.getValue());
+      zip.file("index.html", htmlContent);
+    }
+    // check if js editor has a value
+    if ( jsEditor.getValue() !== "") {
+      if (cssEditor.getValue() === "") {
+        closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
+      } else {
+        closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+      }
+      var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+
+      zip.file("js/index.js", jsEditor.getValue());
+      zip.file("index.html", htmlContent);
+    }
+    // check if css and js editors have values
+    if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
+      closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+      htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+
+      zip.file("css/index.css", cssEditor.getValue());
+      zip.file("js/index.js", jsEditor.getValue());
+      zip.file("index.html", htmlContent);
+    }
+    // check if markdown editor has a value
+    if ( mdEditor.getValue() !== "") {
+      zip.file("README.md", mdEditor.getValue());
+    }
     eval( $("[data-action=ziplibs]").val() );
     var content = zip.generate({type:"blob"});
     saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + ".zip");
@@ -2312,8 +2542,7 @@ $("[data-action=check]").on("change", function() {
     libsTextarea.val( libsTextarea.val().replace( libsValue, "") );
   }
   
-  clearTimeout(delay);
-  delay = setTimeout(updatePreview, 300);
+  setTimeout(updatePreview, 300);
 });
 
 // Save to the Cloud

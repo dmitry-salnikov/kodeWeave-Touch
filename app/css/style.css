@@ -9,6 +9,7 @@
 @import url("../libraries/alertify/themes/alertify.default.css");
 @import url("../jqwidgets/styles/jqx.base.css");
 @import url("../jqwidgets/styles/jqx.metro.css");
+@import url("../jqwidgets/styles/jqx.metrodark.css");
 @import url("../codemirror/inlet.css");
 @import url("polyui.css");
 /* @import url("http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900"); */
@@ -39,35 +40,18 @@ header {
   left: 0;
   right: 0;
   height: 50px;
-  background: #2882CA;
-/*
-  background: #2196F3;
-  background: #013BA6;
-*/
   padding: 10px 5px 0 5px;
 }
 header a {
   text-decoration: none;
   padding: 0 5px;
   margin: 0 5px;
-  color: #fff;
   font: 1.8em sans;
   opacity: .7;
   transition: opacity 0.3s;
 }
-header a:hover {
-  color: #fff;
-  opacity: 1;
-}
 a:active {
   outline: none;
-}
-.active {
-  color: #fff;
-  border-bottom: 2px solid #fff;
-/*
-  border-bottom: 2px solid #6AB5EC;
-*/
 }
 .open-demos, .grid-alignment {
   padding: 0 10px;
@@ -94,37 +78,22 @@ a:active {
 #charmenu {
   position: absolute;
   top: 0;
-  left: 210px;
-  right: 130px;
+  left: 204px;
+  right: 64px;
   height: 50px;
   padding: 4px 5px 50px 5px;
   white-space: nowrap;
   overflow-y: hidden;
   overflow-x: auto;
-  color: #797e83;
 }
 #charmenu a {
   display: inline-block;
   text-decoration: none;
   font: 1em arial, sans-serif;
-  color: #fff;
-  text-shadow: 0 0  0.25em #333;
-  border: 1px solid #2F6288;
-  border-radius: 1em;
   padding: 10px 14px;
   margin: 4px 0.25em;
-  background: #2E71A5;
   float: none;
   opacity: 1;
-}
-#charmenu a:hover {
-  background: #458FC8;
-  border: 1px solid #2D74AB;
-  opacity: 1;
-}
-#charmenu a:active {
-  background: #366589;
-  border: 1px solid #2F6288;
 }
 
 /* Dialogs */
@@ -132,12 +101,6 @@ a:active {
   padding: 0;
   text-align: center;
   font: 16px arial;
-}
-.dialog a, h3 {
-  color: #2882CA;
-}
-.dialog a:hover {
-  color: #2882CA;
 }
 .dialog .sp-cancel {
   font: 12px arial;
@@ -148,19 +111,13 @@ a:active {
   padding-top: 20px;
   margin: 20px;
 }
-.dialog .large, .dialog .heading {
-  color: #2882CA;
-}
 .dialog .large {
   font: 2em sans;
-}
-.dialog .heading {
-  font: 1.25em arial;
-  margin: 0 10px;
 }
 input[type=text].heading {
   text-align: center;
   margin-bottom: 10px;
+  background: transparent;
 }
 .dialog {
   position: absolute;
@@ -169,8 +126,6 @@ input[type=text].heading {
   padding: 5px;
   text-align: center;
   overflow: auto;
-  background: #fff;
-  border: 1px solid #000;
   z-index: 100;
 }
 .full-spectrum .sp-palette {
@@ -204,38 +159,30 @@ input[type=text].heading {
   text-transform: capitalize;
 }
 
-ul.ldd-menu {
+.ldd-menu {
   font-size: 13px;
   list-style: none;
   padding: 0;
 }
-ul.ldd-menu .ldd-submenu {
+.ldd-menu .ldd-submenu {
   font-size: 10px;
 }
-ul.ldd-menu a {
+.ldd-menu a {
   text-decoration: none;
 }
-ul.ldd-menu ul li a {
+.ldd-menu ul li a {
   font-family: Arial, serif;
   font-size: 11px;
   line-height: 20px;
-  color: #000;
   padding: 1px 3px;
   font-weight: normal;
 }
-ul.ldd-menu ul li a:hover{
-  background: #2882CA;
-  color: #fff;
-/*
-  background: #0080FF;
-  color: #fff;
-*/
+.ldd-menu ul li a:hover{
   font-weight: normal;
 }
-ul.ldd-menu ul {
+.ldd-menu ul {
   list-style: outside none none;
   float: left;
-  border-left: 1px solid #DDD;
   margin: 0;
   padding: 10px;
   width: 170px;
@@ -244,10 +191,8 @@ ul.ldd-menu ul {
   font-family: Georgia, serif;
   font-size: 18px;
   font-style: italic;
-  color: #0080FF;
 }
 .new {
-  color: #0CF;
   font-size: 10px;
 }
 
@@ -259,7 +204,6 @@ ul.ldd-menu ul {
   .addlibrary-tablets .ldd-menu ul {
     display: block!important;
     border-left: 0!important;
-    border-top: 1px solid #DDD!important;
     margin: 0!important;
     width: 100%!important;
   }
@@ -272,7 +216,6 @@ ul.ldd-menu ul {
   .adddemos-tablets .ldd-menu ul {
     display: block!important;
     border-left: 0!important;
-    border-top: 1px solid #DDD!important;
     margin: 0!important;
     width: 100%!important;
   }
@@ -281,13 +224,10 @@ ul.ldd-menu ul {
 /* Chrome Dialog */
 .dialog-bg {
   z-index: 9999!important;
-  background: rgb(255, 255, 255);
-  background: rgba(255, 255, 255, 0.25);
 }
 .chromeappwindow {
   padding: 2em;
   border-radius: 0.4em;
-  background: rgb(255, 255, 255);
 }
 .chromeappwindow input .chromeappwindow textarea {
   display: block;
@@ -299,9 +239,6 @@ ul.ldd-menu ul {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: #000;
-  background: rgba(34, 66, 108, 0.5);
-  color: #fff;
   text-align: center;
   overflow: auto;
   font-size: 16px;
@@ -319,7 +256,7 @@ textarea {
 }
 
 /* Editor */
-#splitContainer, .CodeMirror {
+#splitWrapper, .CodeMirror {
   z-index: 0;
 }
 .CodeMirror {
@@ -328,23 +265,27 @@ textarea {
   font-weight: normal;
   display: block;
   width: 100%;
-  background: transparent;
 }
 .CodeMirror, .CodeMirror-gutters {
   height: 100%!important;
 }
-#splitContainer {
+#splitWrapper {
   position: absolute;
   top: 60px;
   left: 0;
   right: 0;
   bottom: 0;
-  background: #fff;
+}
+#mainSplitter, #splitContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 .editor-container {
   width: 100%;
   height: 100%;
-  background: #fff;
 }
 .editor-container > * {
   width: 100%;
@@ -353,41 +294,21 @@ textarea {
   outline: 0;
   padding: 0;
   margin: 0;
-  background: transparent;
   resize: none;
 }
 .lint-error {
   font-family: arial; 
   font-size: 70%; 
-  background: #ffa; 
-  color: #a00; 
   padding: 2px 5px 3px; 
 }
 .lint-error-icon {
-  color: white; 
-  background-color: red; 
   font-weight: bold; 
   border-radius: 50%; 
   padding: 0 3px; 
   margin-right: 7px;
 }
 
-.html-editor, .css-editor, .js-editor {
-  background-size: auto 80%;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-.html-editor {
-  background-image: url("../assets/html5.svg");
-}
-.css-editor {
-  background-image: url("../assets/css3.svg");
-}
-.js-editor {
-  background-image: url("../assets/js.svg");
-}
-
-.fullscreen-html-toggle, .fullscreen-css-toggle, .fullscreen-js-toggle, .preview-mode-toggle {
+.fullscreen-html-toggle, .fullscreen-css-toggle, .fullscreen-js-toggle, .fullscreen-md-toggle, .preview-mode-toggle {
   display: block;
   position: absolute;
   right: 20px;
@@ -395,10 +316,10 @@ textarea {
   font-size: 1.75em;
   z-index: 0;
 }
-.fullscreen-html-toggle:hover, .fullscreen-css-toggle:hover, .fullscreen-js-toggle:hover, .preview-mode-toggle:hover {
+.fullscreen-html-toggle:hover, .fullscreen-css-toggle:hover, .fullscreen-js-toggle:hover, .fullscreen-md-toggle:hover, .preview-mode-toggle:hover {
   opacity: 1;
 }
-.fullscreen-html-toggle, .fullscreen-css-toggle, .fullscreen-js-toggle {
+.fullscreen-html-toggle, .fullscreen-css-toggle, .fullscreen-js-toggle, .fullscreen-md-toggle {
   top: 15px;
 }
 .preview-mode-toggle {
@@ -409,7 +330,10 @@ textarea {
 .onoffswitch,
 .theframeswitch {
   position: relative; width: 90px;
-  -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .offline-mode,
@@ -465,83 +389,4 @@ textarea {
 .offline-mode:checked + .onoffswitch-label .onoffswitch-switch,
 .frame-mode:checked + .frameswitch-label .frameswitch-switch {
   right: 0; 
-}
-
-
-
-
-
-
-
-
-
-/* Custom Checkbox Styling */
-/* Base for label styling */
-.check:not(:checked),
-.check:checked {
-  position: absolute;
-  left: -9999px;
-}
-.check:not(:checked) + label,
-.check:checked + label {
-  position: relative;
-  padding-left: 25px;
-  cursor: pointer;
-}
-/* checkbox aspect */
-.check:not(:checked) + label:before,
-.check:checked + label:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 3px;
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  border: 1px solid #aaa;
-  background: #f8f8f8;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,.3);
-}
-/* checked mark aspect */
-.check:not(:checked) + label:after,
-.check:checked + label:after {
-  content: '✔';
-  position: absolute;
-  top: -5px;
-  left: 5px;
-  font-size: 14px;
-  transition: all .2s;
-  color: #0080FF;
-}
-/* checked mark aspect changes */
-.check:not(:checked) + label:after {
-  opacity: 0;
-  transform: scale(0);
-}
-.check:checked + label:after {
-  opacity: 1;
-  transform: scale(1);
-}
-.check:disabled:checked + label:after {
-  color: #999;
-}
-.check:disabled + label {
-  color: #aaa;
-}
-/* disabled checkbox */
-.check:disabled:not(:checked) + label:before,
-.check:disabled:checked + label:before {
-  box-shadow: none;
-  border-color: #bbb;
-  background-color: #ddd;
-}
-
-/* accessibility */
-.check:checked:focus + label:before,
-.check:not(:checked):focus + label:before {
-  border: 1px dotted blue;
-}
-/* hover style just for information */
-label:hover:before {
-  border: 1px solid #4778d9!important;
 }
