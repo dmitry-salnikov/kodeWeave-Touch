@@ -1943,6 +1943,10 @@ $(window).load(function() {
     $("#loadmd").trigger("click");
   });
 
+  TogetherJS.hub.on("togetherjs.hello togetherjs.hello-back", function() {
+    TogetherJS.reinitialize();
+  });
+  
   if (window.File && window.FileReader && window.FileList && window.Blob) {
     var loadHTML = function(input) {
       var reader = new FileReader();
