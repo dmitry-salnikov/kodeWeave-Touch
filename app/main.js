@@ -365,3 +365,60 @@ setTimeout(markdownPreview, 300);
 setTimeout(updatePreview, 300);
 setTimeout(updateCSSHints, 300);
 setTimeout(updateJSHints, 300);
+
+function callCollabUpdate() {
+  var updatehtml = htmlEditor.getValue()
+  if (TogetherJS.running) {
+    TogetherJS.send({
+      type: "update-html",
+      output: updatehtml
+    });
+  }
+  var updatecss = cssEditor.getValue()
+  if (TogetherJS.running) {
+    TogetherJS.send({
+      type: "update-css",
+      output: updatecss
+    });
+  }
+  var updatejs = jsEditor.getValue()
+  if (TogetherJS.running) {
+    TogetherJS.send({
+      type: "update-js",
+      output: updatejs
+    });
+  }
+  var updatemd = mdEditor.getValue()
+  if (TogetherJS.running) {
+    TogetherJS.send({
+      type: "update-md",
+      output: updatemd
+    });
+  }
+}
+
+// Update TogetherJS
+TogetherJS.hub.on("update-html", function(msg) {
+  if (!msg.sameUrl) {
+      return;
+  }
+  htmlEditor.setValue(msg.output);
+});
+TogetherJS.hub.on("update-css", function(msg) {
+  if (!msg.sameUrl) {
+      return;
+  }
+  cssEditor.setValue(msg.output);
+});
+TogetherJS.hub.on("update-js", function(msg) {
+  if (!msg.sameUrl) {
+      return;
+  }
+  jsEditor.setValue(msg.output);
+});
+TogetherJS.hub.on("update-md", function(msg) {
+  if (!msg.sameUrl) {
+      return;
+  }
+  mdEditor.setValue(msg.output);
+});

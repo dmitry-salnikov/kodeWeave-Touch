@@ -370,6 +370,7 @@ var myarray = [],
         cssEditor.setValue("");
         jsEditor.setValue("var txt = document.querySelector(\"[data-action=input-list]\");\ndocument.querySelector(\"[data-action=alphabetize]\").addEventListener(\"click\", function() {\n  txt.value = (txt.value.split(\"\\n\").sort(caseInsensitive).join(\"\\n\"));\n\n  function caseInsensitive(a, b) {\n    return a.toLowerCase().localeCompare(b.toLowerCase());\n  }\n});\n");
         $(".open-demos, #polyui").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=applicator]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -378,6 +379,7 @@ var myarray = [],
         cssEditor.setValue("body {\n  margin: 0;\n}\n\n::-webkit-input-placeholder { /* WebKit browsers */\n  color: #555;\n}\n:-moz-placeholder { /* Mozilla Firefox 4 to 18 */\n  color: #555;\n}\n::-moz-placeholder { /* Mozilla Firefox 19+ */\n  color: #555;\n}\n:-ms-input-placeholder { /* Internet Explorer 10+ */\n  color: #555;\n}\n\n#addcode, #encode, #decode {\n  position: absolute;\n  font-family: monospace;\n  line-height: 1.4em;\n  font-size: 1em;\n  overflow: auto;\n  resize: none;\n  margin: 0;\n  padding: 0;\n  border: 0;\n}\n\n#encode, #decode {\n  left: 0;\n  width: 50%;\n  height: 50%;\n  background-color: #fff;\n}\n\n#addcode {\n  top: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  width: 50%;\n  height: 100%;\n  min-height: 1.4em;\n  border: 0;\n  border-radius: 0;\n  resize: none;\n  color: #ccc;\n  background-color: #111;\n}\n\n#encode {\n  top: 0;\n}\n\n#decode {\n  bottom: 0;\n}\n");
         jsEditor.setValue("document.querySelector(\"#addcode\").addEventListener(\"keyup\", function() {\n  document.querySelector(\"#encode\").textContent = this.value;\n  document.querySelector(\"#encode\").textContent = document.querySelector(\"#encode\").innerHTML;\n  document.querySelector(\"#decode\").innerHTML = this.value;\n  return false;\n});\n\ndocument.querySelector(\"#encode\").addEventListener(\"click\", function() {\n  this.select();\n  return false;\n});\n");
         $(".open-demos").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=catchthesquare]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -386,6 +388,7 @@ var myarray = [],
         cssEditor.setValue("body {\n  background-color: rgb(0, 14, 40);\n  font-family: arial;\n  color: rgb(255, 255, 255);\n  padding: 0;\n  margin: 0;\n}\n\n.catch {\n  top: 0;\n  left: 1px;\n  padding: 1em;\n  font-family: courier;\n  font-size: 23px;\n  font-weight: bold;\n  color: rgb(188, 255, 193);\n}");
         jsEditor.setValue("var count = 0;\n$(\".catch\").empty();\n\n(function makeDiv(){\n  var divsize = ((Math.random() * 100)  +  50).toFixed();\n  var color = \"#\" +  Math.round(0xffffff * Math.random()).toString(16);\n  $newdiv = $(\"<div class=\\\"grab\\\">\").css({\n    \"width\": divsize + \"px\",\n    \"height\": divsize + \"px\",\n    \"background-color\":  color\n  });\n\n  var posx = (Math.random() * ($(document).width() - divsize)).toFixed();\n  var posy = (Math.random() * ($(document).height() - divsize)).toFixed();\n\n  $newdiv.css({\n    \"position\": \"absolute\",\n    \"left\": posx + \"px\",\n    \"top\": posy + \"px\",\n    \"display\": \"none\"\n  }).appendTo(\"body\").fadeIn(100).delay(300).fadeOut(200, function(){\n    $(this).remove();\n    makeDiv(); \n    $(\".grab\").bind(\"click\", function() { \n      count++;\n      $(\".catch\").html(count);\n    });\n  }); \n})();");
         $(".open-demos, #jquery").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=charactermap]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -394,6 +397,7 @@ var myarray = [],
         cssEditor.setValue("html, body {\n  height: 100%;\n}\n\niframe {\n  width: 100%;\n  height: 100%;\n  border: 0;\n}");
         jsEditor.setValue("");
         $(".open-demos").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=codeeditor]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -402,6 +406,7 @@ var myarray = [],
         cssEditor.setValue("@import url(\"http://codemirror.net/lib/codemirror.css\");\n@import url(\"http://codemirror.net/addon/fold/foldgutter.css\");\n\n.CodeMirror {\n  float: left;\n  width: 50%;\n  border: 1px solid black;\n}\n\niframe {\n  width: 49%;\n  float: left;\n  height: 300px;\n  border: 1px solid black;\n  border-left: 0;\n}");
         jsEditor.setValue("var delay;\n\n// Initialize CodeMirror editor\nvar editor = CodeMirror.fromTextArea(document.getElementById(\"code\"), {\n  mode: \"text/html\",\n  tabMode: \"indent\",\n  styleActiveLine: true,\n  lineNumbers: true,\n  lineWrapping: true,\n  autoCloseTags: true,\n  foldGutter: true,\n  dragDrop : true,\n  gutters: [\"CodeMirror-linenumbers\", \"CodeMirror-foldgutter\"]\n});\n\n// Live preview\neditor.on(\"change\", function() {\n  clearTimeout(delay);\n  delay = setTimeout(updatePreview, 300);\n});\n\nfunction updatePreview() {\n  var previewFrame = document.getElementById(\"preview\");\n  var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;\n  preview.open();\n  preview.write(editor.getValue());\n  preview.close();\n}\nsetTimeout(updatePreview, 300);\n");
         $(".open-demos").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=convertforvalues]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -410,6 +415,7 @@ var myarray = [],
         cssEditor.setValue("body {\n  margin: 0;\n  background: #333;\n}\n\n.editor, .preview {\n  position: absolute;\n  width: 50%;\n  height: 100%;\n  padding: 0;\n  font-family: monospace;\n  min-height: 1.4em;\n  line-height: 1.4em;\n  font-size: 1em;\n  border: 0;\n  border-radius: 0;\n  resize: none;\n}\n\n.editor {\n  left: 0;\n  color: #0b0;\n  background-color: #000;\n}\n\n::-webkit-input-placeholder { /* WebKit browsers */\n  color: #0f6;\n}\n:-moz-placeholder { /* Mozilla Firefox 4 to 18 */\n  color: #0f6;\n}\n::-moz-placeholder { /* Mozilla Firefox 19+ */\n  color: #0f6;\n}\n:-ms-input-placeholder { /* Internet Explorer 10+ */\n  color: #0f6;\n}\n\n.preview {\n  right: 0;\n  background-color: #fff;\n}\n");
         jsEditor.setValue("$(document).ready(function() {\n  var editor = $(\".editor\"),\n      preview = $(\".preview\");\n  \n  // Remove new line and insert new line showing the text in value\n  editor.keyup(function() {\n    preview.val( this.value.replace(/\"/g,'\\\\\"').replace(/\\n/g,\"\\\\n\") );\n  }).click(function() {\n    this.select();\n  });\n  \n  // Easily Select Converted Code\n  preview.click(function() {\n    this.select();\n  });\n});\n");
         $(".open-demos, #normalize, #jquery").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=dateclock]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -418,6 +424,7 @@ var myarray = [],
         cssEditor.setValue(".date {\n  font-family: arial;\n}\n\n.fr {\n  float: right;\n}\n\n.clock {\n  font: bold 1.5em sans;\n  text-align: center;\n}");
         jsEditor.setValue("// Define a function to display the current time\nfunction displayTime() {\n  var now = new Date();\n  document.querySelector('[data-action=clock]').innerHTML =  now.toLocaleTimeString();\n  setTimeout(displayTime, 1000);\n}\ndisplayTime();\n\n// Date\nvar currentTime = new Date();\nvar month = currentTime.getMonth() + 1;\nvar date = currentTime.getDate();\nvar year = currentTime.getFullYear();\ndocument.querySelector('[data-action=leftdate]').innerHTML = month + '/' + date + '/' + year;\n\nvar today = new Date();\nif (year < 1000)\n  year += 1900;\nvar day = today.getDay();\nvar monthname = today.getMonth();\nif (date < 10)\n  date = '0' + date;\nvar dayarray = new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');\nvar montharray = new Array('January','February','March','April','May','June','July','August','September','October','November','December');\ndocument.querySelector('[data-action=rightdate]').innerHTML = dayarray[day] + ', ' + montharray[monthname] + ' ' + date + ', ' + year;\n");
         $(".open-demos").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=detectorientation]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -426,6 +433,7 @@ var myarray = [],
         cssEditor.setValue("body {\n  font: 26px arial;\n}\n.portrait, .landscape, .foot {\n  text-align: center;\n}\n.foot {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  padding: 26px;\n}\n");
         jsEditor.setValue("var detectOrientation = function() {\n  if ( window.innerWidth > window.innerHeight ) {\n    document.querySelector(\".landscape\").style.display = \"block\";\n    document.querySelector(\".portrait\").style.display = \"none\";\n  } else if ( window.innerWidth < window.innerHeight ) {\n    document.querySelector(\".landscape\").style.display = \"none\";\n    document.querySelector(\".portrait\").style.display = \"block\";\n  }\n  document.querySelector(\".foot\").innerHTML =  window.innerWidth + \"px, \" + window.innerHeight + \"px\";\n};\n\nwindow.addEventListener(\"resize\", function() {\n  detectOrientation();\n});\n\ndetectOrientation();\n");
         $(".open-demos").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=osdisplay]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -434,6 +442,7 @@ var myarray = [],
         cssEditor.setValue("");
         jsEditor.setValue("document.addEventListener(\"DOMContentLoaded\", function() {\n  document.querySelector(\"[data-output=os]\").innerHTML = \"<strong>Operating System</strong>: \" + navigator.platform;\n});");
         $(".open-demos").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=markdowneditor]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -442,6 +451,7 @@ var myarray = [],
         cssEditor.setValue("* {\n  box-sizing: border-box;\n}\n\nbody {\n  line-height: 1.4;\n}\n\n.editor-and-preview-container {\n  padding: 1em;\n  width: 100%;\n  height: 100%;\n}\n\n.editor-container, .preview-container {\n  display: inline;\n  overflow: hidden;\n  float: left;\n  width: 50%;\n  height: 100%;\n}\n\n#editor {\n  display: inline-block;\n  width: 100%;\n  height: 500px;\n  resize: none;\n  padding: 1em;\n  line-height: 1.5;\n}\n#editor:focus {\n  outline: none;\n}\n\n#preview {\n  width: 100%;\n  height: 500px;\n  border: 1px green solid;\n  padding: 0 1em;\n  overflow: auto;\n}");
         jsEditor.setValue('var mdconverter = new Showdown.converter();\nvar editor = $("#editor");\nvar preview = $("#preview");\nfunction updatePreview() {\n  preview.html(mdconverter.makeHtml(editor.val()));\n}\nupdatePreview();\neditor.on("keyup", function () {\n  updatePreview();\n});');
         $(".open-demos, #normalize, #jquery, #showdown").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=keylogger]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -450,6 +460,7 @@ var myarray = [],
         cssEditor.setValue("html, body {\n  height: 100%;\n}\n\nbody {\n  padding: 1em 0;\n  background: #0072ff;\n}\n\n.form-control {\n  border-radius: 5px;\n  box-shadow: 0 0 25px #00162d;\n}");
         jsEditor.setValue("$(\"[data-action=input]\").keydown(function(e) {\n  this.value = e.which;\n  e.preventDefault();\n});");
         $(".open-demos, #jquery, #bootstrap").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=newdocument]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -458,6 +469,7 @@ var myarray = [],
         cssEditor.setValue("");
         jsEditor.setValue("");
         $(".open-demos").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=packagezipfiles]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -466,6 +478,7 @@ var myarray = [],
         cssEditor.setValue("");
         jsEditor.setValue("$(\".download\").click(function() {\n  eval( $(\"#jszipdemo\").val() );\n});\n");
         $(".open-demos, #polyui, #jquery, #jszip").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=passwordgen]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -474,6 +487,7 @@ var myarray = [],
         cssEditor.setValue("html, body {\n  height: 100%;\n}\n\nbody {\n  padding: 1em 0;\n  background: #0072ff;\n}\n\n.input-group {\n  box-shadow: 0 0 25px #00162d;\n}\n\n.input-group, .form-control, .input-group-btn, .btn {\n  border-radius: 5px;\n}");
         jsEditor.setValue("function PasswordGen() {\n  var char = \"0123456789abcdefghijklmnopqrstuvwxyz\";\n    var fullchar = \"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    var genHash = \"\";\n    var i;\n    \n    for (i = 0; i < 8; i++) {\n      var rnum = Math.floor(Math.random() * char.length);\n      genHash += char.substring(rnum, rnum + 1);\n    }\n    \n    $(\"[data-action=genoutput]\").val(genHash);\n}\n\n$(\"[data-action=gen]\").click(function() {\n  PasswordGen();\n});\n\nPasswordGen();\n");
         $(".open-demos, #jquery, #bootstrap").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=pdfembed]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -482,6 +496,7 @@ var myarray = [],
         cssEditor.setValue("html, body {\n  height: 100%;\n  overflow: hidden;\n}");
         jsEditor.setValue("");
         $(".open-demos, #normalize").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=pictureviewer]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -490,6 +505,7 @@ var myarray = [],
         cssEditor.setValue("#holder {\n  border: 10px dashed #ccc;\n  margin: 20px auto;\n  text-align: center;\n}\n#holder.hover {\n  border: 10px dashed #333;\n}\n\n.hide {\n  display: none;\n}\n.fill {\n  width: 100%;\n}");
         jsEditor.setValue("var canvas = $(\".logo\"),\n    ctx = canvas[0].getContext(\"2d\"),\n    holder = document.getElementById(\"holder\"),\n    state = document.getElementById(\"status\");\n\nif (typeof window.FileReader === \"undefined\") {\n  state.className = \"fail\";\n} else {\n  state.className = \"success\";\n  state.innerHTML = \"File API & FileReader available\";\n}\n\nfunction displayPreview(file) {\n  var reader = new FileReader();\n\n  reader.onload = function(e) {\n    var img = new Image();\n    img.src = e.target.result;\n    img.onload = function() {\n      // x, y, width, height\n      ctx.clearRect(0, 0, 128, 128);\n      ctx.drawImage(img, 0, 0, 128, 128);\n    };\n  };\n  reader.readAsDataURL(file);\n}\n\n$(\"[data-action=call]\").click(function() {\n  $(\"[data-action=load]\").trigger(\"click\");\n});\n\n$(\"[data-action=load]\").change(function(e) {\n  var file = e.target.files[0];\n  displayPreview(file);\n  $(\".check\").removeClass(\"hide\");\n});\n\n// Drag and drop image load\nholder.ondragover = function () {\n  this.className = \"hover\";\n  return false;\n};\nholder.ondragend = function () {\n  this.className = \"\";\n  return false;\n};\nholder.ondrop = function(e) {\n  this.className = \"\";\n  e.preventDefault();\n  var file = e.dataTransfer.files[0];\n  displayPreview(file);\n  $(\".check\").removeClass(\"hide\");\n};\n");
         $(".open-demos, #jquery").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=polyui]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -498,6 +514,7 @@ var myarray = [],
         cssEditor.setValue("");
         jsEditor.setValue("// Toggle Menu for Phones\n$(\"#toggle\").click(function() {\n  $(this).next(\".nav\").toggleClass(\"is-collapsed-mobile\");\n});\n\n// Handles Navigation Style Classes\n$(\".nav__item\").on(\"click\", function() {\n  $(this).parent().find(\"li\").removeClass(\"nav__item--current\").addClass(\"nav__item\");\n  $(this).addClass(\"nav__item--current\").removeClass(\"nav__item\");\n});");
         $(".open-demos, #polyui, #jquery").trigger("click");
+        callCollabUpdate();
       });
       
 
@@ -508,6 +525,7 @@ var myarray = [],
         cssEditor.setValue("body {\n  font-family: arial, helvetica, sans-serif;\n  font-size: 12px;\n}\n\n.fadelinks {\n  position: relative;\n  height: 332px;\n  width: 500px;\n}\n\n.fadelinks > a {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n}");
         jsEditor.setValue("$(document).ready(function(){\n  $('.fadelinks > :gt(0)').hide();\n  setInterval(function() {\n    $('.fadelinks > :first-child').fadeOut().next().fadeIn().end().appendTo('.fadelinks');\n  }, 3000);\n});");
         $(".open-demos, #normalize, #jquery").trigger("click");
+        callCollabUpdate();
       });
       $("[data-action=splitter]").on("click", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -516,6 +534,7 @@ var myarray = [],
         cssEditor.setValue("@import url(\"http://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/styles/jqx.base.css\");");
         jsEditor.setValue("$(document).ready(function () {\n  $(\"#mainSplitter\").jqxSplitter({\n    width: 850,\n    height: 850,\n    orientation: \"horizontal\",\n    panels: [{\n      size: 300,\n      collapsible: false\n    }]\n  });\n  $(\"#firstNested\").jqxSplitter({\n    width: \"100%\",\n    height: \"100%\",\n    orientation: \"vertical\",\n    panels: [{\n      size: 300,\n      collapsible: false\n    }]\n  });\n  $(\"#secondNested\").jqxSplitter({\n    width: \"100%\", \n    height: \"100%\", \n    orientation: \"horizontal\",\n    panels: [{ size: 150 }]\n  });\n  $(\"#thirdNested\").jqxSplitter({\n    width: \"100%\",\n    height: \"100%\", \n    orientation: \"horizontal\",\n    panels: [{\n      size: 150,\n      collapsible: false\n    }]\n  });\n});\n");
         $(".open-demos, #jquery").trigger("click");
+        callCollabUpdate();
       });
     },
     charGeneration = function() {
