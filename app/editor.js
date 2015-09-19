@@ -1898,12 +1898,18 @@ $(window).load(function() {
   $("#htmlEditor, #cssEditor, #jsEditor, #mdEditor").on("mouseup touchend", function() {
     if ( $(this).attr("id") === "htmlEditor" ) {
       activeEditor.val("htmlEditor");
+      setTimeout(updatePreview, 300);
     } else if ( $(this).attr("id") === "cssEditor" ) {
       activeEditor.val("cssEditor");
+      setTimeout(updatePreview, 300);
+      setTimeout(updateCSSHints, 300);
     } else if ( $(this).attr("id") === "jsEditor" ) {
       activeEditor.val("jsEditor");
+      setTimeout(updatePreview, 300);
+      setTimeout(updateJSHints, 300);
     } else if ( $(this).attr("id") === "mdEditor" ) {
       activeEditor.val("mdEditor");
+      setTimeout(markdownPreview, 300);
     }
     
     if ( $(".active").is(":visible") ) {
