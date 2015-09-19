@@ -117,6 +117,23 @@ var applyLowercase = function() {
     jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
     jsEditor.replaceRange(selected_text, jsEditor.getCursor());
     jsEditor.focus();
+  } else if ( activeEditor.val() === "mdEditor" ) {
+    var selected_text = mdEditor.getSelection().toLowerCase();  // Need to grab the Active Selection
+
+    mdEditor.replaceSelection("", mdEditor.getCursor());
+    mdEditor.replaceRange("", mdEditor.getCursor());
+    mdEditor.focus();
+    var str = "";
+    var mynum = str.length;
+    var start_cursor = mdEditor.getCursor();  // Need to get the cursor position
+    console.log(start_cursor);  // Cursor position
+    var cursorLine = start_cursor.line;
+    var cursorCh = start_cursor.ch;
+
+    // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+    mdEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+    mdEditor.replaceRange(selected_text, mdEditor.getCursor());
+    mdEditor.focus();
   }
 };
 var applyUppercase = function() {
@@ -171,6 +188,23 @@ var applyUppercase = function() {
     jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
     jsEditor.replaceRange(selected_text, jsEditor.getCursor());
     jsEditor.focus();
+  } else if ( activeEditor.val() === "mdEditor" ) {
+    var selected_text = mdEditor.getSelection().toUpperCase();  // Need to grab the Active Selection
+
+    mdEditor.replaceSelection("", mdEditor.getCursor());
+    mdEditor.replaceRange("", mdEditor.getCursor());
+    mdEditor.focus();
+    var str = "";
+    var mynum = str.length;
+    var start_cursor = mdEditor.getCursor();  // Need to get the cursor position
+    console.log(start_cursor);  // Cursor position
+    var cursorLine = start_cursor.line;
+    var cursorCh = start_cursor.ch;
+
+    // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+    mdEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+    mdEditor.replaceRange(selected_text, mdEditor.getCursor());
+    mdEditor.focus();
   }
 };
 
@@ -232,7 +266,7 @@ var jsEditor = CodeMirror(document.getElementById("jsEditor"), {
     "Ctrl-\\": function(){ applyUppercase(); }
   }
 });
-var mdEditor = CodeMirror.fromTextArea(document.getElementById("mdEditor"), {
+var mdEditor = CodeMirror(document.getElementById("mdEditor"), {
   mode: "text/x-markdown",
   tabMode: "indent",
   styleActiveLine: true,
@@ -245,7 +279,8 @@ var mdEditor = CodeMirror.fromTextArea(document.getElementById("mdEditor"), {
   extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
     "Ctrl-'": function(){ applyLowercase(); },
     "Ctrl-\\": function(){ applyUppercase(); }
-  }
+  },
+  value: "Welcome!\n===================\n\n![Placer text](http://kodeweave.sourceforge.net/logo.png)  \n\nHey! I'm your placement Markdown text.\n\n----------\n\n\nTypography\n-------------\n\n[kodeWeave Link](http://kodeweave.sourceforge.net/)  \n**bold text**  \n*italic text*  \n\n### Blockquote:\n\n> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n### Bullet List\n\n - Green\n - Eggs\n - and\n - Ham\n\n### Numbered List\n\n 1. Green\n 2. Eggs\n 3. and\n 4. Ham"
 });
 Inlet(jsEditor);
 // emmetCodeMirror(jsEditor);

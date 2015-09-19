@@ -87,24 +87,6 @@ var myarray = [],
       });
     },
     initGenerators = function() {
-      // Text generator (Lorem Ipsum)
-      $("[data-action=ipsum]").click(function() {
-        if ( activeEditor.val() === "htmlEditor" ) {
-          htmlEditor.replaceSelection("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-          $("[data-action=tools].active").trigger("click");
-          htmlEditor.focus();
-        } else if ( activeEditor.val() === "cssEditor" ) {
-          cssEditor.replaceSelection("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-          $("[data-action=tools].active").trigger("click");
-          cssEditor.focus();
-          // alertify.error("Lorem ipsum is not allowed in cssEditor.");
-        } else if ( activeEditor.val() === "jsEditor" ) {
-          jsEditor.replaceSelection("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-          $("[data-action=tools].active").trigger("click");
-          jsEditor.focus();
-        }
-      });
-
       // Tidy Up/Beautify Code
       $("[data-action=tidy]").click(function() {
         // if ( activeEditor.val() === "htmlEditor" ) {
@@ -149,6 +131,43 @@ var myarray = [],
 
       $("[data-action=uppercase]").click(function() {
         applyUppercase();
+        $("[data-action=tools].active").trigger("click");
+      });
+
+      $("[data-action=search]").click(function() {
+        if ( activeEditor.val() === "htmlEditor" ) {
+          htmlEditor.execCommand("find");
+        } else if ( activeEditor.val() === "cssEditor" ) {
+          cssEditor.execCommand("find");
+        } else if ( activeEditor.val() === "jsEditor" ) {
+          jsEditor.execCommand("find");
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.execCommand("find");
+        }
+        $("[data-action=tools].active").trigger("click");
+      });
+      $("[data-action=replace]").click(function() {
+        if ( activeEditor.val() === "htmlEditor" ) {
+          htmlEditor.execCommand("replace");
+        } else if ( activeEditor.val() === "cssEditor" ) {
+          cssEditor.execCommand("replace");
+        } else if ( activeEditor.val() === "jsEditor" ) {
+          jsEditor.execCommand("replace");
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.execCommand("replace");
+        }
+        $("[data-action=tools].active").trigger("click");
+      });
+      $("[data-action=replaceall]").click(function() {
+        if ( activeEditor.val() === "htmlEditor" ) {
+          htmlEditor.execCommand("replaceAll");
+        } else if ( activeEditor.val() === "cssEditor" ) {
+          cssEditor.execCommand("replaceAll");
+        } else if ( activeEditor.val() === "jsEditor" ) {
+          jsEditor.execCommand("replaceAll");
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.execCommand("replaceAll");
+        }
         $("[data-action=tools].active").trigger("click");
       });
     },
@@ -507,6 +526,8 @@ var myarray = [],
           cssEditor.undo();
         } else if ( activeEditor.val() === "jsEditor" ) {
           jsEditor.undo();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.undo();
         }
       });
       $("#redo").on("click", function() {
@@ -516,18 +537,38 @@ var myarray = [],
           cssEditor.redo();
         } else if ( activeEditor.val() === "jsEditor" ) {
           jsEditor.redo();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.redo();
         }
       });
       $("#tabindent").on("click", function() {
         if ( activeEditor.val() === "htmlEditor" ) {
-          htmlEditor.replaceRange("  ", htmlEditor.getCursor());
+          htmlEditor.execCommand("indentMore");
           htmlEditor.focus();
         } else if ( activeEditor.val() === "cssEditor" ) {
-          cssEditor.replaceRange("  ", cssEditor.getCursor());
+          cssEditor.execCommand("indentMore");
           cssEditor.focus();
         } else if ( activeEditor.val() === "jsEditor" ) {
-          jsEditor.replaceRange("  ", jsEditor.getCursor());
+          jsEditor.execCommand("indentMore");
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.execCommand("indentMore");
+          mdEditor.focus();
+        }
+      });
+      $("#taboutdent").on("click", function() {
+        if ( activeEditor.val() === "htmlEditor" ) {
+          htmlEditor.execCommand("indentLess");
+          htmlEditor.focus();
+        } else if ( activeEditor.val() === "cssEditor" ) {
+          cssEditor.execCommand("indentLess");
+          cssEditor.focus();
+        } else if ( activeEditor.val() === "jsEditor" ) {
+          jsEditor.execCommand("indentLess");
+          jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.execCommand("indentLess");
+          mdEditor.focus();
         }
       });
       $("#charsym1").on("click", function() {
@@ -585,6 +626,24 @@ var myarray = [],
           jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
           jsEditor.replaceRange(selected_text, jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange("<>", mdEditor.getCursor());
+          mdEditor.focus();
+          var str = ">";
+          var mynum = str.length;
+          var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
+          console.log(start_cursor);  // Cursor position
+          var cursorLine = start_cursor.line;
+          var cursorCh = start_cursor.ch;
+
+          // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+          mdEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+          mdEditor.replaceRange(selected_text, mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym2").on("click", function() {
@@ -595,7 +654,7 @@ var myarray = [],
           htmlEditor.replaceSelection("", htmlEditor.getCursor());
           htmlEditor.replaceRange("{}", htmlEditor.getCursor());
           htmlEditor.focus();
-          var str = "]";
+          var str = "}";
           var mynum = str.length;
           var start_cursor = htmlEditor.getCursor();  // Need to get the cursor position
           console.log(start_cursor);  // Cursor position
@@ -613,7 +672,7 @@ var myarray = [],
           cssEditor.replaceSelection("", cssEditor.getCursor());
           cssEditor.replaceRange("{}", cssEditor.getCursor());
           cssEditor.focus();
-          var str = "]";
+          var str = "}";
           var mynum = str.length;
           var start_cursor = cssEditor.getCursor();  // Need to get the cursor position
           console.log(start_cursor);  // Cursor position
@@ -631,7 +690,7 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange("{}", jsEditor.getCursor());
           jsEditor.focus();
-          var str = "]";
+          var str = "}";
           var mynum = str.length;
           var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
           console.log(start_cursor);  // Cursor position
@@ -642,6 +701,24 @@ var myarray = [],
           jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
           jsEditor.replaceRange(selected_text, jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange("{}", mdEditor.getCursor());
+          mdEditor.focus();
+          var str = "}";
+          var mynum = str.length;
+          var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
+          console.log(start_cursor);  // Cursor position
+          var cursorLine = start_cursor.line;
+          var cursorCh = start_cursor.ch;
+
+          // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+          mdEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+          mdEditor.replaceRange(selected_text, mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym3").on("click", function() {
@@ -699,6 +776,24 @@ var myarray = [],
           jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
           jsEditor.replaceRange(selected_text, jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange('""', mdEditor.getCursor());
+          mdEditor.focus();
+          var str = '"';
+          var mynum = str.length;
+          var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
+          console.log(start_cursor);  // Cursor position
+          var cursorLine = start_cursor.line;
+          var cursorCh = start_cursor.ch;
+
+          // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+          mdEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+          mdEditor.replaceRange(selected_text, mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym4").on("click", function() {
@@ -756,6 +851,24 @@ var myarray = [],
           jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
           jsEditor.replaceRange(selected_text, jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange("''", mdEditor.getCursor());
+          mdEditor.focus();
+          var str = "'>'";
+          var mynum = str.length;
+          var start_cursor = jsEditor.getCursor();  // Need to get the cursor position
+          console.log(start_cursor);  // Cursor position
+          var cursorLine = start_cursor.line;
+          var cursorCh = start_cursor.ch;
+
+          // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+          mdEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+          mdEditor.replaceRange(selected_text, mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym5").on("click", function() {
@@ -780,6 +893,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "+", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "+", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym6").on("click", function() {
@@ -804,6 +924,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "-", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "-", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym7").on("click", function() {
@@ -828,6 +955,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + ".", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + ".", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym8").on("click", function() {
@@ -885,6 +1019,24 @@ var myarray = [],
           jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
           jsEditor.replaceRange(selected_text, jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange("()", mdEditor.getCursor());
+          mdEditor.focus();
+          var str = ")";
+          var mynum = str.length;
+          var start_cursor = mdEditor.getCursor();  // Need to get the cursor position
+          console.log(start_cursor);  // Cursor position
+          var cursorLine = start_cursor.line;
+          var cursorCh = start_cursor.ch;
+
+          // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+          mdEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+          mdEditor.replaceRange(selected_text, mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym9").on("click", function() {
@@ -909,6 +1061,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + ":", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + ":", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym10").on("click", function() {
@@ -933,6 +1092,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + ";", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + ";", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym11").on("click", function() {
@@ -957,6 +1123,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "_", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "_", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym12").on("click", function() {
@@ -1014,6 +1187,24 @@ var myarray = [],
           jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
           jsEditor.replaceRange(selected_text, jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange("[]", mdEditor.getCursor());
+          mdEditor.focus();
+          var str = "]";
+          var mynum = str.length;
+          var start_cursor = mdEditor.getCursor();  // Need to get the cursor position
+          console.log(start_cursor);  // Cursor position
+          var cursorLine = start_cursor.line;
+          var cursorCh = start_cursor.ch;
+
+          // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+          mdEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+          mdEditor.replaceRange(selected_text, mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym13").on("click", function() {
@@ -1038,6 +1229,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "|", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "|", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym14").on("click", function() {
@@ -1062,6 +1260,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "/", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "/", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym15").on("click", function() {
@@ -1086,6 +1291,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "\\", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "\\", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym16").on("click", function() {
@@ -1110,6 +1322,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "?", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "?", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym17").on("click", function() {
@@ -1134,6 +1353,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "*", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "*", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym18").on("click", function() {
@@ -1153,6 +1379,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "\\n", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "\\n", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym19").on("click", function() {
@@ -1177,6 +1410,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "&", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "&", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym20").on("click", function() {
@@ -1201,6 +1441,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "%", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "%", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym21").on("click", function() {
@@ -1220,6 +1467,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "$", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "$", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym22").on("click", function() {
@@ -1239,6 +1493,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "&cent;", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "&cent;", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym23").on("click", function() {
@@ -1258,6 +1519,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "&pound;", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "&pound;", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym24").on("click", function() {
@@ -1277,6 +1545,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "&yen;", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "&yen;", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym25").on("click", function() {
@@ -1296,6 +1571,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "&euro;", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "&euro;", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym26").on("click", function() {
@@ -1320,6 +1602,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "@", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "@", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym27").on("click", function() {
@@ -1344,6 +1633,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "=", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "=", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym28").on("click", function() {
@@ -1368,6 +1664,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "#", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "#", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym29").on("click", function() {
@@ -1392,6 +1695,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + ",", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + ",", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym30").on("click", function() {
@@ -1416,6 +1726,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "!", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "!", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym31").on("click", function() {
@@ -1440,6 +1757,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "^", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "^", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym32").on("click", function() {
@@ -1459,6 +1783,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "&copy;", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "&copy;", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym33").on("click", function() {
@@ -1478,6 +1809,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "&reg;", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "&reg;", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#charsym34").on("click", function() {
@@ -1497,6 +1835,13 @@ var myarray = [],
           jsEditor.replaceSelection("", jsEditor.getCursor());
           jsEditor.replaceRange(selected_text + "&trade;", jsEditor.getCursor());
           jsEditor.focus();
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          var selected_text = mdEditor.getSelection();  // Need to grab the Active Selection
+          console.log(selected_text);  // Active Selection
+
+          mdEditor.replaceSelection("", mdEditor.getCursor());
+          mdEditor.replaceRange(selected_text + "&trade;", mdEditor.getCursor());
+          mdEditor.focus();
         }
       });
       $("#function").on("click", function() {
@@ -1526,6 +1871,18 @@ var myarray = [],
 
           // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
           jsEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.replaceRange("function() {}", mdEditor.getCursor());
+          mdEditor.focus();
+          var str = "}";
+          var mynum = str.length;
+          var start_cursor = mdEditor.getCursor();  // Need to get the cursor position
+          console.log(start_cursor);  // Cursor position
+          var cursorLine = start_cursor.line;
+          var cursorCh = start_cursor.ch;
+
+          // Code to move cursor back [x] amount of spaces. [x] is the data-val value.
+          mdEditor.setCursor({line: cursorLine , ch : cursorCh -mynum });
         }
       });
     };
@@ -1538,13 +1895,19 @@ $(window).load(function() {
   });
 
   // Select active editor when clicked/touched
-  $("#htmlEditor, #cssEditor, #jsEditor").on("mouseup touchend", function() {
+  $("#htmlEditor, #cssEditor, #jsEditor, #mdEditor").on("mouseup touchend", function() {
     if ( $(this).attr("id") === "htmlEditor" ) {
       activeEditor.val("htmlEditor");
     } else if ( $(this).attr("id") === "cssEditor" ) {
       activeEditor.val("cssEditor");
     } else if ( $(this).attr("id") === "jsEditor" ) {
       activeEditor.val("jsEditor");
+    } else if ( $(this).attr("id") === "mdEditor" ) {
+      activeEditor.val("mdEditor");
+    }
+    
+    if ( $(".active").is(":visible") ) {
+      $(".active").trigger("click");
     }
   });
 
@@ -1557,6 +1920,9 @@ $(window).load(function() {
   });
   $("[data-action=open-js]").click(function() {
     $("#loadjs").trigger("click");
+  });
+  $("[data-action=open-md]").click(function() {
+    $("#loadmd").trigger("click");
   });
 
   if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -1584,6 +1950,14 @@ $(window).load(function() {
         };
       reader.readAsText(input[0]);
     };
+    var loadMD = function(input) {
+      var reader = new FileReader();
+        reader.onload = function(e) {
+          var content = e.target.result;
+          mdEditor.setValue( e.target.result );
+        };
+      reader.readAsText(input[0]);
+    };
 
     try {
       $('#loadhtml').on('change', function() {
@@ -1596,6 +1970,10 @@ $(window).load(function() {
       });
       $('#loadjs').on('change', function() {
         loadJS(this.files);
+        $("[data-action=tools].active").trigger("click");
+      });
+      $('#loadmd').on('change', function() {
+        loadMD(this.files);
         $("[data-action=tools].active").trigger("click");
       });
     }

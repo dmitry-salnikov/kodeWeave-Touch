@@ -82,7 +82,7 @@
     <!-- Navigation -->
     <header>
       <!-- Hidden Textbox (Detects Active Editor) -->
-      <input type="text" class="hide fl" data-action="activeEditor" value="htmlEditor">
+      <input type="text" class="fl hide" data-action="activeEditor" value="htmlEditor">
       
       <!-- Float Left -->
       <a data-action="tools">
@@ -107,8 +107,11 @@
           <a class="fn" data-action="open-css">
             <i class="fa fa-upload"></i> CSS
           </a>
-          <a class="fr" data-action="open-js">
-            <i class="fa fa-upload"></i> Javascript
+          <a class="fn" data-action="open-js">
+            <i class="fa fa-upload"></i> JS
+          </a>
+          <a class="fr" data-action="open-md">
+            <i class="fa fa-upload"></i> MD
           </a>
         </div><br />
 
@@ -133,6 +136,15 @@
           <!--</a>-->
           <a class="fr" data-action="uppercase">
             Uppercase
+          </a><br>
+          <a class="fl" data-action="search">
+            Search
+          </a>
+          <a class="fn" data-action="replace">
+            Replace
+          </a>
+          <a class="fr" data-action="replaceall">
+            Replace All
           </a>
         </div><br />
         
@@ -141,6 +153,7 @@
           <input id="loadhtml" type="file">
           <input id="loadcss" type="file">
           <input id="loadjs" type="file">
+          <input id="loadmd" type="file">
         </div>
       </div>
       
@@ -679,7 +692,8 @@
         <a id="restartapp" href="javascript:location.reload(true)"><span class="fa fa-refresh"></span></a>
         <a id="undo"><span class="fa fa-undo"></span></a>
         <a id="redo"><span class="fa fa-repeat"></span></a>
-        <a id="tabindent">tab</a>
+        <a id="tabindent">+ tab</a>
+        <a id="taboutdent">- tab</a>
         <a id="charsym1">&lt;&gt;</a>
         <a id="charsym2">{}</a>
         <a id="charsym3">""</a>
@@ -776,54 +790,9 @@
     <div id="splitWrapper">
       <div id="mainSplitter">
         <div>
-          <ul class="editor-container md-editor">
-            <textarea id="mdEditor"># kodeWeave Touch
-kodeWeave Touch is a realtime coding playground for HTML, CSS, and Javascript. Similar to [JSFiddle](http://jsfiddle.net/) and [JSBin](http://jsbin.com/), but kodeWeave Touch was made specifically for mobile devices. While still giving you the option to export as a desktop and/or a chrome application. ([PhoneGap Build](http://build.phonegap.com/) is recommended for mobile devices)
-
-### Version
-0.0.1
-
-### License
-MIT
-
-### Availability
-kodeWeave Touch is available for [Windows](http://sourceforge.net/projects/kodeweave/files/v1/kodeWeaveTouch-win.zip/download), [Mac](http://sourceforge.net/projects/kodeweave/files/latest/download?source=navbar), [Linux](http://sourceforge.net/projects/kodeweave/files/v1/kodeWeaveTouch-lin.tar.gz/download) and as a [Chrome](https://chrome.google.com/webstore/detail/kodeweave-touch/blcgppajmopfndnmegepihhkilaejipf) Application.
-
-### Tech
-kodeWeave Touch uses a number of open source projects to work properly:
-
-* [jQuery](http://jquery.com/) - duh
-* [TogetherJS](https://togetherjs.com/) - awesome collaboration tool
-* [JQWidgets](http://www.jqwidgets.com/jquery-widgets-demo/demos/jqxsplitter/index.htm#demos/jqxsplitter/nested-splitters.htm) - awesome plugin for resizable columns 
-* [Codemirror](http://codemirror.net/) - awesome web-based text editor
-* [Electron](http://electron.atom.io/) - makes web apps run on desktops (comes built with [node.js](http://nodejs.org/))
-* [node-webkit](http://nwjs.io/) - makes web apps run on desktops (comes built with [node.js](http://nodejs.org/))
-* [Inlet](https://github.com/enjalot/Inlet) - awesome inline color picker and numeric slider for Codemirror
-* [Emmet](http://emmet.io/) - Codemirror Plugin for Zen Coding
-* [Showdown](http://showdownjs.github.io/demo/) - Markdown to HTML converter
-* [js-beautifier](http://jsbeautifier.org/) - HTML/CSS/JS Beautifier
-* [CSSLint](http://csslint.net/) - for css syntax validation
-* [JSHint](http://jslint.com/) - for javascript syntax validation
-
-### Development
-
-Want to contribute? Great!  
-
-If you'd like to become a kodeWeave developer.  
-You can contact the software manager Michael at either [Facebook](http://facebook.com/mikethedj4) [Twitter](http://twitter.com/mikethedj4) or via [Email](mailto:mikethedj4@yahoo.com).
-
-You can also submit a pull request here on Github :)
-
-**Note:** kodeWeave is being developed on the [Koding Network](https://koding.com/R/mikethedj4). 
-
-Of course kodeWeave is free and open source, so you can always fork the project and have fun :)
-
-### Todos
-
- - Add Mac 64bit export (utilizing Electron framework)
-
-</textarea>
-          </ul>
+          <div class="editor-container md-editor">
+            <div id="mdEditor"></div>
+          </div>
           <a class="fullscreen-md-toggle unfill">
             <span class="fa fa-expand" id="fullscreen-md"></span>
           </a>
@@ -841,9 +810,9 @@ Of course kodeWeave is free and open source, so you can always fork the project 
                   </a>
                 </div>
                 <div>
-                  <ul class="editor-container css-editor">
-                    <li id="cssEditor"></li>
-                  </ul>
+                  <div class="editor-container css-editor">
+                    <div id="cssEditor"></div>
+                  </div>
                   <a class="fullscreen-css-toggle unfill">
                     <span class="fa fa-expand" id="fullscreen-css"></span>
                   </a>
@@ -853,9 +822,9 @@ Of course kodeWeave is free and open source, so you can always fork the project 
             <div>
               <div id="rightSplitter">
                 <div>
-                  <ul class="editor-container js-editor">
-                    <li id="jsEditor"></li>
-                  </ul>
+                  <div class="editor-container js-editor">
+                    <div id="jsEditor"></div>
+                  </div>
                   <a class="fullscreen-js-toggle unfill">
                     <span class="fa fa-expand" id="fullscreen-js"></span>
                   </a>
