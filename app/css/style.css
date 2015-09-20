@@ -248,11 +248,22 @@ nav {
   vertical-align: middle;
   z-index: 1;
 }
+#holder {
+  border: 10px dashed #ccc;
+  margin: 0 auto 20px auto;
+  text-align: center;
+}
+#holder.hover {
+  border: 10px dashed #333;
+}
 .txtcenter {
   text-align: center;
 }
 textarea {
   resize: vertical;
+}
+.nomargin {
+  margin: 0;
 }
 
 /* Editor */

@@ -13,7 +13,8 @@ var loader = $("[data-action=load]"),
     ctx16 = c16[0].getContext("2d"),
     ctx32 = c32[0].getContext("2d"),
     ctx64 = c64[0].getContext("2d"),
-    ctx = canvas[0].getContext("2d");
+    ctx = canvas[0].getContext("2d"),
+    holder = document.getElementById("holder");
 
 function displayPreview(file) {
   var reader = new FileReader();
@@ -2275,97 +2276,274 @@ $("#mainSplitter").jqxSplitter({
            { size: '75%',collapsible:false }]
 }).jqxSplitter("collapse");
 
-// Check Application Fields (For Download)
-$("[data-action=load]").on("change", function(evt) {
-  if ( $(this).val() === "" ) {
-    $(".watch").addClass("hide");
-  } else {
-    $(".watch").removeClass("hide");
-    var file = evt.target.files[0];
-    displayPreview(file);
+$("[data-action=call]").click(function() {
+  $("[data-action=load]").trigger("click");
+});
 
-    var reader = new FileReader();
+// Drag and drop image load
+holder.ondragover = function () {
+  this.className = "hover";
+  return false;
+};
+holder.ondragend = function () {
+  this.className = "";
+  return false;
+};
+holder.ondrop = function(e) {
+  this.className = "";
+  e.preventDefault();
+  var file = e.dataTransfer.files[0];
+  desktopExport(file);
+  $(".watch").removeClass("hide");
+};
 
-    reader.onload = function(e) {
-      // Download as Windows App
-      $("[data-action=download-as-win-app]").on("click", function() {
-        if ( $("[data-action=download]").hasClass("active") ) {
-          $("[data-action=download]").trigger("click");
+var desktopExport = function(file) {
+  displayPreview(file);
+
+  var reader = new FileReader();
+
+  reader.onload = function(e) {
+    // Download as Windows App
+    $("[data-action=download-as-win-app]").on("click", function() {
+      if ( $("[data-action=download]").hasClass("active") ) {
+        $("[data-action=download]").trigger("click");
+      }
+
+      JSZipUtils.getBinaryContent('zips/YourWinApp.zip', function(err, data) {
+        if(err) {
+          throw err; // or handle err
         }
 
-        JSZipUtils.getBinaryContent('zips/YourWinApp.zip', function(err, data) {
-          if(err) {
-            throw err; // or handle err
-          }
+        var zip = new JSZip();
+        var appName = zip.folder( $("[data-action=sitetitle]").val().replace(/ /g, "-")  );
+        appName.load(data);
 
-          var zip = new JSZip();
-          var appName = zip.folder( $("[data-action=sitetitle]").val().replace(/ /g, "-")  );
-          appName.load(data);
-
-          // Your Web App
-          var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
-              replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
-          
-          var Img16 = c16[0].toDataURL("image/png");
-          var Img32 = c32[0].toDataURL("image/png");
-          var Img64 = c64[0].toDataURL("image/png");
-          var Img128 = canvas[0].toDataURL("image/png");
-          appName.file("resources/default_app/icons/16.png", Img16.split('base64,')[1],{base64: true});
-          appName.file("resources/default_app/icons/32.png", Img32.split('base64,')[1],{base64: true});
-          appName.file("resources/default_app/icons/64.png", Img64.split('base64,')[1],{base64: true});
-          appName.file("resources/default_app/icons/128.png", Img128.split('base64,')[1],{base64: true});
+        // Your Web App
+        var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
+            replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
+        
+        var Img16 = c16[0].toDataURL("image/png");
+        var Img32 = c32[0].toDataURL("image/png");
+        var Img64 = c64[0].toDataURL("image/png");
+        var Img128 = canvas[0].toDataURL("image/png");
+        appName.file("resources/default_app/icons/16.png", Img16.split('base64,')[1],{base64: true});
+        appName.file("resources/default_app/icons/32.png", Img32.split('base64,')[1],{base64: true});
+        appName.file("resources/default_app/icons/64.png", Img64.split('base64,')[1],{base64: true});
+        appName.file("resources/default_app/icons/128.png", Img128.split('base64,')[1],{base64: true});
 
 
-          // check if css editor has a value
-          if (cssEditor.getValue() !== "") {
+        // check if css editor has a value
+        if (cssEditor.getValue() !== "") {
+          closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+          var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
+    
+          appName.file("resources/default_app/css/index.css", cssEditor.getValue());
+          appName.file("resources/default_app/index.html", htmlContent);
+        }
+        // check if js editor has a value
+        if ( jsEditor.getValue() !== "") {
+          if (cssEditor.getValue() === "") {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
+          } else {
             closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
-      
-            appName.file("resources/default_app/css/index.css", cssEditor.getValue());
-            appName.file("resources/default_app/index.html", htmlContent);
           }
-          // check if js editor has a value
-          if ( jsEditor.getValue() !== "") {
-            if (cssEditor.getValue() === "") {
-              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
-            } else {
-              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-            }
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-      
-            appName.file("resources/default_app/js/index.js", jsEditor.getValue());
-            appName.file("resources/default_app/index.html", htmlContent);
-          }
-          // check if css and js editors have values
-          if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
-            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-            htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-      
-            appName.file("resources/default_app/css/index.css", cssEditor.getValue());
-            appName.file("resources/default_app/js/index.js", jsEditor.getValue());
-            appName.file("resources/default_app/index.html", htmlContent);
-          }
-          // check if markdown editor has a value
-          if ( mdEditor.getValue() !== "") {
-            appName.file("resources/default_app/README.md", mdEditor.getValue());
-          }
-          
-          
-          appName.file("resources/default_app/package.json", "{\n  \"name\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"productName\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"version\": \"1.0.0\",\n  \"main\": \"default_app.js\",\n  \"license\": \"MIT\"\n}\n");
-          eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"resources/default_app/libraries").replace(/zip.file/g,"appName.file") );
+          var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+    
+          appName.file("resources/default_app/js/index.js", jsEditor.getValue());
+          appName.file("resources/default_app/index.html", htmlContent);
+        }
+        // check if css and js editors have values
+        if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
+          closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+          htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+    
+          appName.file("resources/default_app/css/index.css", cssEditor.getValue());
+          appName.file("resources/default_app/js/index.js", jsEditor.getValue());
+          appName.file("resources/default_app/index.html", htmlContent);
+        }
+        // check if markdown editor has a value
+        if ( mdEditor.getValue() !== "") {
+          appName.file("resources/default_app/README.md", mdEditor.getValue());
+        }
+        
+        
+        appName.file("resources/default_app/package.json", "{\n  \"name\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"productName\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"version\": \"1.0.0\",\n  \"main\": \"default_app.js\",\n  \"license\": \"MIT\"\n}\n");
+        eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"resources/default_app/libraries").replace(/zip.file/g,"appName.file") );
 
-          var content = zip.generate({type:"blob"});
-          saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-win.zip");
-        });
+        var content = zip.generate({type:"blob"});
+        saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-win.zip");
       });
+    });
 
-      // Download as Mac App
-      $("[data-action=download-as-mac-app-32]").on("click", function() {
-        if ( $("[data-action=download]").hasClass("active") ) {
-          $("[data-action=download]").trigger("click");
+    // Download as Mac App
+    $("[data-action=download-as-mac-app-32]").on("click", function() {
+      if ( $("[data-action=download]").hasClass("active") ) {
+        $("[data-action=download]").trigger("click");
+      }
+
+      JSZipUtils.getBinaryContent('zips/YourMacApp-32bit.zip', function(err, data) {
+        if(err) {
+          throw err; // or handle err
         }
 
-        JSZipUtils.getBinaryContent('zips/YourMacApp-32bit.zip', function(err, data) {
+        var zip = new JSZip(data);
+
+        // Your Web App
+        var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
+            replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
+        
+        closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+        var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+        var Img16 = c16[0].toDataURL("image/png");
+        var Img32 = c32[0].toDataURL("image/png");
+        var Img64 = c64[0].toDataURL("image/png");
+        var Img128 = canvas[0].toDataURL("image/png");
+        zip.file("data/content/app/icons/16.png", Img16.split('base64,')[1],{base64: true});
+        zip.file("data/content/app/icons/32.png", Img32.split('base64,')[1],{base64: true});
+        zip.file("data/content/app/icons/64.png", Img64.split('base64,')[1],{base64: true});
+        zip.file("data/content/app/icons/128.png", Img128.split('base64,')[1],{base64: true});
+
+
+        // check if css editor has a value
+        if (cssEditor.getValue() !== "") {
+          closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+          var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
+    
+          zip.file("data/content/app/css/index.css", cssEditor.getValue());
+          zip.file("data/content/app/index.html", htmlContent);
+        }
+        // check if js editor has a value
+        if ( jsEditor.getValue() !== "") {
+          if (zjsEditor.getValue() === "") {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
+          } else {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+          }
+          var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+    
+          zip.file("data/content/app/js/index.js", jsEditor.getValue());
+          zip.file("data/content/app/index.html", htmlContent);
+        }
+        // check if css and js editors have values
+        if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
+          closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+          htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+    
+          zip.file("data/content/app/css/index.css", cssEditor.getValue());
+          zip.file("data/content/app/js/index.js", jsEditor.getValue());
+          zip.file("data/content/app/index.html", htmlContent);
+        }
+        // check if markdown editor has a value
+        if ( mdEditor.getValue() !== "") {
+          zip.file("resources/default_app/README.md", mdEditor.getValue());
+        }
+
+        
+        eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/app/libraries") );
+
+        zip.file("data/package.json", '{\n  "main"  : "content/index.html",\n  "name"  : "'+ $("[data-action=sitetitle]").val() +'",\n  "window": {\n    "toolbar"    : false,\n    "frame"      : false,\n    "transparent": true\n  }\n}');
+        zip.file("data/content/index.html", '<!doctype html>\n<html>\n <head>\n    <title>'+ $("[data-action=sitetitle]").val() +'</title>\n    <link rel="stylesheet" href="css/style.css">\n  </head>\n <body>\n    <div class="container">\n      <div class="titlebar txtcenter">\n        <div class="fl menubtns">\n          <a class="fl close">\n            <i class="fa fa-times"></i>\n          </a>\n          <a class="fl minimize">\n            <i class="fa fa-minus"></i>\n          </a>\n          <a class="fl maximize">\n            <i class="maxtr fa fa-caret-left"></i>\n            <i class="maxbl fa fa-caret-left"></i>\n          </a>\n        </div>\n        \n        <span data-set="appname"></span>\n      </div>\n\n      <iframe src="app/index.html"></iframe>\n    </div>\n\n    <script src="js/main.js"></script>\n  </body>\n</html>');
+        zip.file("data/content/js/main.js", 'document.addEventListener("DOMContentLoaded", function() {\n  // Load library\n  var gui = require("nw.gui");\n\n  // Reference to window\n  var win = gui.Window.get();\n\n  document.querySelector(".close").onclick = function() {\n    window.close();\n  };\n\n  document.querySelector(".minimize").onclick = function() {\n    win.minimize();\n  };\n\n  document.querySelector(".titlebar").addEventListener("dblclick", function() {\n    if (win.isMaximized) {\n      win.unmaximize();\n      win.isMaximized = false;\n    } else {\n      win.maximize();\n    }\n  });\n\n  document.querySelector(".maximize").onclick = function() {\n    if (win.isMaximized) {\n      win.unmaximize();\n      win.isMaximized = false;\n    } else {\n      win.maximize();\n    }\n  };\n\n  win.on("maximize", function() {\n    win.isMaximized = true;\n  });\n  win.on("unmaximize", function() {\n    win.isMaximized = false;\n  });\n  win.on("enter-fullscreen", function() {\n    document.querySelector(".titlebar").classList.toggle("hide");\n    document.querySelector("iframe").style.top = 0;\n    document.querySelector("iframe").style.height = "100%";\n  });\n  win.on("leave-fullscreen", function() {\n    document.querySelector(".titlebar").classList.toggle("hide");\n    document.querySelector("iframe").style.top = 28 + "px";\n    document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n  });\n  document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n\n  window.addEventListener("keydown", function(e) {\n  // Reload App (CMD+R)\n    if ( e.metaKey && e.keyCode == 82 ) {\n      location.reload(true);\n    } else \n  // Hide Mac App (CMD+W)\n    if ( e.metaKey && e.keyCode == 87 ) {\n      win.hide();\n    }\n    // else\n  // Toggle fullscreen window (CTRL+CMD+F)\n    // if ( e.shiftKey && e.metaKey && e.keyCode == 70 ) {\n      // win.toggleFullscreen();\n    // }\n  });\n\n  // Close buttons hides app\n  // var hidden = false;\n  // gui.App.on("reopen", function(){\n  //   hidden = false;\n  //   win.show();\n  // })\n\n  // win.on("close", function(){\n  //   if (hidden == true) {\n  //     gui.App.quit();\n  //   } else {\n  //     win.hide();\n  //     hidden = true;\n  //   }\n  // });\n\n  // Create menu container\n  var Menu = new gui.Menu({\n    type: "menubar"\n  });\n\n  //initialize default mac menu\n  Menu.createMacBuiltin("'+ $("[data-action=sitetitle]").val() +'");\n\n  // Get the root menu from the default mac menu\n  var rootMenu = Menu.items[2].submenu;\n\n  // Append new item to root menu\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Toggle Fullscreen",\n      key: "F",\n      modifiers: "cmd",\n      click : function () {\n        win.toggleFullscreen();\n      }\n    })\n  );\n\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Reload App",\n      key: "R",\n      modifiers: "shift-cmd",\n      click : function () {\n        location.reload(true);\n      }\n    })\n  );\n\n  // Append Menu to Window\n  gui.Window.get().menu = Menu;\n\n  // Show app name in titlebar\n  document.querySelector("[data-set=appname]").innerHTML = document.title;\n\n  // Responsive UI\n  window.addEventListener("resize", function() {\n    document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n  });\n});');
+
+        zip.file("run.sh", "open -a /Applications/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app/Contents/data/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app");
+
+        var content = zip.generate({type:"blob"});
+        saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-mac.zip");
+      });
+    });
+
+    // Download as Linux App
+    $("[data-action=download-as-lin-app]").on("click", function() {
+      if ( $("[data-action=download]").hasClass("active") ) {
+        $("[data-action=download]").trigger("click");
+      }
+
+      JSZipUtils.getBinaryContent('zips/YourLinApp.zip', function(err, data) {
+        if(err) {
+          throw err; // or handle err
+        }
+
+        var zip = new JSZip();
+        var appName = zip.folder( $("[data-action=sitetitle]").val().replace(/ /g, "-")  );
+        appName.load(data);
+        
+        // Your Web App
+        var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
+            replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
+        
+        var Img16 = c16[0].toDataURL("image/png");
+        var Img32 = c32[0].toDataURL("image/png");
+        var Img64 = c64[0].toDataURL("image/png");
+        var Img128 = canvas[0].toDataURL("image/png");
+        appName.file("resources/default_app/icons/16.png", Img16.split('base64,')[1],{base64: true});
+        appName.file("resources/default_app/icons/32.png", Img32.split('base64,')[1],{base64: true});
+        appName.file("resources/default_app/icons/64.png", Img64.split('base64,')[1],{base64: true});
+        appName.file("resources/default_app/icons/128.png", Img128.split('base64,')[1],{base64: true});
+
+        
+        // check if css editor has a value
+        if (cssEditor.getValue() !== "") {
+          closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+          var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
+    
+          appName.file("resources/default_app/css/index.css", cssEditor.getValue());
+          appName.file("resources/default_app/index.html", htmlContent);
+        }
+        // check if js editor has a value
+        if ( jsEditor.getValue() !== "") {
+          if (cssEditor.getValue() === "") {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
+          } else {
+            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+          }
+          var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+    
+          appName.file("resources/default_app/js/index.js", jsEditor.getValue());
+          appName.file("resources/default_app/index.html", htmlContent);
+        }
+        // check if css and js editors have values
+        if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
+          closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+          htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
+    
+          appName.file("resources/default_app/css/index.css", cssEditor.getValue());
+          appName.file("resources/default_app/js/index.js", jsEditor.getValue());
+          appName.file("resources/default_app/index.html", htmlContent);
+        }
+        // check if markdown editor has a value
+        if ( mdEditor.getValue() !== "") {
+          appName.file("resources/default_app/README.md", mdEditor.getValue());
+        }
+        
+        
+        appName.file("resources/default_app/package.json", "{\n  \"name\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"productName\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"version\": \"1.0.0\",\n  \"main\": \"default_app.js\",\n  \"license\": \"MIT\"\n}\n");
+        eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"resources/default_app/libraries").replace(/zip.file/g,"appName.file") );
+        
+        zip.file("make.sh", "if [ -d ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" ]; then\n  typeset LP_FILE=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +".desktop\n\n  # Remove the target file if any\n  rm -f ${LP_FILE}\n  printf \"%s[Desktop Entry]\\nName="+ $("[data-action=sitetitle]").val() +"\\nPath=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"\\nActions=sudo\\nExec=./"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/electron\\nIcon=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/resources/default_app/icons/128.png\\nTerminal=true\\nType=Application\\nStartupNotify=true > ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +".desktop\" >> ${LP_FILE}\n\n  echo 'Your application and launcher are now located at ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"'\n  rm README.md\n  rm make.sh\n  cd ../\n  rmdir "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"-lin\n  cd ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/\n  chmod 775 electron\nfi\n\nif [ ! -d ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" ]; then\n  mv "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" ${HOME}\n\n  typeset LP_FILE=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +".desktop\n\n  # Remove the target file if any\n  rm -f ${LP_FILE}\n  printf \"%s[Desktop Entry]\\nName="+ $("[data-action=sitetitle]").val() +"\\nPath=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"\\nActions=sudo\\nExec=./"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/electron\\nIcon=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/resources/default_app/icons/128.png\\nTerminal=true\\nType=Application\\nStartupNotify=true > ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +".desktop\" >> ${LP_FILE}\n\n  echo 'Your application and launcher are now located at ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"'\n  rm README.md\n  rm make.sh\n  cd ../\n  rmdir "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"-lin\n  cd ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/\n  chmod 775 electron\nfi\n\n# For Windows OS\n#if EXIST ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" (\n  #echo Yes\n#) ELSE (\n  #echo No\n#)\n");
+        zip.file("README.md", "### Instructions\n 1. Extract the `"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"-lin.zip` folder anywhere on your computer except the home folder. \n 2. Open a terminal and then navigate to "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"'s directory and `run the make.sh file`.\n\n  **example**:\n  cd Downloads/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"-lin\n\n 3. This will move the "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" sibling folder and it's decendants to your home directory and create an application launcher.\n");
+        
+        // zip.file("source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $("[data-action=sitetitle]").val().split(" ").join("-") + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $("[data-action=sitetitle]").val().split(" ").join("-") + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
+        // zip.file("README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
+        var content = zip.generate({type:"blob"});
+        saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-lin.zip");
+      });
+    });
+
+    // Download as Chrome App
+    $("[data-action=download-as-chrome-app]").on("click", function() {
+      if ( $("[data-action=download]").hasClass("active") ) {
+        $("[data-action=download]").trigger("click");
+      }
+      $("[data-action=chromedialog]").fadeIn();
+    });
+    $("[data-action=cancel]").on("click", function() {
+      $("[data-action=chromedialog]").fadeOut();
+    });
+    $("[data-action=confirm]").on("click", function() {
+      if ( ($("[data-action=sitetitle]").val() === "") || ($("[data-action=descr]").val() === "") ) {
+        alertify.error("Download failed! Please fill in all required fields.");
+      } else {
+        JSZipUtils.getBinaryContent("zips/font-awesome-chrome.zip", function(err, data) {
           if(err) {
             throw err; // or handle err
           }
@@ -2373,241 +2551,89 @@ $("[data-action=load]").on("change", function(evt) {
           var zip = new JSZip(data);
 
           // Your Web App
-          var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
-              replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
-          
-          closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-          var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-          var Img16 = c16[0].toDataURL("image/png");
-          var Img32 = c32[0].toDataURL("image/png");
-          var Img64 = c64[0].toDataURL("image/png");
-          var Img128 = canvas[0].toDataURL("image/png");
-          zip.file("data/content/app/icons/16.png", Img16.split('base64,')[1],{base64: true});
-          zip.file("data/content/app/icons/32.png", Img32.split('base64,')[1],{base64: true});
-          zip.file("data/content/app/icons/64.png", Img64.split('base64,')[1],{base64: true});
-          zip.file("data/content/app/icons/128.png", Img128.split('base64,')[1],{base64: true});
-
-
           // check if css editor has a value
           if (cssEditor.getValue() !== "") {
-            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
             var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
       
-            zip.file("data/content/app/css/index.css", cssEditor.getValue());
-            zip.file("data/content/app/index.html", htmlContent);
-          }
-          // check if js editor has a value
-          if ( jsEditor.getValue() !== "") {
-            if (zjsEditor.getValue() === "") {
-              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
-            } else {
-              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-            }
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-      
-            zip.file("data/content/app/js/index.js", jsEditor.getValue());
-            zip.file("data/content/app/index.html", htmlContent);
-          }
-          // check if css and js editors have values
-          if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
-            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-            htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-      
-            zip.file("data/content/app/css/index.css", cssEditor.getValue());
-            zip.file("data/content/app/js/index.js", jsEditor.getValue());
-            zip.file("data/content/app/index.html", htmlContent);
-          }
-          // check if markdown editor has a value
-          if ( mdEditor.getValue() !== "") {
-            zip.file("resources/default_app/README.md", mdEditor.getValue());
-          }
-
-          
-          eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/app/libraries") );
-
-          zip.file("data/package.json", '{\n  "main"  : "content/index.html",\n  "name"  : "'+ $("[data-action=sitetitle]").val() +'",\n  "window": {\n    "toolbar"    : false,\n    "frame"      : false,\n    "transparent": true\n  }\n}');
-          zip.file("data/content/index.html", '<!doctype html>\n<html>\n <head>\n    <title>'+ $("[data-action=sitetitle]").val() +'</title>\n    <link rel="stylesheet" href="css/style.css">\n  </head>\n <body>\n    <div class="container">\n      <div class="titlebar txtcenter">\n        <div class="fl menubtns">\n          <a class="fl close">\n            <i class="fa fa-times"></i>\n          </a>\n          <a class="fl minimize">\n            <i class="fa fa-minus"></i>\n          </a>\n          <a class="fl maximize">\n            <i class="maxtr fa fa-caret-left"></i>\n            <i class="maxbl fa fa-caret-left"></i>\n          </a>\n        </div>\n        \n        <span data-set="appname"></span>\n      </div>\n\n      <iframe src="app/index.html"></iframe>\n    </div>\n\n    <script src="js/main.js"></script>\n  </body>\n</html>');
-          zip.file("data/content/js/main.js", 'document.addEventListener("DOMContentLoaded", function() {\n  // Load library\n  var gui = require("nw.gui");\n\n  // Reference to window\n  var win = gui.Window.get();\n\n  document.querySelector(".close").onclick = function() {\n    window.close();\n  };\n\n  document.querySelector(".minimize").onclick = function() {\n    win.minimize();\n  };\n\n  document.querySelector(".titlebar").addEventListener("dblclick", function() {\n    if (win.isMaximized) {\n      win.unmaximize();\n      win.isMaximized = false;\n    } else {\n      win.maximize();\n    }\n  });\n\n  document.querySelector(".maximize").onclick = function() {\n    if (win.isMaximized) {\n      win.unmaximize();\n      win.isMaximized = false;\n    } else {\n      win.maximize();\n    }\n  };\n\n  win.on("maximize", function() {\n    win.isMaximized = true;\n  });\n  win.on("unmaximize", function() {\n    win.isMaximized = false;\n  });\n  win.on("enter-fullscreen", function() {\n    document.querySelector(".titlebar").classList.toggle("hide");\n    document.querySelector("iframe").style.top = 0;\n    document.querySelector("iframe").style.height = "100%";\n  });\n  win.on("leave-fullscreen", function() {\n    document.querySelector(".titlebar").classList.toggle("hide");\n    document.querySelector("iframe").style.top = 28 + "px";\n    document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n  });\n  document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n\n  window.addEventListener("keydown", function(e) {\n  // Reload App (CMD+R)\n    if ( e.metaKey && e.keyCode == 82 ) {\n      location.reload(true);\n    } else \n  // Hide Mac App (CMD+W)\n    if ( e.metaKey && e.keyCode == 87 ) {\n      win.hide();\n    }\n    // else\n  // Toggle fullscreen window (CTRL+CMD+F)\n    // if ( e.shiftKey && e.metaKey && e.keyCode == 70 ) {\n      // win.toggleFullscreen();\n    // }\n  });\n\n  // Close buttons hides app\n  // var hidden = false;\n  // gui.App.on("reopen", function(){\n  //   hidden = false;\n  //   win.show();\n  // })\n\n  // win.on("close", function(){\n  //   if (hidden == true) {\n  //     gui.App.quit();\n  //   } else {\n  //     win.hide();\n  //     hidden = true;\n  //   }\n  // });\n\n  // Create menu container\n  var Menu = new gui.Menu({\n    type: "menubar"\n  });\n\n  //initialize default mac menu\n  Menu.createMacBuiltin("'+ $("[data-action=sitetitle]").val() +'");\n\n  // Get the root menu from the default mac menu\n  var rootMenu = Menu.items[2].submenu;\n\n  // Append new item to root menu\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Toggle Fullscreen",\n      key: "F",\n      modifiers: "cmd",\n      click : function () {\n        win.toggleFullscreen();\n      }\n    })\n  );\n\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Reload App",\n      key: "R",\n      modifiers: "shift-cmd",\n      click : function () {\n        location.reload(true);\n      }\n    })\n  );\n\n  // Append Menu to Window\n  gui.Window.get().menu = Menu;\n\n  // Show app name in titlebar\n  document.querySelector("[data-set=appname]").innerHTML = document.title;\n\n  // Responsive UI\n  window.addEventListener("resize", function() {\n    document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n  });\n});');
-
-          zip.file("run.sh", "open -a /Applications/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app/Contents/data/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app");
-
-          var content = zip.generate({type:"blob"});
-          saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-mac.zip");
-        });
-      });
-
-      // Download as Linux App
-      $("[data-action=download-as-lin-app]").on("click", function() {
-        if ( $("[data-action=download]").hasClass("active") ) {
-          $("[data-action=download]").trigger("click");
-        }
-
-        JSZipUtils.getBinaryContent('zips/YourLinApp.zip', function(err, data) {
-          if(err) {
-            throw err; // or handle err
-          }
-
-          var zip = new JSZip();
-          var appName = zip.folder( $("[data-action=sitetitle]").val().replace(/ /g, "-")  );
-          appName.load(data);
-          
-          // Your Web App
-          var grabString = "<script src=\"libraries/jquery/jquery.js\"></script\>",
-              replaceString = "<script src=\"libraries/jquery/jquery.js\"></script\>\n    <script>\n      try {\n        $ = jQuery = module.exports;\n        // If you want module.exports to be empty, uncomment:\n        // module.exports = {};\n      } catch(e) {}\n    </script\>";
-          
-          var Img16 = c16[0].toDataURL("image/png");
-          var Img32 = c32[0].toDataURL("image/png");
-          var Img64 = c64[0].toDataURL("image/png");
-          var Img128 = canvas[0].toDataURL("image/png");
-          appName.file("resources/default_app/icons/16.png", Img16.split('base64,')[1],{base64: true});
-          appName.file("resources/default_app/icons/32.png", Img32.split('base64,')[1],{base64: true});
-          appName.file("resources/default_app/icons/64.png", Img64.split('base64,')[1],{base64: true});
-          appName.file("resources/default_app/icons/128.png", Img128.split('base64,')[1],{base64: true});
-
-          
-          // check if css editor has a value
-          if (cssEditor.getValue() !== "") {
-            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-            var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
-      
-            appName.file("resources/default_app/css/index.css", cssEditor.getValue());
-            appName.file("resources/default_app/index.html", htmlContent);
+            zip.file("app/css/index.css", cssEditor.getValue());
+            zip.file("app/index.html", htmlContent);
           }
           // check if js editor has a value
           if ( jsEditor.getValue() !== "") {
             if (cssEditor.getValue() === "") {
-              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
+              closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
             } else {
-              closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+              closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
             }
             var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
       
-            appName.file("resources/default_app/js/index.js", jsEditor.getValue());
-            appName.file("resources/default_app/index.html", htmlContent);
+            zip.file("app/js/index.js", jsEditor.getValue());
+            zip.file("app/index.html", htmlContent);
           }
           // check if css and js editors have values
           if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
-            closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
+            closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
             htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
       
-            appName.file("resources/default_app/css/index.css", cssEditor.getValue());
-            appName.file("resources/default_app/js/index.js", jsEditor.getValue());
-            appName.file("resources/default_app/index.html", htmlContent);
+            zip.file("app/css/index.css", cssEditor.getValue());
+            zip.file("app/js/index.js", jsEditor.getValue());
+            zip.file("app/index.html", htmlContent);
           }
           // check if markdown editor has a value
           if ( mdEditor.getValue() !== "") {
-            appName.file("resources/default_app/README.md", mdEditor.getValue());
+            zip.file("README.md", mdEditor.getValue());
           }
           
-          
-          appName.file("resources/default_app/package.json", "{\n  \"name\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"productName\": \""+ $("[data-action=sitetitle]").val() +"\",\n  \"version\": \"1.0.0\",\n  \"main\": \"default_app.js\",\n  \"license\": \"MIT\"\n}\n");
-          eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"resources/default_app/libraries").replace(/zip.file/g,"appName.file") );
-          
-          zip.file("make.sh", "if [ -d ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" ]; then\n  typeset LP_FILE=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +".desktop\n\n  # Remove the target file if any\n  rm -f ${LP_FILE}\n  printf \"%s[Desktop Entry]\\nName="+ $("[data-action=sitetitle]").val() +"\\nPath=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"\\nActions=sudo\\nExec=./"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/electron\\nIcon=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/resources/default_app/icons/128.png\\nTerminal=true\\nType=Application\\nStartupNotify=true > ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +".desktop\" >> ${LP_FILE}\n\n  echo 'Your application and launcher are now located at ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"'\n  rm README.md\n  rm make.sh\n  cd ../\n  rmdir "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"-lin\n  cd ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/\n  chmod 775 electron\nfi\n\nif [ ! -d ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" ]; then\n  mv "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" ${HOME}\n\n  typeset LP_FILE=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +".desktop\n\n  # Remove the target file if any\n  rm -f ${LP_FILE}\n  printf \"%s[Desktop Entry]\\nName="+ $("[data-action=sitetitle]").val() +"\\nPath=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"\\nActions=sudo\\nExec=./"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/electron\\nIcon=${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/resources/default_app/icons/128.png\\nTerminal=true\\nType=Application\\nStartupNotify=true > ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +".desktop\" >> ${LP_FILE}\n\n  echo 'Your application and launcher are now located at ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"'\n  rm README.md\n  rm make.sh\n  cd ../\n  rmdir "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"-lin\n  cd ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"/\n  chmod 775 electron\nfi\n\n# For Windows OS\n#if EXIST ${HOME}/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" (\n  #echo Yes\n#) ELSE (\n  #echo No\n#)\n");
-          zip.file("README.md", "### Instructions\n 1. Extract the `"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"-lin.zip` folder anywhere on your computer except the home folder. \n 2. Open a terminal and then navigate to "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"'s directory and `run the make.sh file`.\n\n  **example**:\n  cd Downloads/"+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +"-lin\n\n 3. This will move the "+ $("[data-action=sitetitle]").val().replace(/ /g, "-") +" sibling folder and it's decendants to your home directory and create an application launcher.\n");
-          
-          // zip.file("source.c", "/*\n  Save this file as main.c and compile it using this command\n  (those are backticks, not single quotes):\n    gcc -Wall -g -o main main.c `pkg-config --cflags --libs gtk+-2.0 webkit-1.0` -export-dynamic\n  \n  Then execute it using:\n  ./main\n  \n  If you can't compile chances are you don't have gcc installed.\n  Install gcc/c with the following terminal command. (This command is for Debian based Linux distros)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc\n  \n  WebKit requires libraries to successfully aquire, configure, and compile. You can get libraries by issuing the following command in your terminal:\n    sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n  \n  Ubuntu Webkit information - https://help.ubuntu.com/community/WebKit\n    sudo apt-get install libwebkitgtk-dev python-webkit-dev python-webkit\n  \n  Required dependencies for this build: (If you installed all the above this is not needed)\n    sudo apt-get install libgtk2.0-dev libgtk2.0-doc libglib2.0-doc subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev libwebkitgtk-dev\n*/\n\n#include <limits.h>\n#include <gtk/gtk.h>\n#include <webkit/webkit.h>\n\nstatic GtkWidget* window;\nstatic WebKitWebView* web_view;\n\nstatic void destroy_cb (GtkWidget* widget, gpointer data) {\n  gtk_main_quit();\n}\n\nstatic GtkWidget* create_browser() {\n  GtkWidget* scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n\n  web_view = WEBKIT_WEB_VIEW (webkit_web_view_new ());\n  gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (web_view));\n\n  return scrolled_window;\n}\n\nint main (int argc, char* argv[]) {\n  gtk_init (&argc, &argv);\n\n  GtkWidget* vbox = gtk_vbox_new (FALSE, 0);\n  gtk_box_pack_start (GTK_BOX (vbox), create_browser(), TRUE, TRUE, 0);\n\n  GtkWidget* window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_default_size (GTK_WINDOW (window), 800, 560);\n  gtk_widget_set_name (window, \"" + $("[data-action=sitetitle]").val().split(" ").join("-") + "\");\n  /* gtk_window_set_icon_from_file(window, \"app/logo.png\", NULL); */\n  g_signal_connect (G_OBJECT (window), \"destroy\", G_CALLBACK (destroy_cb), NULL);\n  gtk_container_add (GTK_CONTAINER (window), vbox);\n  \n  char uri[PATH_MAX];\n  char cwd[PATH_MAX];\n\n  getcwd(cwd, sizeof(cwd));\n\n  if (argc > 1)\n      snprintf(uri, sizeof(uri), \"%s\", argv[1]);\n  else\n      snprintf(uri, sizeof(uri), \"file://%s/" + $("[data-action=sitetitle]").val().split(" ").join("-") + "/app/index.html\", cwd);\n  \n  webkit_web_view_open (web_view, uri);\n\n  gtk_widget_grab_focus (GTK_WIDGET (web_view));\n  gtk_widget_show_all (window);\n  gtk_main ();\n\n  return 0;\n}\n");
-          // zip.file("README", "This application for Linux relies on the following dependencies...\n  sudo apt-get install subversion gtk-doc-tools autoconf automake libtool libgtk2.0-dev libpango1.0-dev libicu-dev libxslt-dev libsoup2.4-dev libsqlite3-dev gperf bison flex libjpeg62-dev libpng12-dev libxt-dev autotools-dev libgstreamer-plugins-base0.10-dev libenchant-dev libgail-dev\n\nIf kodeWeave was at all helpful for you. Would you consider donating to the project?\nhttps://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BSYGA2RB5ZJCC\n\n");
-          var content = zip.generate({type:"blob"});
-          saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-lin.zip");
-        });
-      });
+          var Img16 = c16[0].toDataURL("image/png");
+          var Img32 = c32[0].toDataURL("image/png");
+          var Img64 = c64[0].toDataURL("image/png");
+          var Img128 = canvas[0].toDataURL("image/png");
+          zip.file("assets/16.png", Img16.split('base64,')[1],{base64: true});
+          zip.file("assets/32.png", Img32.split('base64,')[1],{base64: true});
+          zip.file("assets/64.png", Img64.split('base64,')[1],{base64: true});
+          zip.file("assets/128.png", Img128.split('base64,')[1],{base64: true});
+          eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"app/libraries") );
+          zip.file("css/index.css", "html, body {\n  margin: 0;\n  padding: 0;\n  width: 100%;\n  height: 100%;\n}\n\nwebview, iframe {\n  width: 100%;\n  height: 100%;\n  border: 0;\n}");
+          zip.file("index.html", "<!DOCTYPE html>\n<html>\n  <head>\n    <title>"+ $("[data-action=sitetitle]").val() +"</title>\n    <link rel=\"stylesheet\" href=\"css/index.css\" />\n  </head>\n  <body>\n    <iframe src=\"app/index.html\">\n      Your Chromebook does not support the iFrame html element.\n    </iframe>\n  </body>\n</html>");
 
-      // Download as Chrome App
-      $("[data-action=download-as-chrome-app]").on("click", function() {
-        if ( $("[data-action=download]").hasClass("active") ) {
-          $("[data-action=download]").trigger("click");
-        }
-        $("[data-action=chromedialog]").fadeIn();
-      });
-      $("[data-action=cancel]").on("click", function() {
-        $("[data-action=chromedialog]").fadeOut();
-      });
-      $("[data-action=confirm]").on("click", function() {
-        if ( ($("[data-action=sitetitle]").val() === "") || ($("[data-action=descr]").val() === "") ) {
-          alertify.error("Download failed! Please fill in all required fields.");
-        } else {
-          JSZipUtils.getBinaryContent("zips/font-awesome-chrome.zip", function(err, data) {
-            if(err) {
-              throw err; // or handle err
-            }
-
-            var zip = new JSZip(data);
-
-            // Your Web App
-            // check if css editor has a value
-            if (cssEditor.getValue() !== "") {
-              closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-              var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n    " + closeFinal.getValue();
-        
-              zip.file("app/css/index.css", cssEditor.getValue());
-              zip.file("app/index.html", htmlContent);
-            }
-            // check if js editor has a value
-            if ( jsEditor.getValue() !== "") {
-              if (cssEditor.getValue() === "") {
-                closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
-              } else {
-                closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-              }
-              var htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-        
-              zip.file("app/js/index.js", jsEditor.getValue());
-              zip.file("app/index.html", htmlContent);
-            }
-            // check if css and js editors have values
-            if (cssEditor.getValue() !== "" && jsEditor.getValue() !== "") {
-              closeRefs.setValue($("[data-action=library-code]").val() + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
-              htmlContent = openHTML.getValue() + $("[data-action=sitetitle]").val() + closeHTML.getValue() + closeRefs.getValue() + htmlEditor.getValue() + "\n\n    <script src=\"js/index.js\"></script>" + closeFinal.getValue();
-        
-              zip.file("app/css/index.css", cssEditor.getValue());
-              zip.file("app/js/index.js", jsEditor.getValue());
-              zip.file("app/index.html", htmlContent);
-            }
-            // check if markdown editor has a value
-            if ( mdEditor.getValue() !== "") {
-              zip.file("README.md", mdEditor.getValue());
-            }
-            
-            var Img16 = c16[0].toDataURL("image/png");
-            var Img32 = c32[0].toDataURL("image/png");
-            var Img64 = c64[0].toDataURL("image/png");
-            var Img128 = canvas[0].toDataURL("image/png");
-            zip.file("assets/16.png", Img16.split('base64,')[1],{base64: true});
-            zip.file("assets/32.png", Img32.split('base64,')[1],{base64: true});
-            zip.file("assets/64.png", Img64.split('base64,')[1],{base64: true});
-            zip.file("assets/128.png", Img128.split('base64,')[1],{base64: true});
-            eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"app/libraries") );
-            zip.file("css/index.css", "html, body {\n  margin: 0;\n  padding: 0;\n  width: 100%;\n  height: 100%;\n}\n\nwebview, iframe {\n  width: 100%;\n  height: 100%;\n  border: 0;\n}");
-            zip.file("index.html", "<!DOCTYPE html>\n<html>\n  <head>\n    <title>"+ $("[data-action=sitetitle]").val() +"</title>\n    <link rel=\"stylesheet\" href=\"css/index.css\" />\n  </head>\n  <body>\n    <iframe src=\"app/index.html\">\n      Your Chromebook does not support the iFrame html element.\n    </iframe>\n  </body>\n</html>");
-
-            if ( $(".offline-mode").is(":checked") ) {
-              zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $("[data-action=sitetitle]").val() +'",\n  "short_name": "'+ $("[data-action=sitetitle]").val() +'",\n  "description": "'+ $("[data-action=descr]").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": true,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
-              if ( $(".frame-mode").is(":checked") ) {
-                zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      frame: 'none',\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
-              } else {
-                zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
-              }
+          if ( $(".offline-mode").is(":checked") ) {
+            zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $("[data-action=sitetitle]").val() +'",\n  "short_name": "'+ $("[data-action=sitetitle]").val() +'",\n  "description": "'+ $("[data-action=descr]").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": true,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
+            if ( $(".frame-mode").is(":checked") ) {
+              zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      frame: 'none',\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
             } else {
-              zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $("[data-action=sitetitle]").val() +'",\n  "short_name": "'+ $("[data-action=sitetitle]").val() +'",\n  "description": "'+ $("[data-action=descr]").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": false,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
-              if ( $(".frame-mode").is(":checked") ) {
-                zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      frame: 'none',\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
-              } else {
-                zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
-              }
+              zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
             }
+          } else {
+            zip.file("manifest.json", '{\n  "manifest_version": 2,\n  "name": "'+ $("[data-action=sitetitle]").val() +'",\n  "short_name": "'+ $("[data-action=sitetitle]").val() +'",\n  "description": "'+ $("[data-action=descr]").val() +'",\n  "version": "1.0",\n  "minimum_chrome_version": "38",\n  "offline_enabled": false,\n  "permissions": [ "storage", "fileSystem", "unlimitedStorage", "http://*/", "https://*/" ],\n  "icons": {\n    "16": "assets/16.png",\n    "32": "assets/32.png",\n    "64": "assets/64.png",\n    "128": "assets/128.png"\n  },\n\n  "app": {\n    "background": {\n      "scripts": ["background.js"]\n    }\n  }\n}\n');
+            if ( $(".frame-mode").is(":checked") ) {
+              zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      frame: 'none',\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
+            } else {
+              zip.file("background.js", "/**\n * Listens for the app launching, then creates the window.\n *\n * @see http://developer.chrome.com/apps/app.runtime.html\n * @see http://developer.chrome.com/apps/app.window.html\n */\nchrome.app.runtime.onLaunched.addListener(function(launchData) {\n  chrome.app.window.create(\n    'app/index.html',\n    {\n      id: 'mainWindow',\n      innerBounds: {\n        'width': 800,\n        'height': 600\n      }\n    }\n  );\n});");
+            }
+          }
 
-            // Your Web App
-            var content = zip.generate({type:"blob"});
-            saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-chrome.zip");
-            $(".dialog-bg").fadeOut();
-          });
-        }
-        return false;
-      });
+          // Your Web App
+          var content = zip.generate({type:"blob"});
+          saveAs(content, $("[data-action=sitetitle]").val().split(" ").join("-") + "-chrome.zip");
+          $(".dialog-bg").fadeOut();
+        });
+      }
       return false;
-    };
-    reader.readAsArrayBuffer(file);
+    });
+    return false;
+  };
+  reader.readAsArrayBuffer(file);
+};
+
+// Check Application Fields (For Download)
+$("[data-action=load]").on("change", function(evt) {
+  if ( $(this).val() === "" ) {
+    $(".watch").addClass("hide");
+  } else {
+    $(".watch").removeClass("hide");
+    var file = evt.target.files[0];
+  desktopExport(file);
   }
 });
 
