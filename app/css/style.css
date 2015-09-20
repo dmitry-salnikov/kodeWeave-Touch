@@ -249,12 +249,13 @@ nav {
   z-index: 1;
 }
 #holder {
-  border: 10px dashed #ccc;
+  border: 7px dashed #ccc;
   margin: 0 auto 20px auto;
+  padding: 8px;
   text-align: center;
 }
 #holder.hover {
-  border: 10px dashed #333;
+  border: 7px dashed #333;
 }
 .txtcenter {
   text-align: center;
