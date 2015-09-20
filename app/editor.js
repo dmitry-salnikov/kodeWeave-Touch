@@ -72,20 +72,20 @@ var myarray = [],
       shortcut.add("Ctrl+S", function() {
         $("[data-action=download-zip]").trigger("click");
       });
-      window.addEventListener("keydown", function(e) {
-      // New Document (CMD+N)
-        if ( e.metaKey && e.keyCode == 78 ) {
-          $(".check").attr("checked", false).trigger("change");
-          htmlEditor.setValue("<!-- comment -->\nhello world!");
-          cssEditor.setValue("");
-          jsEditor.setValue("");
-          mdEditor.setValue("");
-        }
-      // Export as Zip (CMD+S)
-        if ( e.metaKey && e.keyCode == 83 ) {
-          $("[data-action=download-zip]").trigger("click");
-        }
-      });
+      // window.addEventListener("keydown", function(e) {
+      // // New Document (CMD+N)
+      //   if ( e.metaKey && e.keyCode == 78 ) {
+      //     $(".check").attr("checked", false).trigger("change");
+      //     htmlEditor.setValue("<!-- comment -->\nhello world!");
+      //     cssEditor.setValue("");
+      //     jsEditor.setValue("");
+      //     mdEditor.setValue("");
+      //   }
+      // // Export as Zip (CMD+S)
+      //   if ( e.metaKey && e.keyCode == 83 ) {
+      //     $("[data-action=download-zip]").trigger("click");
+      //   }
+      // });
     },
     initGenerators = function() {
       // Tidy Up/Beautify Code
@@ -2376,12 +2376,12 @@ var desktopExport = function(file) {
     });
 
     // Download as Mac App
-    $("[data-action=download-as-mac-app-32]").on("click", function() {
+    $("[data-action=download-as-mac-app]").on("click", function() {
       if ( $("[data-action=download]").hasClass("active") ) {
         $("[data-action=download]").trigger("click");
       }
 
-      JSZipUtils.getBinaryContent('zips/YourMacApp-32bit.zip', function(err, data) {
+      JSZipUtils.getBinaryContent('zips/YourMacApp.zip', function(err, data) {
         if(err) {
           throw err; // or handle err
         }
@@ -2441,9 +2441,9 @@ var desktopExport = function(file) {
         
         eval( $("[data-action=ziplibs]").val().replace(/libraries/g,"data/content/app/libraries") );
 
-        zip.file("data/package.json", '{\n  "main"  : "content/index.html",\n  "name"  : "'+ $("[data-action=sitetitle]").val() +'",\n  "window": {\n    "toolbar"    : false,\n    "frame"      : false,\n    "transparent": true\n  }\n}');
-        zip.file("data/content/index.html", '<!doctype html>\n<html>\n <head>\n    <title>'+ $("[data-action=sitetitle]").val() +'</title>\n    <link rel="stylesheet" href="css/style.css">\n  </head>\n <body>\n    <div class="container">\n      <div class="titlebar txtcenter">\n        <div class="fl menubtns">\n          <a class="fl close">\n            <i class="fa fa-times"></i>\n          </a>\n          <a class="fl minimize">\n            <i class="fa fa-minus"></i>\n          </a>\n          <a class="fl maximize">\n            <i class="maxtr fa fa-caret-left"></i>\n            <i class="maxbl fa fa-caret-left"></i>\n          </a>\n        </div>\n        \n        <span data-set="appname"></span>\n      </div>\n\n      <iframe src="app/index.html"></iframe>\n    </div>\n\n    <script src="js/main.js"></script>\n  </body>\n</html>');
-        zip.file("data/content/js/main.js", 'document.addEventListener("DOMContentLoaded", function() {\n  // Load library\n  var gui = require("nw.gui");\n\n  // Reference to window\n  var win = gui.Window.get();\n\n  document.querySelector(".close").onclick = function() {\n    window.close();\n  };\n\n  document.querySelector(".minimize").onclick = function() {\n    win.minimize();\n  };\n\n  document.querySelector(".titlebar").addEventListener("dblclick", function() {\n    if (win.isMaximized) {\n      win.unmaximize();\n      win.isMaximized = false;\n    } else {\n      win.maximize();\n    }\n  });\n\n  document.querySelector(".maximize").onclick = function() {\n    if (win.isMaximized) {\n      win.unmaximize();\n      win.isMaximized = false;\n    } else {\n      win.maximize();\n    }\n  };\n\n  win.on("maximize", function() {\n    win.isMaximized = true;\n  });\n  win.on("unmaximize", function() {\n    win.isMaximized = false;\n  });\n  win.on("enter-fullscreen", function() {\n    document.querySelector(".titlebar").classList.toggle("hide");\n    document.querySelector("iframe").style.top = 0;\n    document.querySelector("iframe").style.height = "100%";\n  });\n  win.on("leave-fullscreen", function() {\n    document.querySelector(".titlebar").classList.toggle("hide");\n    document.querySelector("iframe").style.top = 28 + "px";\n    document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n  });\n  document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n\n  window.addEventListener("keydown", function(e) {\n  // Reload App (CMD+R)\n    if ( e.metaKey && e.keyCode == 82 ) {\n      location.reload(true);\n    } else \n  // Hide Mac App (CMD+W)\n    if ( e.metaKey && e.keyCode == 87 ) {\n      win.hide();\n    }\n    // else\n  // Toggle fullscreen window (CTRL+CMD+F)\n    // if ( e.shiftKey && e.metaKey && e.keyCode == 70 ) {\n      // win.toggleFullscreen();\n    // }\n  });\n\n  // Close buttons hides app\n  // var hidden = false;\n  // gui.App.on("reopen", function(){\n  //   hidden = false;\n  //   win.show();\n  // })\n\n  // win.on("close", function(){\n  //   if (hidden == true) {\n  //     gui.App.quit();\n  //   } else {\n  //     win.hide();\n  //     hidden = true;\n  //   }\n  // });\n\n  // Create menu container\n  var Menu = new gui.Menu({\n    type: "menubar"\n  });\n\n  //initialize default mac menu\n  Menu.createMacBuiltin("'+ $("[data-action=sitetitle]").val() +'");\n\n  // Get the root menu from the default mac menu\n  var rootMenu = Menu.items[2].submenu;\n\n  // Append new item to root menu\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Toggle Fullscreen",\n      key: "F",\n      modifiers: "cmd",\n      click : function () {\n        win.toggleFullscreen();\n      }\n    })\n  );\n\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Reload App",\n      key: "R",\n      modifiers: "shift-cmd",\n      click : function () {\n        location.reload(true);\n      }\n    })\n  );\n\n  // Append Menu to Window\n  gui.Window.get().menu = Menu;\n\n  // Show app name in titlebar\n  document.querySelector("[data-set=appname]").innerHTML = document.title;\n\n  // Responsive UI\n  window.addEventListener("resize", function() {\n    document.querySelector("iframe").style.height = window.innerHeight - 28 + "px";\n  });\n});');
+        zip.file("data/package.json", '{\n  "main"  : "content/index.html",\n  "name"  : "'+ $("[data-action=sitetitle]").val() +'",\n  "window": {\n    "toolbar"    : false\n  }\n}');
+        zip.file("data/content/index.html", '<!doctype html>\n<html>\n <head>\n    <title>'+ $("[data-action=sitetitle]").val() +'</title>\n    <style>\n      iframe {\n        position: absolute;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n        overflow: visible;\n        border: 0;\n      }\n    </style>\n  </head>\n <body>\n    <iframe src="app/index.html"></iframe>\n\n    <script src="js/main.js"></script>\n  </body>\n</html>');
+        zip.file("data/content/js/main.js", 'document.addEventListener("DOMContentLoaded", function() {\n  // Load library\n  var gui = require("nw.gui");\n\n  // Reference to window\n  var win = gui.Window.get();\n\n  window.addEventListener("keydown", function(e) {\n  // Reload App (CMD+R)\n    if ( e.metaKey && e.keyCode == 82 ) {\n      location.reload(true);\n    }\n  //   else \n  // // Hide Mac App (CMD+W)\n  //   if ( e.metaKey && e.keyCode == 87 ) {\n  //     win.hide();\n  //   }\n    // else\n  // Toggle fullscreen window (CTRL+CMD+F)\n    // if ( e.shiftKey && e.metaKey && e.keyCode == 70 ) {\n      // win.toggleFullscreen();\n    // }\n  });\n\n  // Close buttons hides app\n  // var hidden = false;\n  // gui.App.on("reopen", function(){\n  //   hidden = false;\n  //   win.show();\n  // })\n\n  // win.on("close", function(){\n  //   if (hidden == true) {\n  //     gui.App.quit();\n  //   } else {\n  //     win.hide();\n  //     hidden = true;\n  //   }\n  // });\n\n  // Create menu container\n  var Menu = new gui.Menu({\n    type: "menubar"\n  });\n\n  //initialize default mac menu\n  Menu.createMacBuiltin("'+ $("[data-action=sitetitle]").val() +'");\n\n  // Get the root menu from the default mac menu\n  var rootMenu = Menu.items[2].submenu;\n\n  // Append new item to root menu\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Toggle Fullscreen",\n      key: "F",\n      modifiers: "cmd",\n      click : function () {\n        win.toggleFullscreen();\n      }\n    })\n  );\n\n  rootMenu.insert(\n    new gui.MenuItem({\n      type: "normal",\n      label: "Reload App",\n      key: "R",\n      modifiers: "shift-cmd",\n      click : function () {\n        location.reload(true);\n      }\n    })\n  );\n\n  // Append Menu to Window\n  gui.Window.get().menu = Menu;\n});');
 
         zip.file("run.sh", "open -a /Applications/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app/Contents/data/"+ $("[data-action=sitetitle]").val().replace(/ /g, "") +".app");
 

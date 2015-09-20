@@ -19,8 +19,6 @@
     <script src="lib/jsbeautify/unpackers/p_a_c_k_e_r_unpacker.js"></script>
     <script src="lib/jsbeautify/unpackers/myobfuscate_unpacker.js"></script>
     
-    <script src="libraries/jqueryui/jqueryui.min.js"></script>
-    <script src="libraries/jqueryui/jquery.ui.touch-punch.min.js"></script>
     <script src="lib/jszip/jszip.min.js"></script>
     <script src="lib/jszip/jszip-utils.js"></script>
     <script src="lib/jszip/FileSaver.js"></script>
@@ -47,7 +45,9 @@
     <script src="codemirror/addon/search/searchcursor.js"></script>
     <script src="codemirror/addon/dialog/dialog.js"></script>
     <script src="codemirror/addon/formatting.js"></script>
-    
+<!-- 
+    <script src="codemirror/addon/search/match-highlighter.js"></script>
+-->
     <script src="codemirror/htmlhint.js"></script>
     <script src="codemirror/csslint.js"></script>
     <script src="codemirror/jshint.js"></script>
@@ -138,7 +138,7 @@
             Uppercase
           </a><br>
           <a class="fl" data-action="search">
-            Search
+            Find
           </a>
           <a class="fn" data-action="replace">
             Replace
@@ -662,8 +662,8 @@
             </a>
           </li>
           <li class="watch hide">
-            <a data-action="download-as-mac-app-32">
-              Download as Mac 32bit App (node-webkit)
+            <a data-action="download-as-mac-app">
+              Download as Mac App (node-webkit)
             </a>
           </li>
           <li class="watch hide">
@@ -899,5 +899,6 @@
     <script src="main.js"></script>
     <script src="editor.js"></script>
     <script src="lib/hscroll.js"></script>
+    <script src="keys.js"></script>
   </body>
 </html>
