@@ -2398,7 +2398,7 @@ $("[data-action=load]").on("change", function(evt) {
           }
           // check if js editor has a value
           if ( jsEditor.getValue() !== "") {
-            if (zip.getValue() === "") {
+            if (zjsEditor.getValue() === "") {
               closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />" + "\n  </head>\n  <body>\n\n");
             } else {
               closeRefs.setValue($("[data-action=library-code]").val().split(grabString).join(replaceString) + "    <link rel=\"stylesheet\" href=\"libraries/font-awesome/font-awesome.css\" />\n    <link rel=\"stylesheet\" href=\"libraries/font-awesome/macset.css\" />\n    <link rel=\"stylesheet\" href=\"css/index.css\" /></textarea>" + "\n  </head>\n  <body>\n\n");
