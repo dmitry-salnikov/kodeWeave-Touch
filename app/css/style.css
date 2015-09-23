@@ -5,6 +5,7 @@
 @import url("../codemirror/addon/fold/foldgutter.css");
 @import url("../codemirror/addon/lint/lint.css");
 @import url("../codemirror/addon/dialog/dialog.css");
+@import url("../codemirror/addon/hint/show-hint.css");
 @import url("../libraries/alertify/themes/alertify.core.css");
 @import url("../libraries/alertify/themes/alertify.default.css");
 @import url("../jqwidgets/styles/jqx.base.css");

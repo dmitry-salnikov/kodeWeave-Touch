@@ -48,6 +48,7 @@ function updateCSSHints() {
   });// end of cssEditor.operation
 }// end of updateCSSHints
 // Handles CodeMirror Preview Delay
+var timeout;
 var delay;
 var cssWaiting;
 var jsWaiting;
@@ -208,8 +209,6 @@ var applyUppercase = function() {
   }
 };
 
-
-
 // Initialize HTML editor
 var htmlEditor = CodeMirror(document.getElementById("htmlEditor"), {
   mode: "text/html",
@@ -225,9 +224,11 @@ var htmlEditor = CodeMirror(document.getElementById("htmlEditor"), {
   gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
     "Ctrl-'": function(){ applyLowercase(); },
-    "Ctrl-\\": function(){ applyUppercase(); }
+    "Ctrl-\\": function(){ applyUppercase(); },
+    "Ctrl-Space": "autocomplete"
   },
-  value: "<!-- comment -->\nhello world!"
+  value: "<!-- comment -->\nhello world!",
+  paletteHints: true
 });
 Inlet(htmlEditor);
 emmetCodeMirror(htmlEditor);
@@ -245,8 +246,10 @@ var cssEditor = CodeMirror(document.getElementById("cssEditor"), {
   extraKeys: {
     "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
     "Ctrl-'": function(){ applyLowercase(); },
-    "Ctrl-\\": function(){ applyUppercase(); }
-  }
+    "Ctrl-\\": function(){ applyUppercase(); },
+    "Ctrl-Space": "autocomplete"
+  },
+  paletteHints: true
 });
 Inlet(cssEditor);
 emmetCodeMirror(cssEditor);
@@ -263,8 +266,11 @@ var jsEditor = CodeMirror(document.getElementById("jsEditor"), {
   gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
     "Ctrl-'": function(){ applyLowercase(); },
-    "Ctrl-\\": function(){ applyUppercase(); }
-  }
+    "Ctrl-\\": function(){ applyUppercase(); },
+    "Ctrl-Space": "autocomplete"
+  },
+  mode: {name: "javascript", globalVars: false},
+  paletteHints: true
 });
 var mdEditor = CodeMirror(document.getElementById("mdEditor"), {
   mode: "text/x-markdown",
@@ -307,16 +313,18 @@ var closeFinal = CodeMirror(document.querySelector("#closeFinal"), {
 htmlEditor.on("change", function() {
   clearTimeout(delay);
   delay = setTimeout(updatePreview, 300);
-    for (var i = 0; i < widgets.length; ++i){
-      cssEditor.removeLineWidget(widgets[i]);
-      jsEditor.removeLineWidget(widgets[i]);
-    }
+  for (var i = 0; i < widgets.length; ++i) {
+    cssEditor.removeLineWidget(widgets[i]);
+    jsEditor.removeLineWidget(widgets[i]);
+  }
+  // CodeMirror.showHint(htmlEditor);
 });
 cssEditor.on("change", function() {
   clearTimeout(delay);
   clearTimeout(cssWaiting);
   delay = setTimeout(updatePreview, 300);
   cssWaiting = setTimeout(updateCSSHints, 300);
+  // CodeMirror.showHint(cssEditor);
 });
 jsEditor.on("change", function() {
   clearTimeout(delay);
@@ -324,6 +332,27 @@ jsEditor.on("change", function() {
   delay = setTimeout(updatePreview, 300);
   jsWaiting = setTimeout(updateJSHints, 300);
 });
+// jsEditor.on("keyup", function(cm, event) {
+//   var popupKeyCodes = {
+//     "9": "tab",
+//     // "13": "enter",
+//     // "27": "escape",
+//     "33": "pageup",
+//     "34": "pagedown",
+//     "35": "end",
+//     "36": "home",
+//     "38": "up",
+//     "40": "down"
+//   }
+
+//   if(!popupKeyCodes[(event.keyCode || event.which).toString()] && !jsEditor.state.completionActive) {
+//     if(timeout) clearTimeout(timeout);
+//     timeout = setTimeout(function() {
+//       console.log('showing hint');        
+//         CodeMirror.showHint(cm, CodeMirror.hint.javascript, {completeSingle: false});
+//     }, 150);
+//   }
+// });
 mdEditor.on("change", function() {
   clearTimeout(delay);
   delay = setTimeout(markdownPreview, 300);
