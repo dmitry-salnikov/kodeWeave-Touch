@@ -291,6 +291,19 @@ var mdEditor = CodeMirror(document.getElementById("mdEditor"), {
 Inlet(jsEditor);
 // emmetCodeMirror(jsEditor);
 
+if ( localStorage.getItem("htmlData")) {
+  htmlEditor.setValue(localStorage.getItem("htmlData")); 
+}
+if ( localStorage.getItem("cssData")) {
+  cssEditor.setValue(localStorage.getItem("cssData")); 
+}
+if ( localStorage.getItem("jsData")) {
+  jsEditor.setValue(localStorage.getItem("jsData")); 
+}
+if ( localStorage.getItem("mdData")) {
+  mdEditor.setValue(localStorage.getItem("mdData")); 
+}
+
 // Initialize Open and Close for HTML editor
 var openHTML = CodeMirror(document.querySelector("#openHTML"), {
   mode: "text/html",
@@ -318,6 +331,7 @@ htmlEditor.on("change", function() {
     jsEditor.removeLineWidget(widgets[i]);
   }
   // CodeMirror.showHint(htmlEditor);
+  localStorage.setItem("htmlData", htmlEditor.getValue());
 });
 cssEditor.on("change", function() {
   clearTimeout(delay);
@@ -325,12 +339,14 @@ cssEditor.on("change", function() {
   delay = setTimeout(updatePreview, 300);
   cssWaiting = setTimeout(updateCSSHints, 300);
   // CodeMirror.showHint(cssEditor);
+  localStorage.setItem("cssData", cssEditor.getValue());
 });
 jsEditor.on("change", function() {
   clearTimeout(delay);
   clearTimeout(jsWaiting);
   delay = setTimeout(updatePreview, 300);
   jsWaiting = setTimeout(updateJSHints, 300);
+  localStorage.setItem("jsData", jsEditor.getValue());
 });
 // jsEditor.on("keyup", function(cm, event) {
 //   var popupKeyCodes = {
@@ -356,6 +372,7 @@ jsEditor.on("change", function() {
 mdEditor.on("change", function() {
   clearTimeout(delay);
   delay = setTimeout(markdownPreview, 300);
+  localStorage.setItem("mdData", mdEditor.getValue());
 });
 
 // Don't add to code, replace with new drop file's code
