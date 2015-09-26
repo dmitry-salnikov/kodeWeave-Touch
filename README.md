@@ -40,7 +40,3 @@ You can also submit a pull request here on Github :)
 **Note:** kodeWeave is being developed on the [Koding Network](https://koding.com/R/mikethedj4). 
 
 Of course kodeWeave is free and open source, so you can always fork the project and have fun :)
-
-### Todos
-
- - Add Mac 64bit export (utilizing Electron framework)
