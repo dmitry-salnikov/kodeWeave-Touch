@@ -122,6 +122,10 @@ $(window).load(function() {
           download_to_editor(file[0].link, jsEditor);
         } else if (file[0].link.toLowerCase().substring(file[0].link.length - 3) === ".md") {
           download_to_editor(file[0].link, mdEditor);
+        } else if (file[0].link.toLowerCase().substring(file[0].link.length - 4) === ".svg") {
+          download_to_editor(file[0].link, htmlEditor);
+        } else {
+          alertify.error("Sorry kodeWeave does not support that file type!");
         }
         window.close();
       },
@@ -130,7 +134,7 @@ $(window).load(function() {
       },
       linkType: "direct", // "preview" or "direct"
       multiselect: false, // true or false
-      extensions: [".html", ".css", ".js", ".md"]
+      extensions: [".html", ".css", ".js", ".md", ".svg"]
   };
 
   $("[data-action=open-dropbox]").click(function() {
@@ -163,6 +167,10 @@ $(window).load(function() {
           jsEditor.setValue( e.target.result );
         } else if (path.toLowerCase().substring(path.length - 3) === ".md") {
           mdEditor.setValue( e.target.result );
+        } else if (path.toLowerCase().substring(path.length - 3) === ".svg") {
+          htmlEditor.setValue( e.target.result );
+        } else {
+          alertify.error("Sorry kodeWeave does not support that file type!");
         }
       }
       $("[data-action=tools].active").trigger("click");
