@@ -69,6 +69,8 @@
     <script src="lib/cssTidy.js"></script>
     <script src="lib/jsTidy.js"></script>
 
+    <script src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="0aci2snop4eu2qc"></script>
+
     <script>
       TogetherJSConfig_siteName="kodeWeave";
       TogetherJSConfig_toolName="Teamwork";
@@ -108,19 +110,13 @@
         -->
         
         <div>
-          <a class="fl" data-action="open-html">
-            <i class="fa fa-upload"></i> HTML
+          <a class="fl" data-action="open-file">
+            Load Local
           </a>
-          <a class="fn" data-action="open-css">
-            <i class="fa fa-upload"></i> CSS
+          <a class="fr" data-action="open-dropbox">
+            Load Dropbox
           </a>
-          <a class="fn" data-action="open-js">
-            <i class="fa fa-upload"></i> JS
-          </a>
-          <a class="fr" data-action="open-md">
-            <i class="fa fa-upload"></i> MD
-          </a>
-        </div><br />
+        </div><br /><br />
 
         <div>
           <a class="fl" data-action="minify">
@@ -157,10 +153,7 @@
         
         <!-- Load Files Into Editor -->
         <div class="hide">
-          <input id="loadhtml" type="file">
-          <input id="loadcss" type="file">
-          <input id="loadjs" type="file">
-          <input id="loadmd" type="file">
+          <input id="loadfile" type="file">
         </div>
       </div>
       
@@ -907,6 +900,5 @@
     <script src="main.js"></script>
     <script src="editor.js"></script>
     <script src="lib/hscroll.js"></script>
-    <script src="keys.js"></script>
   </body>
 </html>

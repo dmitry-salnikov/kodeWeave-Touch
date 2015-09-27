@@ -59,6 +59,11 @@ var myarray = [],
       return $.get(url, null, function (data) {
         el.val(data);
       }, "text");
+    },
+    download_to_editor = function (url, el) {
+      return $.get(url, null, function (data) {
+        el.setValue(data);
+      }, "text");
     };
 
 // Load Files, Grid Alignment
@@ -103,81 +108,68 @@ $(window).load(function() {
     }
   });
 
-  // Load Files Into Editor
-  $("[data-action=open-html]").click(function() {
-    $("#loadhtml").trigger("click");
-  });
-  $("[data-action=open-css]").click(function() {
-    $("#loadcss").trigger("click");
-  });
-  $("[data-action=open-js]").click(function() {
-    $("#loadjs").trigger("click");
-  });
-  $("[data-action=open-md]").click(function() {
-    $("#loadmd").trigger("click");
+  /**
+   * Chooser (Drop Box)
+   * https://www.dropbox.com/developers/dropins/chooser/js
+   */
+  options = {
+      success: function(file) {
+        if (file[0].link.toLowerCase().substring(file[0].link.length - 5) === ".html") {
+          download_to_editor(file[0].link, htmlEditor);
+        } else if (file[0].link.toLowerCase().substring(file[0].link.length - 4) === ".css") {
+          download_to_editor(file[0].link, cssEditor);
+        } else if (file[0].link.toLowerCase().substring(file[0].link.length - 3) === ".js") {
+          download_to_editor(file[0].link, jsEditor);
+        } else if (file[0].link.toLowerCase().substring(file[0].link.length - 3) === ".md") {
+          download_to_editor(file[0].link, mdEditor);
+        }
+        window.close();
+      },
+      cancel: function() {
+        //optional
+      },
+      linkType: "direct", // "preview" or "direct"
+      multiselect: false, // true or false
+      extensions: [".html", ".css", ".js", ".md"]
+  };
+
+  $("[data-action=open-dropbox]").click(function() {
+    Dropbox.choose(options);
   });
 
   TogetherJS.hub.on("togetherjs.hello togetherjs.hello-back", function() {
     TogetherJS.reinitialize();
   });
+
+  // Load Files Into Editor
+  $("[data-action=open-file]").click(function() {
+    $("#loadfile").trigger("click");
+  });
+  $("#loadfile").on("change", function() {
+    loadfile(this);
+  });
   
   if (window.File && window.FileReader && window.FileList && window.Blob) {
-    var loadHTML = function(input) {
+    function loadfile(input) {
       var reader = new FileReader();
-        reader.onload = function(e) {
-          var content = e.target.result;
+      reader.onload = function(e) {
+        // var path = input.value.replace(/.*(\/|\\)/, '');
+        var path = input.value;
+        if (path.toLowerCase().substring(path.length - 5) === ".html") {
           htmlEditor.setValue( e.target.result );
-        };
-      reader.readAsText(input[0]);
-    };
-    var loadCSS = function(input) {
-      var reader = new FileReader();
-        reader.onload = function(e) {
-          var content = e.target.result;
+        } else if (path.toLowerCase().substring(path.length - 4) === ".css") {
           cssEditor.setValue( e.target.result );
-        };
-      reader.readAsText(input[0]);
-    };
-    var loadJS = function(input) {
-      var reader = new FileReader();
-        reader.onload = function(e) {
-          var content = e.target.result;
+        } else if (path.toLowerCase().substring(path.length - 3) === ".js") {
           jsEditor.setValue( e.target.result );
-        };
-      reader.readAsText(input[0]);
-    };
-    var loadMD = function(input) {
-      var reader = new FileReader();
-        reader.onload = function(e) {
-          var content = e.target.result;
+        } else if (path.toLowerCase().substring(path.length - 3) === ".md") {
           mdEditor.setValue( e.target.result );
-        };
-      reader.readAsText(input[0]);
-    };
-
-    try {
-      $('#loadhtml').on('change', function() {
-        loadHTML(this.files);
-        $("[data-action=tools].active").trigger("click");
-      });
-      $('#loadcss').on('change', function() {
-        loadCSS(this.files);
-        $("[data-action=tools].active").trigger("click");
-      });
-      $('#loadjs').on('change', function() {
-        loadJS(this.files);
-        $("[data-action=tools].active").trigger("click");
-      });
-      $('#loadmd').on('change', function() {
-        loadMD(this.files);
-        $("[data-action=tools].active").trigger("click");
-      });
-    }
-    catch(event) {
-      alertify.error("Oops there's been an error.");
+        }
+      }
+      $("[data-action=tools].active").trigger("click");
+      reader.readAsText(input.files[0]);
     }
   } else {
-    alertify.error('The File APIs are not fully supported in this browser.');
+    alertify.error("The File APIs are not fully supported in this browser.");
   }
 }).on("load resize", function() {
   // Dropdown Styles Libraries
