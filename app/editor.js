@@ -77,27 +77,33 @@ $(window).load(function() {
   $("#htmlEditor, #cssEditor, #jsEditor, #mdEditor").on("mouseup touchend", function() {
     if ( $(this).attr("id") === "htmlEditor" ) {
       activeEditor.val("htmlEditor");
-      setTimeout(updatePreview, 300);
+      clearTimeout(delay);
+      delay = setTimeout(updatePreview, 300);
       if ($("#function").is(":hidden")) {
         $("#function").show();
       }
     } else if ( $(this).attr("id") === "cssEditor" ) {
       activeEditor.val("cssEditor");
-      setTimeout(updatePreview, 300);
-      setTimeout(updateCSSHints, 300);
+      clearTimeout(delay);
+      clearTimeout(cssWaiting);
+      delay = setTimeout(updatePreview, 300);
+      cssWaiting = setTimeout(updateCSSHints, 300);
       if ($("#function").is(":visible")) {
         $("#function").hide();
       }
     } else if ( $(this).attr("id") === "jsEditor" ) {
       activeEditor.val("jsEditor");
-      setTimeout(updatePreview, 300);
-      setTimeout(updateJSHints, 300);
+      clearTimeout(delay);
+      clearTimeout(jsWaiting);
+      delay = setTimeout(updatePreview, 300);
+      jsWaiting = setTimeout(updateJSHints, 300);
       if ($("#function").is(":hidden")) {
         $("#function").show();
       }
     } else if ( $(this).attr("id") === "mdEditor" ) {
       activeEditor.val("mdEditor");
-      setTimeout(markdownPreview, 300);
+      clearTimeout(delay);
+      delay = setTimeout(markdownPreview, 300);
       if ($("#function").is(":hidden")) {
         $("#function").show();
       }
@@ -894,6 +900,100 @@ $("[data-action=check]").on("change", function() {
   } else {
     $('.chartjs, .chartjszip').clear();
   }
+  if ( $("#codemirror").is(":checked") ) {
+    $('.codemirror').clear();
+
+    download_to_textbox('libraries/codemirror/codemirror.css', $('.codemirror1'));
+    download_to_textbox('libraries/codemirror/addon/fold/foldgutter.css', $('.codemirror2'));
+    download_to_textbox('libraries/codemirror/codemirror.js', $('.codemirror3'));
+    download_to_textbox('libraries/codemirror/javascripts/code-completion.js', $('.codemirror4'));
+    download_to_textbox('libraries/codemirror/javascripts/css-completion.js', $('.codemirror5'));
+    download_to_textbox('libraries/codemirror/javascripts/html-completion.js', $('.codemirror6'));
+    download_to_textbox('libraries/codemirror/mode/javascript/javascript.js', $('.codemirror7'));
+    download_to_textbox('libraries/codemirror/mode/xml/xml.js', $('.codemirror8'));
+    download_to_textbox('libraries/codemirror/mode/css/css.js', $('.codemirror9'));
+    download_to_textbox('libraries/codemirror/mode/htmlmixed/htmlmixed.js', $('.codemirror10'));
+    download_to_textbox('libraries/codemirror/addon/edit/closetag.js', $('.codemirror11'));
+    download_to_textbox('libraries/codemirror/addon/edit/matchbrackets.js', $('.codemirror12'));
+    download_to_textbox('libraries/codemirror/addon/selection/active-line.js', $('.codemirror13'));
+    download_to_textbox('libraries/codemirror/addon/fold/foldcode.js', $('.codemirror14'));
+    download_to_textbox('libraries/codemirror/addon/fold/foldgutter.js', $('.codemirror15'));
+    download_to_textbox('libraries/codemirror/addon/fold/brace-fold.js', $('.codemirror16'));
+    download_to_textbox('libraries/codemirror/addon/fold/xml-fold.js', $('.codemirror17'));
+    download_to_textbox('libraries/codemirror/addon/fold/comment-fold.js', $('.codemirror18'));
+    download_to_textbox('libraries/codemirror/addon/search/search.js', $('.codemirror19'));
+    download_to_textbox('libraries/codemirror/addon/search/searchcursor.js', $('.codemirror20'));
+    download_to_textbox('libraries/codemirror/addon/dialog/dialog.js', $('.codemirror21'));
+    download_to_textbox('libraries/codemirror/addon/hint/show-hint.js', $('.codemirror22'));
+    download_to_textbox('libraries/codemirror/addon/hint/xml-hint.js', $('.codemirror23'));
+    download_to_textbox('libraries/codemirror/addon/hint/html-hint.js', $('.codemirror24'));
+    download_to_textbox('libraries/codemirror/addon/hint/css-hint.js', $('.codemirror25'));
+    download_to_textbox('libraries/codemirror/addon/hint/javascript-hint.js', $('.codemirror26'));
+    download_to_textbox('libraries/codemirror/addon/search/match-highlighter.js', $('.codemirror27'));
+    download_to_textbox('libraries/codemirror/htmlhint.js', $('.codemirror28'));
+    download_to_textbox('libraries/codemirror/csslint.js', $('.codemirror29'));
+    download_to_textbox('libraries/codemirror/jshint.js', $('.codemirror30'));
+    download_to_textbox('libraries/codemirror/addon/lint/lint.js', $('.codemirror31'));
+    download_to_textbox('libraries/codemirror/addon/lint/html-lint.js', $('.codemirror32'));
+    download_to_textbox('libraries/codemirror/addon/lint/css-lint.js', $('.codemirror33'));
+    download_to_textbox('libraries/codemirror/addon/lint/javascript-lint.js', $('.codemirror34'));
+    download_to_textbox('libraries/codemirror/inlet.min.js', $('.codemirror35'));
+    download_to_textbox('libraries/codemirror/inlet.css', $('.codemirror36'));
+    download_to_textbox('libraries/codemirror/emmet.js', $('.codemirror37'));
+    download_to_textbox('libraries/codemirror/addon/lint/lint.css', $('.codemirror38'));
+    download_to_textbox('libraries/codemirror/addon/dialog/dialog.css', $('.codemirror39'));
+    download_to_textbox('libraries/codemirror/addon/hint/show-hint.css', $('.codemirror40'));
+
+    // var grabCodemirror = [
+    //   "zip.file('libraries/codemirror/codemirror.css', $('.codemirror1').val());\n",
+    //   "zip.file('libraries/codemirror/addon/fold/foldgutter.css', $('.codemirror2').val());\n",
+    //   "zip.file('libraries/codemirror/codemirror.js', $('.codemirror3').val());\n",
+    //   "zip.file('libraries/codemirror/javascripts/code-completion.js', $('.codemirror4').val());\n",
+    //   "zip.file('libraries/codemirror/javascripts/css-completion.js', $('.codemirror5').val());\n",
+    //   "zip.file('libraries/codemirror/javascripts/html-completion.js', $('.codemirror6').val());\n",
+    //   "zip.file('libraries/codemirror/mode/javascript/javascript.js', $('.codemirror7').val());\n",
+    //   "zip.file('libraries/codemirror/mode/xml/xml.js', $('.codemirror8').val());\n",
+    //   "zip.file('libraries/codemirror/mode/css/css.js', $('.codemirror9').val());\n",
+    //   "zip.file('libraries/codemirror/mode/htmlmixed/htmlmixed.js', $('.codemirror10').val());\n",
+    //   "zip.file('libraries/codemirror/addon/edit/closetag.js', $('.codemirror11').val());\n",
+    //   "zip.file('libraries/codemirror/addon/edit/matchbrackets.js', $('.codemirror12').val());\n",
+    //   "zip.file('libraries/codemirror/addon/selection/active-line.js', $('.codemirror13').val());\n",
+    //   "zip.file('libraries/codemirror/addon/fold/foldcode.js', $('.codemirror14').val());\n",
+    //   "zip.file('libraries/codemirror/addon/fold/foldgutter.js', $('.codemirror15').val());\n",
+    //   "zip.file('libraries/codemirror/addon/fold/brace-fold.js', $('.codemirror16').val());\n",
+    //   "zip.file('libraries/codemirror/addon/fold/xml-fold.js', $('.codemirror17').val());\n",
+    //   "zip.file('libraries/codemirror/addon/fold/comment-fold.js', $('.codemirror18').val());\n",
+    //   "zip.file('libraries/codemirror/addon/search/search.js', $('.codemirror19').val());\n",
+    //   "zip.file('libraries/codemirror/addon/search/searchcursor.js', $('.codemirror20').val());\n",
+    //   "zip.file('libraries/codemirror/addon/dialog/dialog.js', $('.codemirror21').val());\n",
+    //   "zip.file('libraries/codemirror/addon/hint/show-hint.js', $('.codemirror22').val());\n",
+    //   "zip.file('libraries/codemirror/addon/hint/xml-hint.js', $('.codemirror23').val());\n",
+    //   "zip.file('libraries/codemirror/addon/hint/html-hint.js', $('.codemirror24').val());\n",
+    //   "zip.file('libraries/codemirror/addon/hint/css-hint.js', $('.codemirror25').val());\n",
+    //   "zip.file('libraries/codemirror/addon/hint/javascript-hint.js', $('.codemirror26').val());\n",
+    //   "zip.file('libraries/codemirror/addon/search/match-highlighter.js', $('.codemirror27').val());\n",
+    //   "zip.file('libraries/codemirror/htmlhint.js', $('.codemirror28').val());\n",
+    //   "zip.file('libraries/codemirror/csslint.js', $('.codemirror29').val());\n",
+    //   "zip.file('libraries/codemirror/jshint.js', $('.codemirror30').val());\n",
+    //   "zip.file('libraries/codemirror/addon/lint/lint.js', $('.codemirror31').val());\n",
+    //   "zip.file('libraries/codemirror/addon/lint/html-lint.js', $('.codemirror32').val());\n",
+    //   "zip.file('libraries/codemirror/addon/lint/css-lint.js', $('.codemirror33').val());\n",
+    //   "zip.file('libraries/codemirror/addon/lint/javascript-lint.js', $('.codemirror34').val());\n",
+    //   "zip.file('libraries/codemirror/inlet.min.js', $('.codemirror35').val());\n",
+    //   "zip.file('libraries/codemirror/inlet.css', $('.codemirror36').val());\n",
+    //   "zip.file('libraries/codemirror/emmet.js', $('.codemirror37').val());\n",
+    //   "zip.file('libraries/codemirror/addon/lint/lint.css', $('.codemirror38').val());\n",
+    //   "zip.file('libraries/codemirror/addon/dialog/dialog.css', $('.codemirror39').val());\n",
+    //   "zip.file('libraries/codemirror/addon/hint/show-hint.css', $('.codemirror40').val());\n"
+    // ];
+
+    var grabCodemirror = "zip.file('libraries/codemirror/codemirror.css', $('.codemirror1').val());\n\n      zip.file('libraries/codemirror/addon/fold/foldgutter.css', $('.codemirror2').val());\n\n      zip.file('libraries/codemirror/codemirror.js', $('.codemirror3').val());\n\n      zip.file('libraries/codemirror/javascripts/code-completion.js', $('.codemirror4').val());\n\n      zip.file('libraries/codemirror/javascripts/css-completion.js', $('.codemirror5').val());\n\n      zip.file('libraries/codemirror/javascripts/html-completion.js', $('.codemirror6').val());\n\n      zip.file('libraries/codemirror/mode/javascript/javascript.js', $('.codemirror7').val());\n\n      zip.file('libraries/codemirror/mode/xml/xml.js', $('.codemirror8').val());\n\n      zip.file('libraries/codemirror/mode/css/css.js', $('.codemirror9').val());\n\n      zip.file('libraries/codemirror/mode/htmlmixed/htmlmixed.js', $('.codemirror10').val());\n\n      zip.file('libraries/codemirror/addon/edit/closetag.js', $('.codemirror11').val());\n\n      zip.file('libraries/codemirror/addon/edit/matchbrackets.js', $('.codemirror12').val());\n\n      zip.file('libraries/codemirror/addon/selection/active-line.js', $('.codemirror13').val());\n\n      zip.file('libraries/codemirror/addon/fold/foldcode.js', $('.codemirror14').val());\n\n      zip.file('libraries/codemirror/addon/fold/foldgutter.js', $('.codemirror15').val());\n\n      zip.file('libraries/codemirror/addon/fold/brace-fold.js', $('.codemirror16').val());\n\n      zip.file('libraries/codemirror/addon/fold/xml-fold.js', $('.codemirror17').val());\n\n      zip.file('libraries/codemirror/addon/fold/comment-fold.js', $('.codemirror18').val());\n\n      zip.file('libraries/codemirror/addon/search/search.js', $('.codemirror19').val());\n\n      zip.file('libraries/codemirror/addon/search/searchcursor.js', $('.codemirror20').val());\n\n      zip.file('libraries/codemirror/addon/dialog/dialog.js', $('.codemirror21').val());\n\n      zip.file('libraries/codemirror/addon/hint/show-hint.js', $('.codemirror22').val());\n\n      zip.file('libraries/codemirror/addon/hint/xml-hint.js', $('.codemirror23').val());\n\n      zip.file('libraries/codemirror/addon/hint/html-hint.js', $('.codemirror24').val());\n\n      zip.file('libraries/codemirror/addon/hint/css-hint.js', $('.codemirror25').val());\n\n      zip.file('libraries/codemirror/addon/hint/javascript-hint.js', $('.codemirror26').val());\n\n      zip.file('libraries/codemirror/addon/search/match-highlighter.js', $('.codemirror27').val());\n\n      zip.file('libraries/codemirror/htmlhint.js', $('.codemirror28').val());\n\n      zip.file('libraries/codemirror/csslint.js', $('.codemirror29').val());\n\n      zip.file('libraries/codemirror/jshint.js', $('.codemirror30').val());\n\n      zip.file('libraries/codemirror/addon/lint/lint.js', $('.codemirror31').val());\n\n      zip.file('libraries/codemirror/addon/lint/html-lint.js', $('.codemirror32').val());\n\n      zip.file('libraries/codemirror/addon/lint/css-lint.js', $('.codemirror33').val());\n\n      zip.file('libraries/codemirror/addon/lint/javascript-lint.js', $('.codemirror34').val());\n\n      zip.file('libraries/codemirror/inlet.min.js', $('.codemirror35').val());\n\n      zip.file('libraries/codemirror/inlet.css', $('.codemirror36').val());\n\n      zip.file('libraries/codemirror/emmet.js', $('.codemirror37').val());\n\n      zip.file('libraries/codemirror/addon/lint/lint.css', $('.codemirror38').val());\n\n      zip.file('libraries/codemirror/addon/dialog/dialog.css', $('.codemirror39').val());\n\n      zip.file('libraries/codemirror/addon/hint/show-hint.css', $('.codemirror40').val());\n";
+
+    $('.codemirror').trigger("change");
+    $(".codemirrorzip").val(grabCodemirror);
+  } else {
+    $('.codemirror, .codemirrorzip').clear();
+  }
   if ( $("#createjs").is(":checked") ) {
     $('.createjs').clear();
     download_to_textbox('libraries/createjs/createjs.min.js', $('.createjs1'));
@@ -964,13 +1064,79 @@ $("[data-action=check]").on("change", function() {
   } else {
     $('.jszip, .jszipzip').clear();
   }
-  if ( $("#jquerytools").is(":checked") ) {
-    $('.jquerytools').clear();
-    download_to_textbox('libraries/jquerytools/jquery.tools.min.js', $('.jquerytools'));
-    $('.jquerytools').trigger("change");
-    $(".jquerytoolszip").val("zip.file('libraries/jquerytools/jquery.tools.min.js', $(\".jquerytools\").val());");
+  if ( $("#jqxsplitter").is(":checked") ) {
+    $('.jqxsplitter').clear();
+
+    download_to_textbox('libraries/jqwidgets/styles/jqx.base.css', $('.jqwidgets1'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.android.css', $('.jqwidgets2'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.arctic.css', $('.jqwidgets3'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.black.css', $('.jqwidgets4'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.blackberry.css', $('.jqwidgets5'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.bootstrap.css', $('.jqwidgets6'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.classic.css', $('.jqwidgets7'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.darkblue.css', $('.jqwidgets8'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.energyblue.css', $('.jqwidgets9'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.fresh.css', $('.jqwidgets10'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.highcontrast.css', $('.jqwidgets11'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.metro.css', $('.jqwidgets12'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.metrodark.css', $('.jqwidgets13'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.mobile.css', $('.jqwidgets14'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.office.css', $('.jqwidgets15'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.orange.css', $('.jqwidgets16'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.shinyblack.css', $('.jqwidgets17'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.summer.css', $('.jqwidgets18'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.ui-darkness.css', $('.jqwidgets19'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.ui-le-frog.css', $('.jqwidgets20'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.ui-lightness.css', $('.jqwidgets21'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.ui-overcast.css', $('.jqwidgets22'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.ui-redmond.css', $('.jqwidgets23'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.ui-smoothness.css', $('.jqwidgets24'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.ui-start.css', $('.jqwidgets25'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.ui-sunny.css', $('.jqwidgets26'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.web.css', $('.jqwidgets27'));
+    download_to_textbox('libraries/jqwidgets/styles/jqx.windowsphone.css', $('.jqwidgets28'));
+    download_to_textbox('libraries/jqwidgets/jqxcore.js', $('.jqwidgets29'));
+    download_to_textbox('libraries/jqwidgets/jqxsplitter.js', $('.jqwidgets30'));
+
+    // var jqxsplitter = [
+    //   "zip.file('libraries/jqwidgets/styles/jqx.base.css', $('.jqwidgets1').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.android.css', $('.jqwidgets2').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.arctic.css', $('.jqwidgets3').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.black.css', $('.jqwidgets4').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.blackberry.css', $('.jqwidgets5').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.bootstrap.css', $('.jqwidgets6').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.classic.css', $('.jqwidgets7').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.darkblue.css', $('.jqwidgets8').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.energyblue.css', $('.jqwidgets9').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.fresh.css', $('.jqwidgets10').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.highcontrast.css', $('.jqwidgets11').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.metro.css', $('.jqwidgets12').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.metrodark.css', $('.jqwidgets13').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.mobile.css', $('.jqwidgets14').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.office.css', $('.jqwidgets15').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.orange.css', $('.jqwidgets16').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.shinyblack.css', $('.jqwidgets17').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.summer.css', $('.jqwidgets18').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.ui-darkness.css', $('.jqwidgets19').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.ui-le-frog.css', $('.jqwidgets20').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.ui-lightness.css', $('.jqwidgets21').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.ui-overcast.css', $('.jqwidgets22').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.ui-redmond.css', $('.jqwidgets23').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.ui-smoothness.css', $('.jqwidgets24').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.ui-start.css', $('.jqwidgets25').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.ui-sunny.css', $('.jqwidgets26').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.web.css', $('.jqwidgets27').val());\n",
+    //   "zip.file('libraries/jqwidgets/styles/jqx.windowsphone.css', $('.jqwidgets28').val());\n",
+    //   "zip.file('libraries/jqwidgets/jqxcore.js', $('.jqwidgets29').val());\n",
+    //   "zip.file('libraries/jqwidgets/jqxsplitter.js', $('.jqwidgets30').val());\n"
+    // ];
+
+    var jqxsplitter = "zip.file('libraries/jqwidgets/styles/jqx.base.css', $('.jqwidgets1').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.android.css', $('.jqwidgets2').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.arctic.css', $('.jqwidgets3').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.black.css', $('.jqwidgets4').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.blackberry.css', $('.jqwidgets5').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.bootstrap.css', $('.jqwidgets6').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.classic.css', $('.jqwidgets7').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.darkblue.css', $('.jqwidgets8').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.energyblue.css', $('.jqwidgets9').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.fresh.css', $('.jqwidgets10').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.highcontrast.css', $('.jqwidgets11').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.metro.css', $('.jqwidgets12').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.metrodark.css', $('.jqwidgets13').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.mobile.css', $('.jqwidgets14').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.office.css', $('.jqwidgets15').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.orange.css', $('.jqwidgets16').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.shinyblack.css', $('.jqwidgets17').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.summer.css', $('.jqwidgets18').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.ui-darkness.css', $('.jqwidgets19').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.ui-le-frog.css', $('.jqwidgets20').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.ui-lightness.css', $('.jqwidgets21').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.ui-overcast.css', $('.jqwidgets22').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.ui-redmond.css', $('.jqwidgets23').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.ui-smoothness.css', $('.jqwidgets24').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.ui-start.css', $('.jqwidgets25').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.ui-sunny.css', $('.jqwidgets26').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.web.css', $('.jqwidgets27').val());\n\n      zip.file('libraries/jqwidgets/styles/jqx.windowsphone.css', $('.jqwidgets28').val());\n\n      zip.file('libraries/jqwidgets/jqxcore.js', $('.jqwidgets29').val());\n\n      zip.file('libraries/jqwidgets/jqxsplitter.js', $('.jqwidgets30').val());\n";
+
+    $('.jqxsplitter').trigger("change");
+    $(".jqxsplitterzip").val(jqxsplitter);
   } else {
-    $('.jquerytools, .jquerytoolszip').clear();
+    $('.jqxsplitter, .jqxsplitterzip').clear();
   }
   if ( $("#kinetic").is(":checked") ) {
     $('.kinetic').clear();

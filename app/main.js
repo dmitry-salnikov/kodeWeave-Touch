@@ -48,10 +48,6 @@ function updateCSSHints() {
   });// end of cssEditor.operation
 }// end of updateCSSHints
 // Handles CodeMirror Preview Delay
-var timeout;
-var delay;
-var cssWaiting;
-var jsWaiting;
 
 // Rules Specified for HTML Validation
 var ruleSets = {
@@ -181,6 +177,7 @@ var closeFinal = CodeMirror(document.querySelector("#closeFinal"), {
 
 // Live preview
 htmlEditor.on("change", function() {
+  localStorage.setItem("htmlData", htmlEditor.getValue());
   clearTimeout(delay);
   delay = setTimeout(updatePreview, 300);
   for (var i = 0; i < widgets.length; ++i) {
@@ -188,22 +185,21 @@ htmlEditor.on("change", function() {
     jsEditor.removeLineWidget(widgets[i]);
   }
   // CodeMirror.showHint(htmlEditor);
-  localStorage.setItem("htmlData", htmlEditor.getValue());
 });
 cssEditor.on("change", function() {
+  localStorage.setItem("cssData", cssEditor.getValue());
   clearTimeout(delay);
   clearTimeout(cssWaiting);
   delay = setTimeout(updatePreview, 300);
   cssWaiting = setTimeout(updateCSSHints, 300);
   // CodeMirror.showHint(cssEditor);
-  localStorage.setItem("cssData", cssEditor.getValue());
 });
 jsEditor.on("change", function() {
+  localStorage.setItem("jsData", jsEditor.getValue());
   clearTimeout(delay);
   clearTimeout(jsWaiting);
   delay = setTimeout(updatePreview, 300);
   jsWaiting = setTimeout(updateJSHints, 300);
-  localStorage.setItem("jsData", jsEditor.getValue());
 });
 // jsEditor.on("keyup", function(cm, event) {
 //   var popupKeyCodes = {
@@ -227,9 +223,9 @@ jsEditor.on("change", function() {
 //   }
 // });
 mdEditor.on("change", function() {
+  localStorage.setItem("mdData", mdEditor.getValue());
   clearTimeout(delay);
   delay = setTimeout(markdownPreview, 300);
-  localStorage.setItem("mdData", mdEditor.getValue());
 });
 
 // Don't add to code, replace with new drop file's code
