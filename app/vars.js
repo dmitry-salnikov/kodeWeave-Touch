@@ -144,6 +144,25 @@ var timeout,
         mdEditor.focus();
       }
     },
+    applyMinify = function() {
+      if ( activeEditor.val() === "htmlEditor" ) {
+        htmlEditor.setValue(htmlEditor.getValue().replace(/\<\!--\s*?[^\s?\[][\s\S]*?--\>/g,'').replace(/\>\s*\</g,'><'));
+        $("[data-action=tools].active").trigger("click");
+      } else if ( activeEditor.val() === "cssEditor" ) {
+        cssEditor.setValue( cssEditor.getValue().replace(/\/\*.*\*\/|\/\*[\s\S]*?\*\/|\n|\t|\v|\s{2,}/g,"").replace(/\s*\{\s*/g,"{").replace(/\s*\}\s*/g,"}").replace(/\s*\:\s*/g,":").replace(/\s*\;\s*/g,";").replace(/\s*\,\s*/g,",").replace(/\s*\~\s*/g,"~").replace(/\s*\>\s*/g,">").replace(/\s*\+\s*/g,"+").replace(/\s*\!\s*/g,"!") );
+      } else if ( activeEditor.val() === "jsEditor" ) {
+        jsEditor.setValue( jsEditor.getValue().replace(/\/\*[\s\S]*?\*\/|\/\/.*\n|\s{2,}|\n|\t|\v|\s(?=function\(.*?\))|\s(?=\=)|\s(?=\{)/g,"").replace(/\s?function\s?\(/g,"function(").replace(/\s?\{\s?/g,"{").replace(/\s?\}\s?/g,"}").replace(/\,\s?/g,",").replace(/if\s?/g,"if") );
+      }
+    },
+    applyBeautify = function() {
+      if ( activeEditor.val() === "htmlEditor" ) {
+        beautifyHTML();
+      } else if ( activeEditor.val() === "cssEditor" ) {
+        beautifyCSS();
+      } else if ( activeEditor.val() === "jsEditor" ) {
+        beautifyJS();
+      }
+    },
     shortcutKeys = function() {
       // New Document
       shortcut.add("Ctrl+N", function() {
@@ -185,27 +204,14 @@ var timeout,
         //   jsEditor.autoFormatRange({line:0, ch:0}, {line:jsLines});
         // }
         
-        if ( activeEditor.val() === "htmlEditor" ) {
-          beautifyHTML();
-        } else if ( activeEditor.val() === "cssEditor" ) {
-          beautifyCSS();
-        } else if ( activeEditor.val() === "jsEditor" ) {
-          beautifyJS();
-        }
+        applyBeautify();
         
         $("[data-action=tools].active").trigger("click");
       });
 
       // Minify Code
       $("[data-action=minify]").click(function() {
-        if ( activeEditor.val() === "htmlEditor" ) {
-          htmlEditor.setValue(htmlEditor.getValue().replace(/\<\!--\s*?[^\s?\[][\s\S]*?--\>/g,'').replace(/\>\s*\</g,'><'));
-          $("[data-action=tools].active").trigger("click");
-        } else if ( activeEditor.val() === "cssEditor" ) {
-          cssEditor.setValue( cssEditor.getValue().replace(/\/\*.*\*\/|\/\*[\s\S]*?\*\/|\n|\t|\v|\s{2,}/g,"").replace(/\s*\{\s*/g,"{").replace(/\s*\}\s*/g,"}").replace(/\s*\:\s*/g,":").replace(/\s*\;\s*/g,";").replace(/\s*\,\s*/g,",").replace(/\s*\~\s*/g,"~").replace(/\s*\>\s*/g,">").replace(/\s*\+\s*/g,"+").replace(/\s*\!\s*/g,"!") );
-        } else if ( activeEditor.val() === "jsEditor" ) {
-          jsEditor.setValue( jsEditor.getValue().replace(/\/\*[\s\S]*?\*\/|\/\/.*\n|\s{2,}|\n|\t|\v|\s(?=function\(.*?\))|\s(?=\=)|\s(?=\{)/g,"").replace(/\s?function\s?\(/g,"function(").replace(/\s?\{\s?/g,"{").replace(/\s?\}\s?/g,"}").replace(/\,\s?/g,",").replace(/if\s?/g,"if") );
-        }
+        applyMinify();
         $("[data-action=tools].active").trigger("click");
       });
       

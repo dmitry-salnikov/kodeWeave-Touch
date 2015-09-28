@@ -448,6 +448,24 @@ $("[data-action=call]").click(function() {
   $("[data-action=load]").trigger("click");
 });
 
+if ( navigator.platform.toLowerCase() === "macintosh" || "macintel" || "macppc" || "mac68k" ) {
+  $("[data-action=lowercase]").attr("title", "Cmd+'");
+  $("[data-action=uppercase]").attr("title", "Cmd+\\");
+  $("[data-action=search]").attr("title", "CMD+F");
+  $("[data-action=replace]").attr("title", "Cmd+Option+F");
+  $("[data-action=replaceall]").attr("title", "Shift+Cmd+Option+F");
+  $("[data-action=minify]").attr("title", "Shift+Cmd+'");
+  $("[data-action=tidy]").attr("title", "Shift+Cmd+\\");
+} else {
+  $("[data-action=lowercase]").attr("title", "CTRL+'");
+  $("[data-action=uppercase]").attr("title", "CTRL+\\");
+  $("[data-action=search]").attr("title", "CTRL+F");
+  $("[data-action=replace]").attr("title", "Shift-Ctrl-F");
+  $("[data-action=replaceall]").attr("title", "Shift-Ctrl-R");
+  $("[data-action=minify]").attr("title", "Shift+Ctrl+'");
+  $("[data-action=tidy]").attr("title", "Shift+Ctrl+\\");
+}
+
 // Drag and drop image load
 holder.ondragover = function () {
   this.className = "hover";

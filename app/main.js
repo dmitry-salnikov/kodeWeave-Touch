@@ -75,9 +75,16 @@ var htmlEditor = CodeMirror(document.getElementById("htmlEditor"), {
   // lint: true,
   // gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+  extraKeys: {
+    "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
     "Ctrl-'": function(){ applyLowercase(); },
     "Ctrl-\\": function(){ applyUppercase(); },
+    "Cmd-'": function(){ applyLowercase(); },
+    "Cmd-\\": function(){ applyUppercase(); },
+    "Shift-Ctrl-'": function(){ applyMinify(); },
+    "Shift-Ctrl-\\": function(){ applyBeautify(); },
+    "Shift-Cmd-'": function(){ applyMinify(); },
+    "Shift-Cmd-\\": function(){ applyBeautify(); },
     "Ctrl-Space": "autocomplete"
   },
   value: "<!-- comment -->\nhello world!",
@@ -100,6 +107,12 @@ var cssEditor = CodeMirror(document.getElementById("cssEditor"), {
     "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
     "Ctrl-'": function(){ applyLowercase(); },
     "Ctrl-\\": function(){ applyUppercase(); },
+    "Cmd-'": function(){ applyLowercase(); },
+    "Cmd-\\": function(){ applyUppercase(); },
+    "Shift-Ctrl-'": function(){ applyMinify(); },
+    "Shift-Ctrl-\\": function(){ applyBeautify(); },
+    "Shift-Cmd-'": function(){ applyMinify(); },
+    "Shift-Cmd-\\": function(){ applyBeautify(); },
     "Ctrl-Space": "autocomplete"
   },
   paletteHints: true
@@ -117,9 +130,16 @@ var jsEditor = CodeMirror(document.getElementById("jsEditor"), {
   dragDrop: true,
   lint: true,
   gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+  extraKeys: {
+    "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
     "Ctrl-'": function(){ applyLowercase(); },
     "Ctrl-\\": function(){ applyUppercase(); },
+    "Cmd-'": function(){ applyLowercase(); },
+    "Cmd-\\": function(){ applyUppercase(); },
+    "Shift-Ctrl-'": function(){ applyMinify(); },
+    "Shift-Ctrl-\\": function(){ applyBeautify(); },
+    "Shift-Cmd-'": function(){ applyMinify(); },
+    "Shift-Cmd-\\": function(){ applyBeautify(); },
     "Ctrl-Space": "autocomplete"
   },
   mode: {name: "javascript", globalVars: false},
@@ -135,9 +155,16 @@ var mdEditor = CodeMirror(document.getElementById("mdEditor"), {
   foldGutter: true,
   dragDrop: true,
   gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+  extraKeys: {
+    "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
     "Ctrl-'": function(){ applyLowercase(); },
-    "Ctrl-\\": function(){ applyUppercase(); }
+    "Ctrl-\\": function(){ applyUppercase(); },
+    "Cmd-'": function(){ applyLowercase(); },
+    "Cmd-\\": function(){ applyUppercase(); },
+    "Shift-Ctrl-'": function(){ applyMinify(); },
+    "Shift-Ctrl-\\": function(){ applyBeautify(); },
+    "Shift-Cmd-'": function(){ applyMinify(); },
+    "Shift-Cmd-\\": function(){ applyBeautify(); }
   },
   value: "Welcome!\n===================\n\n![Placer text](http://kodeweave.sourceforge.net/logo.png)  \n\nHey! I'm your placement Markdown text.\n\n----------\n\n\nTypography\n-------------\n\n[kodeWeave Link](http://kodeweave.sourceforge.net/)  \n**bold text**  \n*italic text*  \n\n### Blockquote:\n\n> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n### Bullet List\n\n - Green\n - Eggs\n - and\n - Ham\n\n### Numbered List\n\n 1. Green\n 2. Eggs\n 3. and\n 4. Ham"
 });
