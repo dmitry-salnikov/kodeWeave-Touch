@@ -113,7 +113,7 @@
       Home: function() {handle.setFocus(0);},
       End: function() {handle.setFocus(handle.length);},
       Enter: handle.pick,
-      Tab: handle.pick,
+      Tab: handle.close,
       Esc: handle.close
     };
     var ourMap = options.customKeys ? {} : baseMap;

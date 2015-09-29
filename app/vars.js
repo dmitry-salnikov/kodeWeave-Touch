@@ -167,6 +167,7 @@ var timeout,
       // New Document
       shortcut.add("Ctrl+N", function() {
         $(".check").attr("checked", false).trigger("change");
+        $("[data-action=sitetitle]").val("site title").change();
         htmlEditor.setValue("<!-- comment -->\nhello world!");
         cssEditor.setValue("");
         jsEditor.setValue("");
@@ -225,6 +226,21 @@ var timeout,
           jsEditor.execCommand("gotoLine");
         } else if ( activeEditor.val() === "mdEditor" ) {
           mdEditor.execCommand("gotoLine");
+        }
+
+        $("[data-action=tools].active").trigger("click");
+      });
+      
+      // Comment Current Selection
+      $("[data-action=toggle_comment]").click(function() {
+        if ( activeEditor.val() === "htmlEditor" ) {
+          htmlEditor.execCommand("emmet.toggle_comment");
+        } else if ( activeEditor.val() === "cssEditor" ) {
+          cssEditor.execCommand("emmet.toggle_comment");
+        } else if ( activeEditor.val() === "jsEditor" ) {
+          jsEditor.execCommand("emmet.toggle_comment");
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.execCommand("emmet.toggle_comment");
         }
 
         $("[data-action=tools].active").trigger("click");
