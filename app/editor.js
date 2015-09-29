@@ -77,33 +77,29 @@ $(window).load(function() {
   $("#htmlEditor, #cssEditor, #jsEditor, #mdEditor").on("mouseup touchend", function() {
     if ( $(this).attr("id") === "htmlEditor" ) {
       activeEditor.val("htmlEditor");
-      clearTimeout(delay);
-      delay = setTimeout(updatePreview, 300);
       if ($("#function").is(":hidden")) {
         $("#function").show();
       }
+      for (var i = 0; i < widgets.length; ++i) {
+        cssEditor.removeLineWidget(widgets[i]);
+        jsEditor.removeLineWidget(widgets[i]);
+      }
     } else if ( $(this).attr("id") === "cssEditor" ) {
       activeEditor.val("cssEditor");
-      clearTimeout(delay);
       clearTimeout(cssWaiting);
-      delay = setTimeout(updatePreview, 300);
       cssWaiting = setTimeout(updateCSSHints, 300);
       if ($("#function").is(":visible")) {
         $("#function").hide();
       }
     } else if ( $(this).attr("id") === "jsEditor" ) {
       activeEditor.val("jsEditor");
-      clearTimeout(delay);
       clearTimeout(jsWaiting);
-      delay = setTimeout(updatePreview, 300);
       jsWaiting = setTimeout(updateJSHints, 300);
       if ($("#function").is(":hidden")) {
         $("#function").show();
       }
     } else if ( $(this).attr("id") === "mdEditor" ) {
       activeEditor.val("mdEditor");
-      clearTimeout(delay);
-      delay = setTimeout(markdownPreview, 300);
       if ($("#function").is(":hidden")) {
         $("#function").show();
       }
@@ -111,6 +107,34 @@ $(window).load(function() {
     
     if ( $(".active").is(":visible") ) {
       $(".active").trigger("click");
+    }
+  });
+  $("#htmlEditor, #cssEditor, #jsEditor").on("mouseup touchend", function() {
+    if ( $("body").hasClass("live-markdown-preview") ) {
+      $("body").removeClass("live-markdown-preview");
+      if ( !$("body").hasClass("app") ) {
+        $("body").addClass("app");
+        clearTimeout(delay);
+        delay = setTimeout(updatePreview, 300);
+      } 
+    } else if ( !$("body").hasClass("app") ) {
+      $("body").addClass("app");
+      clearTimeout(delay);
+      delay = setTimeout(updatePreview, 300);
+    } 
+  });
+  $("#mdEditor").on("mouseup touchend", function() {
+    if ( $("body").hasClass("app") ) {
+      $("body").removeClass("app");
+      if ( !$("body").hasClass("live-markdown-preview") ) {
+        $("body").addClass("live-markdown-preview");
+        clearTimeout(delay);
+        delay = setTimeout(markdownPreview, 300);
+      }
+    } else if ( !$("body").hasClass("live-markdown-preview") ) {
+      $("body").addClass("live-markdown-preview");
+      clearTimeout(delay);
+      delay = setTimeout(markdownPreview, 300);
     }
   });
 
@@ -451,6 +475,7 @@ $("[data-action=call]").click(function() {
 if ( navigator.platform.toLowerCase() === "macintosh" || "macintel" || "macppc" || "mac68k" ) {
   $("[data-action=lowercase]").attr("title", "Cmd+'");
   $("[data-action=uppercase]").attr("title", "Cmd+\\");
+  $("[data-action=gotoline]").attr("title", "Cmd+L");
   $("[data-action=search]").attr("title", "CMD+F");
   $("[data-action=replace]").attr("title", "Cmd+Option+F");
   $("[data-action=replaceall]").attr("title", "Shift+Cmd+Option+F");
@@ -459,6 +484,7 @@ if ( navigator.platform.toLowerCase() === "macintosh" || "macintel" || "macppc" 
 } else {
   $("[data-action=lowercase]").attr("title", "CTRL+'");
   $("[data-action=uppercase]").attr("title", "CTRL+\\");
+  $("[data-action=gotoline]").attr("title", "Ctrl+L");
   $("[data-action=search]").attr("title", "CTRL+F");
   $("[data-action=replace]").attr("title", "Shift-Ctrl-F");
   $("[data-action=replaceall]").attr("title", "Shift-Ctrl-R");
@@ -961,6 +987,7 @@ $("[data-action=check]").on("change", function() {
     download_to_textbox('libraries/codemirror/addon/lint/lint.css', $('.codemirror38'));
     download_to_textbox('libraries/codemirror/addon/dialog/dialog.css', $('.codemirror39'));
     download_to_textbox('libraries/codemirror/addon/hint/show-hint.css', $('.codemirror40'));
+    download_to_textbox('libraries/codemirror/addon/search/goto-line.js', $('.codemirror41'));
 
     // var grabCodemirror = [
     //   "zip.file('libraries/codemirror/codemirror.css', $('.codemirror1').val());\n",
@@ -1003,9 +1030,10 @@ $("[data-action=check]").on("change", function() {
     //   "zip.file('libraries/codemirror/addon/lint/lint.css', $('.codemirror38').val());\n",
     //   "zip.file('libraries/codemirror/addon/dialog/dialog.css', $('.codemirror39').val());\n",
     //   "zip.file('libraries/codemirror/addon/hint/show-hint.css', $('.codemirror40').val());\n"
+    //   "zip.file('libraries/codemirror/addon/search/goto-line.js', $('.codemirror41').val());\n"
     // ];
 
-    var grabCodemirror = "zip.file('libraries/codemirror/codemirror.css', $('.codemirror1').val());\n\n      zip.file('libraries/codemirror/addon/fold/foldgutter.css', $('.codemirror2').val());\n\n      zip.file('libraries/codemirror/codemirror.js', $('.codemirror3').val());\n\n      zip.file('libraries/codemirror/javascripts/code-completion.js', $('.codemirror4').val());\n\n      zip.file('libraries/codemirror/javascripts/css-completion.js', $('.codemirror5').val());\n\n      zip.file('libraries/codemirror/javascripts/html-completion.js', $('.codemirror6').val());\n\n      zip.file('libraries/codemirror/mode/javascript/javascript.js', $('.codemirror7').val());\n\n      zip.file('libraries/codemirror/mode/xml/xml.js', $('.codemirror8').val());\n\n      zip.file('libraries/codemirror/mode/css/css.js', $('.codemirror9').val());\n\n      zip.file('libraries/codemirror/mode/htmlmixed/htmlmixed.js', $('.codemirror10').val());\n\n      zip.file('libraries/codemirror/addon/edit/closetag.js', $('.codemirror11').val());\n\n      zip.file('libraries/codemirror/addon/edit/matchbrackets.js', $('.codemirror12').val());\n\n      zip.file('libraries/codemirror/addon/selection/active-line.js', $('.codemirror13').val());\n\n      zip.file('libraries/codemirror/addon/fold/foldcode.js', $('.codemirror14').val());\n\n      zip.file('libraries/codemirror/addon/fold/foldgutter.js', $('.codemirror15').val());\n\n      zip.file('libraries/codemirror/addon/fold/brace-fold.js', $('.codemirror16').val());\n\n      zip.file('libraries/codemirror/addon/fold/xml-fold.js', $('.codemirror17').val());\n\n      zip.file('libraries/codemirror/addon/fold/comment-fold.js', $('.codemirror18').val());\n\n      zip.file('libraries/codemirror/addon/search/search.js', $('.codemirror19').val());\n\n      zip.file('libraries/codemirror/addon/search/searchcursor.js', $('.codemirror20').val());\n\n      zip.file('libraries/codemirror/addon/dialog/dialog.js', $('.codemirror21').val());\n\n      zip.file('libraries/codemirror/addon/hint/show-hint.js', $('.codemirror22').val());\n\n      zip.file('libraries/codemirror/addon/hint/xml-hint.js', $('.codemirror23').val());\n\n      zip.file('libraries/codemirror/addon/hint/html-hint.js', $('.codemirror24').val());\n\n      zip.file('libraries/codemirror/addon/hint/css-hint.js', $('.codemirror25').val());\n\n      zip.file('libraries/codemirror/addon/hint/javascript-hint.js', $('.codemirror26').val());\n\n      zip.file('libraries/codemirror/addon/search/match-highlighter.js', $('.codemirror27').val());\n\n      zip.file('libraries/codemirror/htmlhint.js', $('.codemirror28').val());\n\n      zip.file('libraries/codemirror/csslint.js', $('.codemirror29').val());\n\n      zip.file('libraries/codemirror/jshint.js', $('.codemirror30').val());\n\n      zip.file('libraries/codemirror/addon/lint/lint.js', $('.codemirror31').val());\n\n      zip.file('libraries/codemirror/addon/lint/html-lint.js', $('.codemirror32').val());\n\n      zip.file('libraries/codemirror/addon/lint/css-lint.js', $('.codemirror33').val());\n\n      zip.file('libraries/codemirror/addon/lint/javascript-lint.js', $('.codemirror34').val());\n\n      zip.file('libraries/codemirror/inlet.min.js', $('.codemirror35').val());\n\n      zip.file('libraries/codemirror/inlet.css', $('.codemirror36').val());\n\n      zip.file('libraries/codemirror/emmet.js', $('.codemirror37').val());\n\n      zip.file('libraries/codemirror/addon/lint/lint.css', $('.codemirror38').val());\n\n      zip.file('libraries/codemirror/addon/dialog/dialog.css', $('.codemirror39').val());\n\n      zip.file('libraries/codemirror/addon/hint/show-hint.css', $('.codemirror40').val());\n";
+    var grabCodemirror = "zip.file('libraries/codemirror/codemirror.css', $('.codemirror1').val());\n\n      zip.file('libraries/codemirror/addon/fold/foldgutter.css', $('.codemirror2').val());\n\n      zip.file('libraries/codemirror/codemirror.js', $('.codemirror3').val());\n\n      zip.file('libraries/codemirror/javascripts/code-completion.js', $('.codemirror4').val());\n\n      zip.file('libraries/codemirror/javascripts/css-completion.js', $('.codemirror5').val());\n\n      zip.file('libraries/codemirror/javascripts/html-completion.js', $('.codemirror6').val());\n\n      zip.file('libraries/codemirror/mode/javascript/javascript.js', $('.codemirror7').val());\n\n      zip.file('libraries/codemirror/mode/xml/xml.js', $('.codemirror8').val());\n\n      zip.file('libraries/codemirror/mode/css/css.js', $('.codemirror9').val());\n\n      zip.file('libraries/codemirror/mode/htmlmixed/htmlmixed.js', $('.codemirror10').val());\n\n      zip.file('libraries/codemirror/addon/edit/closetag.js', $('.codemirror11').val());\n\n      zip.file('libraries/codemirror/addon/edit/matchbrackets.js', $('.codemirror12').val());\n\n      zip.file('libraries/codemirror/addon/selection/active-line.js', $('.codemirror13').val());\n\n      zip.file('libraries/codemirror/addon/fold/foldcode.js', $('.codemirror14').val());\n\n      zip.file('libraries/codemirror/addon/fold/foldgutter.js', $('.codemirror15').val());\n\n      zip.file('libraries/codemirror/addon/fold/brace-fold.js', $('.codemirror16').val());\n\n      zip.file('libraries/codemirror/addon/fold/xml-fold.js', $('.codemirror17').val());\n\n      zip.file('libraries/codemirror/addon/fold/comment-fold.js', $('.codemirror18').val());\n\n      zip.file('libraries/codemirror/addon/search/search.js', $('.codemirror19').val());\n\n      zip.file('libraries/codemirror/addon/search/searchcursor.js', $('.codemirror20').val());\n\n      zip.file('libraries/codemirror/addon/dialog/dialog.js', $('.codemirror21').val());\n\n      zip.file('libraries/codemirror/addon/hint/show-hint.js', $('.codemirror22').val());\n\n      zip.file('libraries/codemirror/addon/hint/xml-hint.js', $('.codemirror23').val());\n\n      zip.file('libraries/codemirror/addon/hint/html-hint.js', $('.codemirror24').val());\n\n      zip.file('libraries/codemirror/addon/hint/css-hint.js', $('.codemirror25').val());\n\n      zip.file('libraries/codemirror/addon/hint/javascript-hint.js', $('.codemirror26').val());\n\n      zip.file('libraries/codemirror/addon/search/match-highlighter.js', $('.codemirror27').val());\n\n      zip.file('libraries/codemirror/htmlhint.js', $('.codemirror28').val());\n\n      zip.file('libraries/codemirror/csslint.js', $('.codemirror29').val());\n\n      zip.file('libraries/codemirror/jshint.js', $('.codemirror30').val());\n\n      zip.file('libraries/codemirror/addon/lint/lint.js', $('.codemirror31').val());\n\n      zip.file('libraries/codemirror/addon/lint/html-lint.js', $('.codemirror32').val());\n\n      zip.file('libraries/codemirror/addon/lint/css-lint.js', $('.codemirror33').val());\n\n      zip.file('libraries/codemirror/addon/lint/javascript-lint.js', $('.codemirror34').val());\n\n      zip.file('libraries/codemirror/inlet.min.js', $('.codemirror35').val());\n\n      zip.file('libraries/codemirror/inlet.css', $('.codemirror36').val());\n\n      zip.file('libraries/codemirror/emmet.js', $('.codemirror37').val());\n\n      zip.file('libraries/codemirror/addon/lint/lint.css', $('.codemirror38').val());\n\n      zip.file('libraries/codemirror/addon/dialog/dialog.css', $('.codemirror39').val());\n\n      zip.file('libraries/codemirror/addon/hint/show-hint.css', $('.codemirror40').val());\n\n\n      zip.file('libraries/codemirror/addon/search/goto-line.js', $('.codemirror41').val());\n";
 
     $('.codemirror').trigger("change");
     $(".codemirrorzip").val(grabCodemirror);

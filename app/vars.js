@@ -215,11 +215,28 @@ var timeout,
         $("[data-action=tools].active").trigger("click");
       });
       
+      // Go To Line
+      $("[data-action=gotoline]").click(function() {
+        if ( activeEditor.val() === "htmlEditor" ) {
+          htmlEditor.execCommand("gotoLine");
+        } else if ( activeEditor.val() === "cssEditor" ) {
+          cssEditor.execCommand("gotoLine");
+        } else if ( activeEditor.val() === "jsEditor" ) {
+          jsEditor.execCommand("gotoLine");
+        } else if ( activeEditor.val() === "mdEditor" ) {
+          mdEditor.execCommand("gotoLine");
+        }
+
+        $("[data-action=tools].active").trigger("click");
+      });
+
+      // Make text selection lowercase
       $("[data-action=lowercase]").click(function() {
         applyLowercase();
         $("[data-action=tools].active").trigger("click");
       });
 
+      // Make text selection uppercase
       $("[data-action=uppercase]").click(function() {
         applyUppercase();
         $("[data-action=tools].active").trigger("click");
@@ -590,7 +607,7 @@ var timeout,
         $("[data-action=sitetitle]").val("Password Generator").change();
         htmlEditor.setValue("<div class=\"container-fluid\">\n  <div class=\"row\">\n    <div class=\"col-lg-12\">\n      <div class=\"input-group\">\n        <input type=\"text\" class=\"form-control\" data-action=\"genoutput\" />\n        <span class=\"input-group-btn\">\n          <button class=\"btn btn-default btn-primary\" type=\"button\" data-action=\"gen\">\n            Generate!\n          </button>\n        </span>\n      </div>\n    </div>\n  </div>\n</div>");
         cssEditor.setValue("html, body {\n  height: 100%;\n}\n\nbody {\n  padding: 1em 0;\n  background: #0072ff;\n}\n\n.input-group {\n  box-shadow: 0 0 25px #00162d;\n}\n\n.input-group, .form-control, .input-group-btn, .btn {\n  border-radius: 5px;\n}");
-        jsEditor.setValue("function PasswordGen() {\n  var char = \"0123456789abcdefghijklmnopqrstuvwxyz\";\n    var fullchar = \"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    var genHash = \"\";\n    var i;\n    \n    for (i = 0; i < 8; i++) {\n      var rnum = Math.floor(Math.random() * char.length);\n      genHash += char.substring(rnum, rnum + 1);\n    }\n    \n    $(\"[data-action=genoutput]\").val(genHash);\n}\n\n$(\"[data-action=gen]\").click(function() {\n  PasswordGen();\n});\n\nPasswordGen();\n");
+        jsEditor.setValue("function PasswordGen() {\n  var char = \"0123456789abcdefghijklmnopqrstuvwxyz\";\n  var fullchar = \"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n  var genHash = \"\";\n  var i;\n\n  for (i = 0; i < 8; i++) {\n    var rnum = Math.floor(Math.random() * char.length);\n    genHash += char.substring(rnum, rnum + 1);\n  }\n\n  $(\"[data-action=genoutput]\").val(genHash);\n}\n\n$(\"[data-action=gen]\").click(function() {\n  PasswordGen();\n});\n\nPasswordGen();");
         $(".open-demos, #jquery, #bootstrap").trigger("click");
         callCollabUpdate();
       });

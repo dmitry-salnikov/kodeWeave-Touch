@@ -213,6 +213,43 @@ htmlEditor.on("change", function() {
   }
   // CodeMirror.showHint(htmlEditor);
 });
+htmlEditor.on("keyup", function(cm, event) {
+  var popupHTMLKeyCodes = {
+    "9": "tab",
+    "8": "backspace",
+    "13": "enter",
+    "27": "escape",
+    "32": "space",
+    "33": "pageup",
+    "34": "pagedown",
+    "35": "end",
+    "36": "home",
+    "37": "left",
+    "39": "right",
+    "38": "up",
+    "40": "down",
+    "51": "#",
+    "16": "shift",
+    "16": "shift",
+    "186": "semicolon",
+    "219": "[",
+    "221": "]",
+    "48": "0",
+    "50": "1",
+    "51": "2",
+    "53": "3",
+    "54": "4",
+    "55": "5",
+    "56": "6",
+    "57": "7",
+    "58": "8",
+    "59": "9"
+  }
+  if (!popupHTMLKeyCodes[(event.keyCode || event.which).toString()]) {
+    CodeMirror.showHint(cm, CodeMirror.hint.html);
+  }
+  localStorage.setItem("htmlData", htmlEditor.getValue());
+});
 cssEditor.on("change", function() {
   localStorage.setItem("cssData", cssEditor.getValue());
   clearTimeout(delay);
@@ -221,11 +258,91 @@ cssEditor.on("change", function() {
   cssWaiting = setTimeout(updateCSSHints, 300);
   // CodeMirror.showHint(cssEditor);
 });
+cssEditor.on("keyup", function(cm, event) {
+  var popupCSSKeyCodes = {
+    "9": "tab",
+    "8": "backspace",
+    "13": "enter",
+    "27": "escape",
+    "32": "space",
+    "33": "pageup",
+    "34": "pagedown",
+    "35": "end",
+    "36": "home",
+    "37": "left",
+    "39": "right",
+    "38": "up",
+    "40": "down",
+    "51": "#",
+    "16": "shift",
+    "16": "shift",
+    "186": "semicolon",
+    "219": "[",
+    "221": "]",
+    "48": "0",
+    "50": "1",
+    "51": "2",
+    "53": "3",
+    "54": "4",
+    "55": "5",
+    "56": "6",
+    "57": "7",
+    "58": "8",
+    "59": "9"
+  }
+  if (!popupCSSKeyCodes[(event.keyCode || event.which).toString()]) {
+    CodeMirror.showHint(cm, CodeMirror.hint.css);
+  }
+
+  localStorage.setItem("cssData", cssEditor.getValue());
+  clearTimeout(cssWaiting);
+  cssWaiting = setTimeout(updateCSSHints, 300);
+});
 jsEditor.on("change", function() {
   localStorage.setItem("jsData", jsEditor.getValue());
   clearTimeout(delay);
   clearTimeout(jsWaiting);
   delay = setTimeout(updatePreview, 300);
+  jsWaiting = setTimeout(updateJSHints, 300);
+});
+jsEditor.on("keyup", function(cm, event) {
+  var popupJSKeyCodes = {
+    "9": "tab",
+    "8": "backspace",
+    "13": "enter",
+    "27": "escape",
+    "32": "space",
+    "33": "pageup",
+    "34": "pagedown",
+    "35": "end",
+    "36": "home",
+    "37": "left",
+    "39": "right",
+    "38": "up",
+    "40": "down",
+    "51": "#",
+    "16": "shift",
+    "16": "shift",
+    "186": "semicolon",
+    "219": "[",
+    "221": "]",
+    "48": "0",
+    "50": "1",
+    "51": "2",
+    "53": "3",
+    "54": "4",
+    "55": "5",
+    "56": "6",
+    "57": "7",
+    "58": "8",
+    "59": "9"
+  }
+  if (!popupJSKeyCodes[(event.keyCode || event.which).toString()]) {
+    CodeMirror.showHint(cm, CodeMirror.hint.javascript);
+  }
+
+  localStorage.setItem("jsData", jsEditor.getValue());
+  clearTimeout(jsWaiting);
   jsWaiting = setTimeout(updateJSHints, 300);
 });
 // jsEditor.on("keyup", function(cm, event) {

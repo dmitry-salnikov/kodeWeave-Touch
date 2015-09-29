@@ -52,6 +52,8 @@
     <script src="codemirror/addon/htmlPalette.js"></script>
     <script src="codemirror/addon/cssPalette.js"></script>
     <script src="codemirror/addon/jsPalette.js"></script>
+    <script src="codemirror/addon/search/searchcursor.js"></script>
+    <script src="codemirror/addon/search/goto-line.js"></script>
 <!-- 
     <script src="codemirror/addon/search/match-highlighter.js"></script>
 -->
@@ -79,7 +81,7 @@
       TogetherJSConfig_dontShowClicks = true;
     </script>
   </head>
-  <body>
+  <body class="app">
     <!-- Opening and Closing for final index.html code -->
     <div class="hide">
       <div id="openHTML"></div>
@@ -143,11 +145,15 @@
           <a class="fl" data-action="search">
             Find
           </a>
-          <a class="fn" data-action="replace">
+          <a class="fr" data-action="replace">
             Replace
-          </a>
-          <a class="fr" data-action="replaceall">
+          </a><br>
+
+          <a class="fl" data-action="replaceall">
             Replace All
+          </a>
+          <a class="fr" data-action="gotoline">
+            Jump To Line
           </a>
         </div><br />
         
@@ -224,7 +230,7 @@
                   <li>
                     <a>
                       <input data-action="check" class="check" type="checkbox" id="codemirror" />
-                      <label for="codemirror">Codemirror (5.7)</label>
+                      <label for="codemirror">Codemirror (4.0.4)</label>
                     </a>
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;link rel="stylesheet" href="libraries/codemirror/codemirror.css"&gt;
@@ -266,7 +272,8 @@
     &lt;script src="libraries/codemirror/addon/lint/css-lint.js"&gt;&lt;/script&gt;
     &lt;script src="libraries/codemirror/addon/lint/javascript-lint.js"&gt;&lt;/script&gt;
     &lt;script src="libraries/codemirror/inlet.min.js"&gt;&lt;/script&gt;
-    &lt;script src="libraries/codemirror/emmet.js"&gt;&lt;/script&gt;</textarea>
+    &lt;script src="libraries/codemirror/emmet.js"&gt;&lt;/script&gt;
+    &lt;script src="libraries/codemirror/addon/search/goto-line.js"&gt;&lt;/script&gt;</textarea>
                       <textarea class="combinelibs hide">$("#codemirror").trigger("click");</textarea>
                       <textarea class="codemirror1 hide"></textarea>
                       <textarea class="codemirror2 hide"></textarea>
@@ -308,6 +315,7 @@
                       <textarea class="codemirror38 hide"></textarea>
                       <textarea class="codemirror39 hide"></textarea>
                       <textarea class="codemirror40 hide"></textarea>
+                      <textarea class="codemirror41 hide"></textarea>
                       <textarea class="codemirrorzip jszipcode hide"></textarea>
                     </div>
                   </li>
