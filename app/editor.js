@@ -481,6 +481,7 @@ if ( navigator.platform.toLowerCase() === "macintosh" || "macintel" || "macppc" 
   $("[data-action=replaceall]").attr("title", "Shift+Cmd+Option+F");
   $("[data-action=minify]").attr("title", "Shift+Cmd+'");
   $("[data-action=tidy]").attr("title", "Shift+Cmd+\\");
+  $("[data-action=toggle_comment]").attr("title", "Cmd+/");
 } else {
   $("[data-action=lowercase]").attr("title", "CTRL+'");
   $("[data-action=uppercase]").attr("title", "CTRL+\\");
@@ -490,6 +491,7 @@ if ( navigator.platform.toLowerCase() === "macintosh" || "macintel" || "macppc" 
   $("[data-action=replaceall]").attr("title", "Shift-Ctrl-R");
   $("[data-action=minify]").attr("title", "Shift+Ctrl+'");
   $("[data-action=tidy]").attr("title", "Shift+Ctrl+\\");
+  $("[data-action=toggle_comment]").attr("title", "Ctrl+/");
 }
 
 // Drag and drop image load
