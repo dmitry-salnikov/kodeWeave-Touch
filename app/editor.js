@@ -155,7 +155,7 @@ $(window).load(function() {
         } else if (file[0].link.toLowerCase().substring(file[0].link.length - 4) === ".svg") {
           download_to_editor(file[0].link, htmlEditor);
         } else {
-          alertify.error("Sorry kodeWeave does not support that file type!");
+          alertify.error("Sorry kodeWeave Touch does not support that file type!");
         }
         window.close();
       },
