@@ -2,6 +2,24 @@ var timeout,
     delay,
     cssWaiting,
     jsWaiting,
+    singleFileDownload = function() {
+      $(".savehtml").click(function() {
+        var blob = new Blob([ htmlEditor.getValue() ], {type: "text/html"});
+        saveAs(blob, "source.html");
+      });
+      $(".savecss").click(function() {
+        var blob = new Blob([ cssEditor.getValue() ], {type: "text/css"});
+        saveAs(blob, "source.css");
+      });
+      $(".savejs").click(function() {
+        var blob = new Blob([ jsEditor.getValue() ], {type: "text/javascript"});
+        saveAs(blob, "source.js");
+      });
+      $(".savemd").click(function() {
+        var blob = new Blob([ mdEditor.getValue() ], {type: "text/x-markdown"});
+        saveAs(blob, "source.md");
+      });
+    },
     applyLowercase = function() {
       if ( activeEditor.val() === "htmlEditor" ) {
         var selected_text = htmlEditor.getSelection().toLowerCase();  // Need to grab the Active Selection
@@ -164,6 +182,10 @@ var timeout,
       }
     },
     shortcutKeys = function() {
+      // Load File
+      shortcut.add("Ctrl+O", function() {
+        $("[data-action=open-file]").trigger("click");
+      });
       // New Document
       shortcut.add("Ctrl+N", function() {
         $(".check").attr("checked", false).trigger("change");
@@ -175,6 +197,16 @@ var timeout,
       // Export layout hotkey
       shortcut.add("Ctrl+S", function() {
         $("[data-action=download-zip]").trigger("click");
+      });
+      // Reload Application
+      shortcut.add("F5", function() {
+        location.reload(true);
+      });
+      shortcut.add("Ctrl+R", function() {
+        location.reload(true);
+      });
+      $("#restartapp").click(function() {
+        location.reload(true);
       });
       // window.addEventListener("keydown", function(e) {
       // // New Document (CMD+N)

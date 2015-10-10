@@ -321,7 +321,7 @@ textarea {
   margin-right: 7px;
 }
 
-.fullscreen-html-toggle, .fullscreen-css-toggle, .fullscreen-js-toggle, .fullscreen-md-toggle, .preview-mode-toggle {
+.fullscreen-html-toggle, .fullscreen-css-toggle, .fullscreen-js-toggle, .fullscreen-md-toggle, .preview-mode-toggle, .savefile {
   display: block;
   position: absolute;
   right: 20px;
@@ -334,6 +334,12 @@ textarea {
 }
 .fullscreen-html-toggle, .fullscreen-css-toggle, .fullscreen-js-toggle, .fullscreen-md-toggle {
   top: 15px;
+}
+.savefile {
+  top: 50px;
+}
+.savefile:hover {
+  opacity: 1;
 }
 .preview-mode-toggle {
   bottom: 15px;

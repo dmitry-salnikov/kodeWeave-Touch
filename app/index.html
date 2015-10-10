@@ -22,6 +22,7 @@
     <script src="lib/jszip/jszip.min.js"></script>
     <script src="lib/jszip/jszip-utils.js"></script>
     <script src="lib/jszip/FileSaver.js"></script>
+    <script src="lib/jszip/Blob.js"></script>
     <script src="libraries/alertify/alertify.min.js"></script>
     <script src="libraries/showdown/Showdown.min.js"></script>
     
@@ -102,8 +103,9 @@
       <div class="dialog toolbox hide">
         <!-- Website Title -->
         <div class="txtcenter">
-          <input type="text" class="heading" data-action="sitetitle" placeholder="site title" value="site title" accept="text/html, text/css, application/x-javascript">
-        </div>
+          <input type="text" class="heading" data-action="sitetitle" placeholder="site title" value="site title"><br />
+          <input class="heading" type="number" min="0.1" step="0.1" value="0.1" data-value="version">
+        </div><br />
       
         <!--
         <a class="fn heading" data-action="ipsum">
@@ -503,11 +505,13 @@
                     <div class="hide">
                       <textarea class="libsources hide">    &lt;script src="libraries/jszip/jszip.min.js"&gt;&lt;/script&gt;
     &lt;script src="libraries/jszip/jszip-utils.js"&gt;&lt;/script&gt;
-    &lt;script src="libraries/jszip/FileSaver.js"&gt;&lt;/script&gt;</textarea>
+    &lt;script src="libraries/jszip/FileSaver.js"&gt;&lt;/script&gt;
+    &lt;script src="libraries/jszip/Blob.js"&gt;&lt;/script&gt;</textarea>
                       <textarea class="combinelibs hide">$("#jszip").trigger("click");</textarea>
                       <textarea class="jszip jszip1 hide"></textarea>
                       <textarea class="jszip jszip2 hide"></textarea>
                       <textarea class="jszip jszip3 hide"></textarea>
+                      <textarea class="jszip jszip4 hide"></textarea>
                       <textarea class="jszipzip jszipcode hide"></textarea>
                     </div>
                   </li>
@@ -847,13 +851,11 @@
               Download as Chrome App
             </a>
           </li>
-<!--
           <li class="watch hide">
-            <a class="download-as-pygtk-app">
-              Download as PyGTK (Cross Platform)
+            <a data-action="download-as-chrome-ext">
+              Download as Chrome Extension
             </a>
           </li>
--->
           <li>
             <a data-action="download-zip" title="Ctrl+S">
               Download as .zip
@@ -864,7 +866,7 @@
       
       <!-- Code Section -->
       <div id="charmenu">
-        <a id="restartapp" href="javascript:location.reload(true)"><span class="fa fa-refresh"></span></a>
+        <a id="restartapp"><span class="fa fa-refresh"></span></a>
         <a id="undo"><span class="fa fa-undo"></span></a>
         <a id="redo"><span class="fa fa-repeat"></span></a>
         <a id="tabindent">+ tab</a>
@@ -965,69 +967,81 @@
     <form method="post" id="editors">
       <div id="splitWrapper">
         <div id="mainSplitter">
-        <div>
-          <div class="editor-container md-editor">
-            <div id="mdEditor"></div>
+          <div>
+            <div class="editor-container md-editor">
+              <div id="mdEditor"></div>
+            </div>
+            <a class="fullscreen-md-toggle unfill">
+              <span class="fa fa-expand" id="fullscreen-md"></span>
+            </a>
+            <a class="savefile savemd">
+              <span class="fa fa-download"></span>
+            </a>
           </div>
-          <a class="fullscreen-md-toggle unfill">
-            <span class="fa fa-expand" id="fullscreen-md"></span>
-          </a>
-        </div>
-        <div>
-          <div id="splitContainer">
-            <div>
-              <div id="leftSplitter">
-                <div>
-                  <div class="editor-container html-editor">
-                    <div id="htmlEditor"></div>
+          <div>
+            <div id="splitContainer">
+              <div>
+                <div id="leftSplitter">
+                  <div>
+                    <div class="editor-container html-editor">
+                      <div id="htmlEditor"></div>
+                    </div>
+                    <a class="fullscreen-html-toggle unfill">
+                      <span class="fa fa-expand" id="fullscreen-html"></span>
+                    </a>
+                    <a class="savefile savehtml">
+                      <span class="fa fa-download"></span>
+                    </a>
                   </div>
-                  <a class="fullscreen-html-toggle unfill">
-                    <span class="fa fa-expand" id="fullscreen-html"></span>
-                  </a>
-                </div>
-                <div>
-                  <div class="editor-container css-editor">
-                    <div id="cssEditor"></div>
+                  <div>
+                    <div class="editor-container css-editor">
+                      <div id="cssEditor"></div>
+                    </div>
+                    <a class="fullscreen-css-toggle unfill">
+                      <span class="fa fa-expand" id="fullscreen-css"></span>
+                    </a>
+                    <a class="savefile savecss">
+                      <span class="fa fa-download"></span>
+                    </a>
                   </div>
-                  <a class="fullscreen-css-toggle unfill">
-                    <span class="fa fa-expand" id="fullscreen-css"></span>
-                  </a>
                 </div>
               </div>
-            </div>
-            <div>
-              <div id="rightSplitter">
-                <div>
-                  <div class="editor-container js-editor">
-                    <div id="jsEditor"></div>
+              <div>
+                <div id="rightSplitter">
+                  <div>
+                    <div class="editor-container js-editor">
+                      <div id="jsEditor"></div>
+                    </div>
+                    <a class="fullscreen-js-toggle unfill">
+                      <span class="fa fa-expand" id="fullscreen-js"></span>
+                    </a>
+                    <a class="savefile savejs">
+                      <span class="fa fa-download"></span>
+                    </a>
                   </div>
-                  <a class="fullscreen-js-toggle unfill">
-                    <span class="fa fa-expand" id="fullscreen-js"></span>
-                  </a>
-                </div>
-                <div>
-                  <div class="editor-container preview-editor">
-                    <iframe id="preview"></iframe>
+                  <div>
+                    <div class="editor-container preview-editor">
+                      <iframe id="preview"></iframe>
+                    </div>
+                    <a class="preview-mode-toggle unfill">
+                      <span class="fa fa-expand" id="preview-mode"></span>
+                    </a>
                   </div>
-                  <a class="preview-mode-toggle unfill">
-                    <span class="fa fa-expand" id="preview-mode"></span>
-                  </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </form>
     
-    <!-- Main Dialog -->
-    <div class="dialog-bg column hide" data-action="chromedialog">
+    <!-- Chrome Application Dialog -->
+    <div class="dialog-bg column hide" data-action="chromeappdialog">
       <div>
         <nav>
           <div class="grid chromeappwindow">
             <form class="form">
-              <textarea class="form__input" data-action="descr" placeholder="Description" rows="7"></textarea>
+              <textarea class="form__input" data-action="app-descr" placeholder="Description" rows="7"></textarea>
               
               <h4>
                 Offline:
@@ -1055,13 +1069,28 @@
             </form>
               
             <div class="txtcenter">
-              <a class="btn--default" data-action="confirm">Confirm</a>
-              <a class="btn--warning" data-action="cancel">Cancel</a>
+              <a class="btn--default" data-action="app-confirm">Confirm</a>
+              <a class="btn--warning" data-action="app-cancel">Cancel</a>
             </div>
           </div>
         </nav>
       </div>
     </div>
+    
+    <!-- Chrome Extension Dialog -->
+    <div class="dialog-bg column hide" data-action="chromeextdialog">
+      <div>
+        <nav>
+          <div class="grid chromeappwindow">
+            <textarea class="form__input" data-action="ext-descr" placeholder="Description" rows="7"></textarea>
+          
+            <div class="txtcenter">
+              <a class="btn--default" data-action="ext-confirm">Confirm</a>
+              <a class="btn--warning" data-action="ext-cancel">Cancel</a>
+            </div>
+          </div>
+        </nav>
+      </div>
     
     <script src="jqwidgets/jqxcore.js"></script>
     <script src="jqwidgets/jqxsplitter.js"></script>
